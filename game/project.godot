@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 
 Content="*res://scripts/services/content_db.gd"
 Session="*res://scripts/services/game_session.gd"
+Telemetry="*res://scripts/services/telemetry.gd"
 Router="*res://scripts/services/scene_router.gd"
 
 [display]
