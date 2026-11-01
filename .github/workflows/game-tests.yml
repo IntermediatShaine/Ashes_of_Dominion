@@ -1,0 +1,61 @@
+name: Godot reliability
+
+on:
+  push:
+    paths: ['game/**', '.github/workflows/game-tests.yml', '.gitattributes']
+  pull_request:
+    paths: ['game/**', '.github/workflows/game-tests.yml', '.gitattributes']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: godot-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Godot 4.5.1 / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      AOD_TEST_LOG_DIR: ${{ runner.temp }}/aod-logs
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - name: Install checksum-verified official Godot
+        run: ./game/tools/install_ci_godot.ps1 -Destination "${{ runner.temp }}/godot"
+      - name: Headless import
+        run: ./game/tools/verify.ps1 -Godot $env:GODOT -Check import
+      - name: Automated game tests
+        run: |
+          if ($IsLinux) { bash ./game/run_tests.sh "$env:GODOT"; exit $LASTEXITCODE }
+          else { ./game/run_tests.ps1 -Godot $env:GODOT; exit $LASTEXITCODE }
+      - name: Startup smoke test
+        run: ./game/tools/verify.ps1 -Godot $env:GODOT -Check smoke
+      - name: Save, exit, relaunch, compare full state
+        run: |
+          if ($IsLinux) { bash ./game/check_relaunch.sh "$env:GODOT"; exit $LASTEXITCODE }
+          else { ./game/check_relaunch.ps1 -Godot $env:GODOT; exit $LASTEXITCODE }
+      - name: PowerShell harness failure injection
+        run: ./game/tools/test_harness.ps1 -Godot $env:GODOT -Shell powershell
+      - name: Bash harness failure injection
+        if: runner.os == 'Linux'
+        run: ./game/tools/test_harness.ps1 -Godot $env:GODOT -Shell bash
+      - name: Upload verification logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: godot-logs-${{ matrix.os }}
+          path: ${{ runner.temp }}/aod-logs
+          if-no-files-found: warn
+          retention-days: 7

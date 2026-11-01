@@ -90,6 +90,15 @@ archive comparison are in [`CODEX_ISSUE_3_AUDIT.md`](CODEX_ISSUE_3_AUDIT.md).
 
 No generator, RNG, save-schema or route-selection changes. No manual play or screenshot review.
 
+## Phase 2B — automated testing and CI
+
+`codex/ci-test-hardening`, base `aec6ce9`: four wrappers now reject failed imports, diagnostics,
+missing completion markers and empty test selections; tests use isolated application data.
+Local Windows Godot 4.5.1: **66 tests, 0 failed**, Mist **4/4**, import/boot/relaunch passed;
+**20/20 harness cases** including 18 intentional failures rejected. Linux/Windows workflow
+added with pinned action SHAs and SHA-512-verified engine. Hosted status and exact commands:
+[`TESTING_AND_CI.md`](TESTING_AND_CI.md). Gameplay source and save format unchanged.
+
 ## How to update status
 
 For every meaningful change record the commit SHA, affected file(s), exact test command(s),

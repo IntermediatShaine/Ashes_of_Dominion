@@ -107,6 +107,19 @@ faction-relation consequences.
 - **Decisions requiring owner review:** `DECISIONS.md` 2026-11-01 entries (engine version,
   `game/` as project root, unreconciled Codex/M2 line of work).
 
+## Phase 2B — test harness and CI (2026-11-01)
+
+- Branch `codex/ci-test-hardening`, based on `aec6ce9` (PR #4 merged).
+- Hardened four wrappers through native shared PowerShell/Bash runners: import failures,
+  engine diagnostics and missing positive completion evidence now fail; each invocation uses
+  isolated application data. Optional retained logs use `AOD_TEST_LOG_DIR`.
+- Added checksum-pinned Godot 4.5.1 Linux/Windows CI and a 20-case-per-shell self-test with real
+  failure injection in disposable project copies. Local PowerShell: 20/20 harness cases;
+  66 game tests; focused Mist 4/4; import, smoke and relaunch pass.
+- See `docs/TESTING_AND_CI.md` for exact commands, fixture corrections and hosted status.
+- Gameplay, content, RNG, save schemas and scenes untouched; Claude's narrative/faction work
+  remains independent. Human play and branch-protection configuration remain owner actions.
+
 ## Handoff record template
 
 - Date and commit/branch:

@@ -4,6 +4,13 @@ Significant development changes to **Ashes of Dominion** are recorded here. Do n
 
 ## Unreleased
 
+### Engineering — Phase 2B (2026-11-01)
+- Hardened PowerShell/Bash test and relaunch wrappers with import checking, strict completion
+  evidence, isolated application data and optional retained logs.
+- Added Godot 4.5.1 Linux/Windows GitHub Actions and deliberate harness failure-injection checks.
+- Local Windows verification: 66 game tests pass; 20 controlled harness cases behave correctly.
+  Exact commands and hosted verification status are in `docs/TESTING_AND_CI.md`.
+
 ### Fixed — 2026-11-01 (`codex/issue-3-mist-preview`)
 - Prevented selected uncharted routes from revealing hidden intermediate waypoint geometry.
 - Added four renderer regression tests; 66 tests pass on Windows Godot 4.5.1 headless, with

@@ -1,0 +1,120 @@
+# Phase 2B — testing and CI
+
+The authoritative project is `game/`. Compatibility target: official Godot
+`4.5.1.stable.official.f62fdbde1`. No gameplay/content changes are part of this milestone.
+
+## Running checks
+
+From `game/`, Windows PowerShell:
+
+```powershell
+$engine = 'C:\path\to\Godot_v4.5.1-stable_win64_console.exe'
+.\tools\verify.ps1 -Godot $engine -Check import
+.\run_tests.ps1 -Godot $engine
+.\tools\verify.ps1 -Godot $engine -Check smoke
+.\check_relaunch.ps1 -Godot $engine
+# Optional focused test run:
+.\run_tests.ps1 -Godot $engine -Filter mist_preview
+```
+
+Linux/Bash:
+
+```bash
+bash tools/verify.sh import /absolute/path/to/godot
+bash run_tests.sh /absolute/path/to/godot
+bash tools/verify.sh smoke /absolute/path/to/godot
+bash check_relaunch.sh /absolute/path/to/godot
+bash run_tests.sh /absolute/path/to/godot --filter=mist_preview
+```
+
+Each command imports first and rejects a nonzero process exit or engine/script diagnostics
+on either output stream, including import errors reported with exit 0. Tests must report a
+positive test count and zero failures; a filter matching no tests fails. Relaunch must report
+both a completed write and successful comparison from a second process. Warnings remain visible
+and do not fail the run (the two persistence-recovery warnings are expected).
+
+Each invocation uses a new temporary application-data directory (APPDATA, LOCALAPPDATA, XDG data,
+config and cache). Write/verify share that invocation's private directory, then it is removed.
+PowerShell restores the caller's environment and working directory. Project `.godot/` cache is
+still local to the checkout; avoid concurrent imports in the same checkout. Self-contained Godot
+builds can still keep editor configuration next to their executable; use a dedicated engine copy
+if that directory is read-only. macOS-specific Godot application-data behavior is not verified.
+
+Set `AOD_TEST_LOG_DIR` to retain per-stage logs in a unique run subdirectory; otherwise logs are
+printed and the temporary copy is removed. CI retains logs for seven days even after a failure.
+The checks do not copy or use personal save slots. Do not commit local logs, caches or binaries.
+
+## Deliberate failure detection
+
+PowerShell 7 (also installed on both hosted runners) runs the harness self-test:
+
+```powershell
+.\tools\test_harness.ps1 -Godot $engine -Shell powershell
+# On Linux, verify the independent Bash wrappers too:
+./tools/test_harness.ps1 -Godot $engine -Shell bash
+```
+
+The self-test copies the project to a temporary directory with spaces, excluding `.godot/`.
+It never injects failures into the active project. Twenty cases exercise each shell:
+
+- Two successful fake-engine controls, including shared isolated data across relaunch processes.
+- Both wrappers: nonzero import and diagnostic-only import; trace confirms no subsequent stage.
+- Test wrapper: runtime script error with ANSI decoration, engine error on stderr, failed
+  assertion/nonzero exit, failing summary despite exit 0, missing summary, zero tests.
+- Relaunch wrapper: failed write, failed verification, missing success marker.
+- Missing executable.
+- Four real-Godot cases: failing assertion, runtime null-method error, malformed referenced
+  autoload rejected at import, and tampered expected day rejected by the full-state comparison.
+
+An unreferenced malformed script is not guaranteed to be compiled during Godot's editor import;
+the import fixture deliberately corrupts the copied Content autoload. The full test run remains
+necessary to load test scripts and validate runtime paths.
+
+## GitHub Actions
+
+Workflow: [Godot reliability](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/workflows/game-tests.yml).
+It runs on pushes and pull requests affecting `game/**`, its workflow, or `.gitattributes`,
+and supports manual dispatch once available on the default branch. Matrix: Ubuntu 24.04 and
+Windows Server 2022, with independent 20-minute job limits. Linux runs the Bash game wrappers;
+Windows runs PowerShell. Both run PowerShell failure injection; Linux additionally runs Bash
+failure injection. Import, full tests, 60-frame startup, and two-process save consistency are
+separate required job steps. A hung engine is bounded by the CI job timeout; local wrappers do
+not impose their own process timeout.
+
+Actions are pinned to full commit SHAs. `install_ci_godot.ps1` downloads from the
+[official 4.5.1 release](https://github.com/godotengine/godot-builds/releases/tag/4.5.1-stable),
+checks archive SHA-512 against committed pins from that release's `SHA512-SUMS.txt`, then verifies
+the executable's exact version. No export templates are needed. The workflow uses read-only
+repository permissions, no persisted checkout credentials and no project secrets. Branch
+protection requiring this workflow is an owner setting, not enabled by this PR.
+
+## Execution record — 2026-11-01
+
+Base: `aec6ce9` (merged Mist PR #4); branch: `codex/ci-test-hardening`.
+Local engine: `D:\Ashes of Dominion\.local-tools\godot\Godot_v4.5.1-stable_win64_console.exe`.
+Baseline ran the original wrappers with isolated APPDATA as documented in the issue #3 audit:
+66 tests, 0 failed; headless boot and two-process relaunch passed.
+
+After hardening, executed from `game/` with that engine as `$engine`:
+
+| Command | Actual result |
+| --- | --- |
+| `.\run_tests.ps1 -Godot $engine` | exit 0; import accepted; 66 tests, 0 failed; only two expected recovery warnings |
+| `.\run_tests.ps1 -Godot $engine -Filter mist_preview` | exit 0; 4 tests, 0 failed |
+| `.\tools\verify.ps1 -Godot $engine -Check smoke` | exit 0; import and 60-frame boot accepted |
+| `.\check_relaunch.ps1 -Godot $engine` | exit 0; write and fresh-process state comparison accepted |
+| `.\tools\test_harness.ps1 -Godot $engine` | exit 0; 20/20 controlled cases accepted; all 18 negative cases returned nonzero |
+| `install_ci_godot.ps1 -Destination <workspace-local tools>` | official Windows archive checksum and exact executable version verified |
+| `bash -n game/tools/verify.sh game/run_tests.sh game/check_relaunch.sh` | exit 0 via Git Bash outside sandbox (MSYS initialization is blocked inside sandbox) |
+| `git diff --check` | exit 0 |
+
+The first fake stderr fixture bypassed PowerShell's object pipeline; it was corrected to run as
+a native process before the passing 20-case run. The first real import fixture was unreferenced
+and did not compile during import; corrected to a referenced autoload as described above.
+These were fixture-development failures, not passing checks.
+
+Hosted workflow results will be recorded after the branch is published. No Linux runtime success
+or human/manual play acceptance is inferred from local Windows results. The regression suite
+still includes the four Mist renderer tests, nine deterministic generation tests and thirteen
+save-system tests. `game/scripts/`, `game/scenes/`, `game/data/`, `game/tests/`, and the relaunch
+scene/script are unchanged; no save schema, RNG, generator or scene-reference changes.
