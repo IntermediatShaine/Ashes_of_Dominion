@@ -71,8 +71,9 @@ successes. Configurable later if the design disagrees.
 ### 13. Mist semantics
 Persistent landmarks are known from the start only if `known_at_start`; completing an expedition
 reveals its route edges and the destination's neighbouring landmarks. Waypoints show once an
-adjacent edge was travelled. Route *preview* draws the planned line (dashed where uncharted) but
-labels days/danger as estimates (see known_issues for the shape leak).
+adjacent edge was travelled. Route preview draws charted edges exactly. If any selected edge is
+uncharted, one straight dashed origin-to-destination indication replaces the unknown geometry.
+Days/danger remain estimates. No discovery or route-planning state is changed by rendering.
 
 ### 14. One test runner, no framework
 A 150-line runner (`tests/test_runner.gd`) run as a scene so autoloads exist; tests are plain

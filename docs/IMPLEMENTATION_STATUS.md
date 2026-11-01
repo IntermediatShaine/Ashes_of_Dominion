@@ -1,7 +1,7 @@
 # Implementation status
 
-**Last verified: 2026-11-01** on branch `feature/import-godot-project`, with the official
-**Godot 4.5.1-stable** Linux build (headless). Project root: [`game/`](../game/).
+**Last verified: 2026-11-01** on branch `codex/issue-3-mist-preview`, with the official
+**Godot 4.5.1-stable** Windows build (headless). Project root: [`game/`](../game/).
 
 Verification levels: **Planned** (design only) · **Implemented** (code present and inspected) ·
 **Tested** (automated test executed and passing, command recorded) · **Runtime** (executed in
@@ -64,14 +64,31 @@ scripted exploration playthrough, defeat → resurrection once, **enemy FSM 7**,
 
 See [`game/docs/known_issues.md`](../game/docs/known_issues.md) (authoritative, kept with the
 code). Headline items: no manual verification on Windows; combat numbers unplayed; no save during
-an expedition; old generation versions are not preserved; Mist route preview leaks waypoint shape.
+an expedition; old generation versions are not preserved. Mist route-preview waypoint disclosure
+is corrected and covered by renderer integration tests (issue #3).
 
 ## Unreconciled material
 
 - A separate line of work (OpenAI Codex, "AshesOfDominion-unified-foundation" v0.3.1-m1, plus
   Claude's M2/M2b/M2.1 zips) exists outside this repository and was **not inspected** on
   2026-11-01 (folder access was not available). Its relationship to `game/` is an owner decision;
-  see `docs/AI_HANDOFF.md` and `docs/DECISIONS.md`.
+  see `docs/AI_HANDOFF.md` and `docs/DECISIONS.md`. Codex subsequently located and statically
+  inspected the exact v0.3.1-m1 archive; see [`CODEX_ISSUE_3_AUDIT.md`](CODEX_ISSUE_3_AUDIT.md).
+
+## Codex independent verification — issue #3 (2026-11-01)
+
+Base `1a2d4ed`; branch `codex/issue-3-mist-preview`. Full commands, environment setup and
+archive comparison are in [`CODEX_ISSUE_3_AUDIT.md`](CODEX_ISSUE_3_AUDIT.md).
+
+| Check | Baseline | After correction |
+| --- | --- | --- |
+| Headless import | wrapper import completed without diagnostics after data-path isolation | explicit import exit 0, no errors/warnings |
+| Automated suite | 62 tests, 0 failed | 66 tests, 0 failed; only two expected recovery warnings |
+| New renderer regression suite against original code | 4 tests, 2 failed (uncharted and partly charted geometry) | all 4 pass within full suite |
+| Headless boot, 60 frames | exit 0 | exit 0 |
+| Two-process save/relaunch | passed | passed |
+
+No generator, RNG, save-schema or route-selection changes. No manual play or screenshot review.
 
 ## How to update status
 

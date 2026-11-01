@@ -75,8 +75,23 @@ run `run_tests.ps1` and `check_relaunch.ps1`, record findings in `game/docs/know
 tune `game/data/balance.json` / `enemies.json` if controls or combat feel wrong.
 
 After that, in order (from `game/docs/development_roadmap.md`): save during exploration (or
-declare expeditions atomic), generation versioning, Mist preview leak, a second decision with
+declare expeditions atomic), generation versioning, a second decision with
 faction-relation consequences.
+
+## Codex handoff — issue #3, 2026-11-01
+
+- Branch: `codex/issue-3-mist-preview`, based on main `1a2d4ed`.
+- `world_map_screen.gd`: selected uncharted geometry is replaced by one direct dashed indication;
+  charted edges remain solid. Planning, estimates, seeds and save format are unchanged.
+- New `test_mist_preview.gd` captures actual renderer commands: four tests, two reproduced
+  failures before the fix; full suite after fix **66 tests, 0 failed** on official Windows
+  Godot 4.5.1. Import, boot and two-process relaunch passed. Human play remains unverified.
+- Exact commands and environment failures/recovery: `docs/CODEX_ISSUE_3_AUDIT.md`.
+- Located the v0.3.1-m1 ZIP in Downloads and inspected source without importing it. It has
+  incompatible save/state contracts. Comparison and bounded reuse proposals are in the audit;
+  no older source or saves were copied into `game/`. Earlier non-recovery notes above are historical.
+- Next: owner visual review of Mist preview and gameplay; consider isolated test-runner improvements
+  separately from Claude's feature work.
 
 ## Handoff record — 2026-11-01
 
