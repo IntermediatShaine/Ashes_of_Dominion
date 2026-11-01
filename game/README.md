@@ -14,7 +14,11 @@ Other 4.x versions are untested: 4.4 will probably open it, anything older than 
 (the GDScript relies on 4.3+ builtins such as `floorf`). The "4.7.2" mentioned in the design
 document does not exist as of this writing; use the latest 4.5.x stable.
 
-## Opening and running
+## Download a playable build (no Godot editor required)
+
+Visit the [latest playable preview](https://github.com/IntermediatShaine/Ashes_of_Dominion/releases/tag/preview) and download the **Windows x64 ZIP** or **Linux x86_64 ZIP**. Extract the entire ZIP, launch `AshesOfDominion.exe` (Windows) or `AshesOfDominion.x86_64` (Linux), and keep its `.pck` beside it. These builds are portable, not signed installers. The preview becomes available after the first successful [distribution workflow](../docs/DOWNLOADS_AND_RELEASES.md) run on main.
+
+## Opening and running from source
 
 1. Install Godot 4.5.1 (standard build; .NET is not required).
 2. Open Godot → **Import** → select `project.godot` in this folder → **Import & Edit**.

@@ -18,5 +18,5 @@ build/
 dist/
 .saves/
 
-# Export settings may carry local paths or secrets: review before committing.
-export_presets.cfg
+# Tracked game/export_presets.cfg contains safe, reviewed portable export presets.
+# Godot's .godot/ directory (including export_credentials.cfg) stays ignored.
