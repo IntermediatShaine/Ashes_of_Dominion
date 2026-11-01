@@ -1,0 +1,26 @@
+{
+	"_comment": "Small narrative decisions. Each resolves once per universe (UniverseState.decision_log). Effects: morality -> character; reputation -> universe factions; haul -> current expedition; recruits -> settlement.pending_recruits.",
+	"stranded_survivor": {
+		"title": "A stranded survivor",
+		"appears_in_biomes": ["marches", "eldergrove"],
+		"prompt": "A woman in Crown colours sits against a stump, leg bound with a torn cloak. A pack of supplies lies beside her. She says her patrol left her when the hounds came. She asks for food to make it to Emberfall.",
+		"options": {
+			"help": {
+				"label": "Share two food and point her to Emberfall",
+				"requires_haul": {"food": 2},
+				"effects": {"morality": 15, "reputation": {"crown_of_aurel": 10}, "haul": {"food": -2}, "recruits": 1},
+				"result": "She limps off toward the village. One more mouth, one more pair of hands."
+			},
+			"rob": {
+				"label": "Take her pack. She won't need it.",
+				"effects": {"morality": -20, "reputation": {"crown_of_aurel": -15, "ashen_legion": 5}, "haul": {"food": 3, "iron": 1}},
+				"result": "She doesn't scream. That is somehow worse. The pack is heavier than it looked."
+			},
+			"ignore": {
+				"label": "Walk on. The Marches are full of the dying.",
+				"effects": {"morality": -3},
+				"result": "You do not look back."
+			}
+		}
+	}
+}

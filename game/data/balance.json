@@ -1,0 +1,79 @@
+{
+	"_comment": "All tunable numbers for the vertical slice live here. Nothing in scripts/ hardcodes these.",
+	"character": {
+		"base_health": 20,
+		"health_per_endurance": 4,
+		"base_attack": 2,
+		"attack_per_strength": 1,
+		"base_defense": 0,
+		"defense_per_endurance": 0.5,
+		"base_move_speed": 130,
+		"speed_per_dexterity": 4,
+		"attack_cooldown": 0.45,
+		"attack_active_time": 0.12,
+		"attack_reach": 30,
+		"attack_width": 26,
+		"invulnerability_after_hit": 0.35
+	},
+	"progression": {
+		"xp_per_level_base": 20,
+		"xp_per_level_growth": 1.45,
+		"max_level": 20,
+		"heal_on_level_up": true
+	},
+	"combat": {
+		"damage_variance": 0.2,
+		"min_damage": 1,
+		"defense_scale": 0.5
+	},
+	"expedition": {
+		"day_cost_units": 150.0,
+		"resource_regrowth_days": 10,
+		"defeat_loses_haul": true,
+		"retreat_keeps_haul": true
+	},
+	"starting_settlement": {
+		"population": 6,
+		"population_capacity": 8,
+		"storage_capacity": 40,
+		"loyalty": 50,
+		"morale": 40,
+		"productivity": 50,
+		"freedom": 60,
+		"discipline": 30,
+		"military_strength": 0,
+		"resources": {"wood": 6, "stone": 2, "food": 8, "iron": 0}
+	},
+	"settlement": {
+		"food_consumption_per_person_day": 0.1,
+		"starvation_morale_penalty_per_day": 3,
+		"fed_morale_recovery_per_day": 1,
+		"overflow_resources_lost": true
+	},
+	"threat": {
+		"awareness_per_expedition_after_grace": 8,
+		"awareness_per_building": 2,
+		"bands": [
+			{"max": 0, "label": "Dormant", "text": "No one beyond the Marches has noticed Emberfall."},
+			{"max": 25, "label": "Stirring", "text": "Rumours of a rebuilt village are spreading."},
+			{"max": 55, "label": "Watchful", "text": "Scouts have been seen on the ridgelines."},
+			{"max": 85, "label": "Alert", "text": "Emberfall is on someone's map now."},
+			{"max": 100, "label": "Hunted", "text": "An attack is only a matter of time."}
+		]
+	},
+	"wilderness": {
+		"width": 44,
+		"height": 30,
+		"cell_size": 32,
+		"base_resource_nodes": 6,
+		"base_enemies": 3,
+		"enemies_per_danger_level": 2,
+		"resource_amount_min": 2,
+		"resource_amount_max": 4
+	},
+	"world_map": {
+		"procedural_waypoints": 6,
+		"neighbor_links": 2,
+		"danger_levels": 3
+	}
+}
