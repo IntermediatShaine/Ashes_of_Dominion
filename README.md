@@ -6,6 +6,7 @@
 GDScript, placeholder visuals). The full expedition loop — village → map → route → seeded wilderness →
 8-direction movement → combat → resources → return → construction → save → relaunch → continue — is
 covered by 66 automated tests and a two-process relaunch check. It has **not yet been played by a human**.
+covered by 66 automated tests (reported by Codex for merged PR #4) and a two-process relaunch check. It has **not yet been played by a human**.
 See [implementation status](docs/IMPLEMENTATION_STATUS.md) for the evidence.
 Godot 4.5.1 Linux/Windows CI and harness failure-injection results are documented in
 [testing and CI](docs/TESTING_AND_CI.md).
@@ -33,7 +34,8 @@ Controls and the full layout are in [`game/README.md`](game/README.md).
 - [Implementation status](docs/IMPLEMENTATION_STATUS.md) — evidence-based progress tracking.
 - [Decisions](docs/DECISIONS.md) — confirmed directions and proposals not yet finalized.
 - [AI handoff](docs/AI_HANDOFF.md) — coordination notes for coding assistants.
-- [Codex onboarding](docs/CODEX_HANDOFF.md) — Codex Cloud setup and its first audit/fix assignment.
+- [Codex onboarding](docs/CODEX_HANDOFF.md) — setup and completed first assignment.
+- [Phase 2C proposals](docs/PHASE_2C_ARCHITECTURE_PROPOSAL.md) — owner-pending persistence decision, compatibility tests and roadmap.
 - [AGENTS.md](AGENTS.md) — shared instructions for AI assistants.
 - [CLAUDE.md](CLAUDE.md) — Claude-specific entry point.
 

@@ -92,7 +92,10 @@ func test_full_loop_persists_consequences() -> void:
 	assert_ok(started2)
 	assert_eq(started2.value, "exp_000002", "id counters persist")
 	var area2 := b2.expeditions.build_area()
-	assert_true(area2.npc_spawn.is_empty(), "decision already made => npc gone")
+	# The survivor is resolved, so the next marches decision in priority order takes her place.
+	assert_eq(String(area2.npc_spawn.get("decision_id", "")), "crown_patrol", "resolved decision gives way to the Crown patrol")
+	assert_eq(area2.spawn, area.spawn)
+	assert_eq(area2.exit, area.exit)
 	assert_true(area2.resource_nodes[0]["depleted"], "harvested node stays depleted")
 	assert_eq(area2.enemy_spawns.size(), area.enemy_spawns.size())
 

@@ -176,15 +176,18 @@ func _build_decision(root: Control) -> PanelContainer:
 	return p
 
 
-func show_decision(decision_id: String, decision: Dictionary, expedition: ExpeditionRecord) -> void:
+## `universe` drives the reputation-aware prompt and option gating; the dialog
+## never reads morality.
+func show_decision(decision_id: String, decision: Dictionary, expedition: ExpeditionRecord, universe: UniverseState = null) -> void:
 	for c in _decision_body.get_children():
 		c.queue_free()
 	_decision_body.add_child(UiKit.title(DictUtil.get_string(decision, "title", decision_id), 22))
-	_decision_body.add_child(UiKit.label(DictUtil.get_string(decision, "prompt"), 15, UiKit.TEXT, true))
-	var options := DictUtil.get_dict(decision, "options")
+	var prompt := DecisionRules.prompt_for(decision, universe) if universe != null else DictUtil.get_string(decision, "prompt")
+	_decision_body.add_child(UiKit.label(prompt, 15, UiKit.TEXT, true))
+	var options := DecisionRules.visible_options(decision, universe) if universe != null else DictUtil.get_dict(decision, "options")
 	for oid in DictUtil.sorted_keys(options):
 		var opt: Dictionary = options[oid]
-		var block := DecisionRules.option_blocking_reason(opt, expedition)
+		var block := DecisionRules.blocking_reason(opt, expedition, universe)
 		var b := UiKit.button(DictUtil.get_string(opt, "label", String(oid)) + ("" if block == "" else "  — " + block), func():
 			decision_chosen.emit(decision_id, String(oid)), 490)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT

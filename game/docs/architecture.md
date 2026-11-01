@@ -50,6 +50,9 @@ this keeps the scenes editable later.)
    universe seed + destination id + generation version, plus the universe's harvest history) →
    entities spawned from the map. Gameplay events call back:
    `collect_resource`, `on_enemy_defeated` (rewards stream), `DecisionRules.resolve`.
+   The area's single decision NPC is chosen by `DecisionRules.select_for_area` (biome, optional
+   landmark list, `priority`); the HUD builds the dialog from `prompt_for` / `visible_options` /
+   `blocking_reason`, which read faction reputation (universe scope) and never morality.
 4. Exit / retreat → `ExpeditionService.finish(reason)` → `resolve()` once: haul → settlement
    (storage cap), discovery, `WorldSimulation.advance_days`, recruits, threat, history.
    Defeat → `TransitionService.on_protagonist_defeated()` (see game_state.md).

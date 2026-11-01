@@ -76,7 +76,8 @@ func _ready() -> void:
 	if not map.npc_spawn.is_empty():
 		_npc = Area2D.new()
 		_npc.set_script(SurvivorScript)
-		_npc.setup(String(map.npc_spawn["decision_id"]))
+		var npc_decision_id := String(map.npc_spawn["decision_id"])
+		_npc.setup(npc_decision_id, Content.get_def("decisions", npc_decision_id))
 		_npc.position = map.cell_center(map.npc_spawn["cell"])
 		_npc.talked.connect(_on_npc_talked)
 		_entities.add_child(_npc)
@@ -167,7 +168,7 @@ func _on_experience(_amount: int, levels: int) -> void:
 
 
 func _on_npc_talked(decision_id: String) -> void:
-	hud.show_decision(decision_id, Content.get_def("decisions", decision_id), Session.expeditions.active())
+	hud.show_decision(decision_id, Content.get_def("decisions", decision_id), Session.expeditions.active(), Session.universe())
 
 
 func _on_decision_chosen(decision_id: String, option_id: String) -> void:
@@ -182,11 +183,20 @@ func _on_decision_chosen(decision_id: String, option_id: String) -> void:
 	hud.set_prompt("")
 	var result := DictUtil.get_string(DictUtil.get_dict(DictUtil.get_dict(decision, "options"), option_id), "result", "")
 	var effects: Dictionary = r.value
+	if int(effects.get("health", 0)) != 0:
+		# The rule already changed the persisted condition; mirror it on the live body.
+		player.combatant.health = DictUtil.get_int(Session.universe().protagonist_condition, "health", player.combatant.health)
+		hud.set_health(player.combatant.health, player.combatant.max_health)
+		_last_player_health = player.combatant.health
 	var notes: Array[String] = []
 	if int(effects.get("morality", 0)) != 0:
 		notes.append("Morality %+d" % int(effects["morality"]))
 	for fid in DictUtil.sorted_keys(DictUtil.get_dict(effects, "reputation")):
 		notes.append("%s %+d" % [DictUtil.get_string(Content.get_def("factions", String(fid)), "name"), int(effects["reputation"][fid])])
+	if int(effects.get("recruits", 0)) > 0:
+		notes.append("+%d recruit" % int(effects["recruits"]))
+	if int(effects.get("health", 0)) != 0:
+		notes.append("Health %+d" % int(effects["health"]))
 	hud.show_decision_result(result + ("\n\n" + " · ".join(notes) if not notes.is_empty() else ""))
 
 

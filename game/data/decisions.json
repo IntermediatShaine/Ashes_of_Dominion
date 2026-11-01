@@ -1,8 +1,11 @@
 {
-	"_comment": "Small narrative decisions. Each resolves once per universe (UniverseState.decision_log). Effects: morality -> character; reputation -> universe factions; haul -> current expedition; recruits -> settlement.pending_recruits.",
+	"_comment": "Small narrative decisions. Each resolves once per universe (UniverseState.decision_log). Selection per area: DecisionRules.select_for_area — unresolved decisions whose appears_in_biomes contains the area's biome (and whose appears_at_landmarks, if present, contains the destination) ordered by priority then id; the first one is the area's single NPC. Effects: morality -> character; reputation -> universe factions; haul -> current expedition; recruits -> settlement.pending_recruits; health -> protagonist (never below 1). Options may carry requires_haul and requires_reputation {faction, min, max, hide_when_blocked}; prompts_by_reputation picks the prompt text by the player's standing with a faction (first match wins, else prompt).",
 	"stranded_survivor": {
 		"title": "A stranded survivor",
+		"priority": 10,
 		"appears_in_biomes": ["marches", "eldergrove"],
+		"npc_color": "#d9bf4d",
+		"npc_prompt": "Talk",
 		"prompt": "A woman in Crown colours sits against a stump, leg bound with a torn cloak. A pack of supplies lies beside her. She says her patrol left her when the hounds came. She asks for food to make it to Emberfall.",
 		"options": {
 			"help": {
@@ -20,6 +23,50 @@
 				"label": "Walk on. The Marches are full of the dying.",
 				"effects": {"morality": -3},
 				"result": "You do not look back."
+			}
+		}
+	},
+	"crown_patrol": {
+		"title": "A Crown patrol",
+		"priority": 20,
+		"appears_in_biomes": ["marches"],
+		"appears_at_landmarks": ["ashen_crossroads", "aurel_border_fort"],
+		"npc_color": "#3f62b8",
+		"npc_prompt": "Hail the patrol",
+		"prompt": "Four riders in Aurel blue block the road, lances couched. The sergeant looks you over, hand resting on her hilt, and asks what business a survivor of Emberfall has this far from the ashes.",
+		"prompts_by_reputation": [
+			{"faction": "crown_of_aurel", "min": 20, "text": "Four riders in Aurel blue rein in on the road. The sergeant raises an open hand. 'Emberfall's survivor — the one who sent Ysolde home. The Crown remembers its debts, and the Border Fort could use someone who knows these trails.'"},
+			{"faction": "crown_of_aurel", "max": -20, "text": "Four riders in Aurel blue block the road, lances couched. The sergeant's hand goes to her sword. 'That's the one. The fort has your description.' Nobody dismounts to talk."}
+		],
+		"options": {
+			"escort": {
+				"label": "Offer to guide them through marauder country",
+				"requires_reputation": {"faction": "crown_of_aurel", "min": 20},
+				"effects": {"morality": 5, "reputation": {"crown_of_aurel": 10, "ashen_legion": -5}, "haul": {"iron": 2}},
+				"result": "A day on the old roads, and the sergeant pays in good iron. The Legion's scouts will have seen whose colours you rode beside."
+			},
+			"trade": {
+				"label": "Trade news of the Marches for rations",
+				"requires_reputation": {"faction": "crown_of_aurel", "min": -19},
+				"effects": {"reputation": {"crown_of_aurel": 3}, "haul": {"food": 2}},
+				"result": "Marauder camps, hound tracks, the state of the crossroads. They give you two days of bread for it and ride on."
+			},
+			"bribe": {
+				"label": "Buy the road with a bar of iron",
+				"requires_haul": {"iron": 1},
+				"effects": {"reputation": {"crown_of_aurel": 5}, "haul": {"iron": -1}},
+				"result": "The sergeant weighs the iron, then weighs you, and finds the iron heavier. The lances part and you walk through."
+			},
+			"defy": {
+				"label": "Tell them the Marches belong to no crown",
+				"effects": {"reputation": {"crown_of_aurel": -10, "ashen_legion": 5}, "recruits": 1},
+				"result": "They ride off laughing. One of them does not: a conscript with a Marches accent slips away that night and turns up at Emberfall's gate."
+			},
+			"fight": {
+				"label": "Cut your way through",
+				"requires_reputation": {"faction": "crown_of_aurel", "max": -20, "hide_when_blocked": true},
+				"effects": {"morality": -10, "reputation": {"crown_of_aurel": -20, "ashen_legion": 5}, "haul": {"iron": 1}, "health": -6},
+				"result": "You come out of it with a rider's blade and a wound that will not close for days. The Crown will not forget this road."
 			}
 		}
 	}

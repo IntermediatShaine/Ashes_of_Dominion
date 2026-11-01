@@ -1,4 +1,6 @@
-# Codex onboarding and first assignment
+# Codex onboarding and first assignment (historical)
+
+**Update, 2026-11-01:** The first assignment was completed and merged in PR #4; issue #3 is closed. The published suite moved from 62 to **66 tests, 0 failures** in Codex's verified Windows run. The instructions further below document the original assignment and are **not** an open task. Next responsibilities are proposed, not approved, in [Phase 2C roadmap](PHASE_2C_DEVELOPMENT_ROADMAP.md). No game source has been replaced by the v0.3.1-m1 archive.
 
 ## Purpose
 
