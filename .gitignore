@@ -1,0 +1,22 @@
+# Godot generated/imported files
+.godot/
+.import/
+.export/
+
+# Local editors and OS
+.vscode/
+.idea/
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# Personal saves, logs and distributable builds
+*.log
+build/
+dist/
+.saves/
+
+# Export settings may carry local paths or secrets: review before committing.
+export_presets.cfg
