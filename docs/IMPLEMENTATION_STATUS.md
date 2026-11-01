@@ -1,5 +1,7 @@
 # Implementation status
 
+**Last verified: 2026-11-01** on branch `codex/ci-test-hardening`, with the official
+**Godot 4.5.1-stable** Linux and Windows builds (headless). Project root: [`game/`](../game/).
 **Last verified: 2026-11-01** on branch `feature/second-decision-reputation` (Phase 2A), with the
 official **Godot 4.5.1-stable** Linux build (headless). Project root: [`game/`](../game/).
 
@@ -106,6 +108,18 @@ archive comparison are in [`CODEX_ISSUE_3_AUDIT.md`](CODEX_ISSUE_3_AUDIT.md).
 | Two-process save/relaunch | passed | passed |
 
 No generator, RNG, save-schema or route-selection changes. No manual play or screenshot review.
+
+## Phase 2B — automated testing and CI
+
+`codex/ci-test-hardening`, base `aec6ce9`: four wrappers now reject failed imports, diagnostics,
+missing completion markers and empty test selections; tests use isolated application data.
+Local Windows Godot 4.5.1: **66 tests, 0 failed**, Mist **4/4**, import/boot/relaunch passed;
+**20/20 harness cases** including 18 intentional failures rejected. Linux/Windows workflow
+added with pinned action SHAs and SHA-512-verified engine. Hosted status and exact commands:
+[`TESTING_AND_CI.md`](TESTING_AND_CI.md). Gameplay source and save format unchanged.
+Hosted engineering revision `76d89d3`: [run 41331300938](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/41331300938)
+**passed on Linux and Windows**, including 66 tests per platform, import/boot/relaunch,
+20 PowerShell harness cases per platform and 20 Bash cases on Linux.
 
 ## How to update status
 

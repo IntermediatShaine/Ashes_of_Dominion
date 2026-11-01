@@ -4,6 +4,12 @@ Significant development changes to **Ashes of Dominion** are recorded here. Do n
 
 ## Unreleased
 
+### Engineering — Phase 2B (2026-11-01)
+- Hardened PowerShell/Bash test and relaunch wrappers with import checking, strict completion
+  evidence, isolated application data and optional retained logs.
+- Added Godot 4.5.1 Linux/Windows GitHub Actions and deliberate harness failure-injection checks.
+- Local Windows verification: 66 game tests pass; 20 controlled harness cases behave correctly.
+  Exact commands and hosted verification status are in `docs/TESTING_AND_CI.md`.
 ### Added — 2026-11-01 (`feature/second-decision-reputation`, Phase 2A)
 - Second narrative encounter, **the Crown patrol**, at the Ashen Crossroads and the Aurel Border
   Fort (after the survivor): escort (Friendly only; +morality, +Crown, −Legion, iron), trade

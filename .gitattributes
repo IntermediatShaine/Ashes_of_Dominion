@@ -4,3 +4,6 @@
 *.tscn text eol=lf
 *.tres text eol=lf
 *.md text eol=lf
+*.sh text eol=lf
+*.ps1 text eol=lf
+*.yml text eol=lf

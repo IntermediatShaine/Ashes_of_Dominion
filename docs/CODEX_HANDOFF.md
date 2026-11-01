@@ -14,9 +14,12 @@ to Codex or creating a Codex Cloud environment.
 
 - Godot project root: `game/` — open `game/project.godot`.
 - The imported implementation was tested with **Godot 4.5.1-stable**, not Godot 4.7.2.
-- The last recorded automated checkpoint (2026-11-01) reported **62 tests, 0 failures**,
+- The latest Phase 2B checkpoint (2026-11-01) reported **66 tests, 0 failures** on Linux/Windows CI,
   successful headless import/boot, and a two-process save/relaunch check.
   **Those are historical results, not a fresh Codex test run.**
+- Phase 2B hardened the wrappers and added CI/failure-injection checks. Current commands,
+  isolation behavior and verified workflow links: [`TESTING_AND_CI.md`](TESTING_AND_CI.md).
+  The original Mist assignment below is completed in PR #4.
 - A first expedition-loop prototype exists, with placeholder artwork. Manual Windows gameplay
   remains unverified. Read [`IMPLEMENTATION_STATUS.md`](IMPLEMENTATION_STATUS.md) for evidence.
 

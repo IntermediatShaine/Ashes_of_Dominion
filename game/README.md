@@ -72,6 +72,10 @@ Optional rendered walkthrough (writes PNGs of every screen, needs a GPU/display)
    If you fall, the curse returns you to Emberfall; what you carried stays where you fell.
 5. Returning autosaves; **Save Game** also works any time in Emberfall. **Continue** loads the newest slot.
 
+Engineering checks, isolated data, CI and harness failure injection are documented in
+[`../docs/TESTING_AND_CI.md`](../docs/TESTING_AND_CI.md). The test/relaunch wrappers now reject
+failed imports and missing success markers; a filter matching zero tests fails.
+
 ## Project layout
 
 ```
