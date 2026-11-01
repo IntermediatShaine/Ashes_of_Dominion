@@ -31,6 +31,7 @@ Controls and the full layout are in [`game/README.md`](game/README.md).
 - [Implementation status](docs/IMPLEMENTATION_STATUS.md) — evidence-based progress tracking.
 - [Decisions](docs/DECISIONS.md) — confirmed directions and proposals not yet finalized.
 - [AI handoff](docs/AI_HANDOFF.md) — coordination notes for coding assistants.
+- [Codex onboarding](docs/CODEX_HANDOFF.md) — Codex Cloud setup and its first audit/fix assignment.
 - [AGENTS.md](AGENTS.md) — shared instructions for AI assistants.
 - [CLAUDE.md](CLAUDE.md) — Claude-specific entry point.
 

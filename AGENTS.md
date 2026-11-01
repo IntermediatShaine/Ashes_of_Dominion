@@ -33,3 +33,10 @@ This repository is the **source of truth** for the Ashes of Dominion project. Re
 ## Demo focus
 
 Complete a playable expedition loop: settlement → world map/route → exploration → encounter/combat → resources → return → upgrade → save/reload. Resist expanding into full game systems before the core loop works.
+
+## Multi-assistant / Codex coordination
+
+- Codex should also read `docs/CODEX_HANDOFF.md` for the current working baseline, environment setup, first assignment and coexistence with Claude.
+- Use separate branches and pull requests for parallel assistants; coordinate overlapping areas before editing and avoid force-pushes or broad rewrites of shared work.
+- Prior Codex/Claude packages outside this repository are **not** automatically authoritative. Inspect and compare them before proposing a merge; preserve `game/` as the current tracked baseline.
+- For all AI reviews, focus on evidence: deterministic generation, save/load correctness, Mist information leaks and tested Godot 4.5.1 compatibility.
