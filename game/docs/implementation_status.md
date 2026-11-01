@@ -6,8 +6,10 @@ human played it). Everything below was run on Godot 4.5.1-stable headless (tests
 virtual display with software OpenGL (screenshot tour). **Nothing has been manually played on a
 real Windows machine yet** — that is the first thing to do (see development_roadmap.md).
 
-Last test run: `=== 51 tests, 0 failed ===`, no engine errors; smoke test `--quit-after 60` exit 0;
-screenshot tour: 10 screens rendered, no errors.
+Last test run (2026-11-01, Godot 4.5.1-stable official, Linux headless, from the GitHub `game/`
+checkout): `=== 62 tests, 0 failed ===`, no `SCRIPT ERROR`; smoke test `--quit-after 60` exit 0;
+two-process relaunch check (`check_relaunch.sh`) PASSED. The screenshot tour (10 screens, no
+errors) was last run on 2026-10-28 and was not repeated on 2026-11-01 (no display available).
 
 ## Checkpoint loop (directive §5.2)
 
@@ -23,15 +25,15 @@ screenshot tour: 10 screens rendered, no errors.
 | 8 | Plan an expedition (route A/B, estimates) | Auto + runtime |
 | 9 | Enter an explorable area | Auto + runtime |
 | 10 | Move the protagonist (8-dir, collision, camera) | Auto (physics test) + runtime (tour) |
-| 11 | Encounter a basic enemy (detect / chase / attack) | Runtime (hound hit the player during the tour); FSM auto-tested only for strike/hit entry points |
-| 12 | Attack and defeat it | Auto (take_hit path) — the live hitbox sweep is runtime-only |
+| 11 | Encounter a basic enemy (detect / chase / attack) | Auto (`test_enemy_fsm.gd`: every FSM transition driven by real physics frames) + runtime |
+| 12 | Attack and defeat it | Auto (`test_combat_physics.gd`: physics-driven hitbox sweep, once-per-swing, cooldown, i-frames) + runtime |
 | 13 | Collect a resource | Auto + runtime |
 | 14 | Return to the settlement | Auto + runtime |
 | 15 | Spend resources on an improvement | Auto + runtime |
 | 16 | Save | Auto + runtime (autosave + button) |
-| 17 | Exit | Runtime |
-| 18 | Reload | Auto (load_slot / continue) |
-| 19 | Continue with correct persisted state | Auto (core-loop + persistence tests) |
+| 17 | Exit | Auto (relaunch check: the engine process exits after saving) |
+| 18 | Reload | Auto (load_slot / continue; relaunch check uses the Continue path in a fresh process) |
+| 19 | Continue with correct persisted state | Auto (core-loop + persistence tests; relaunch check compares the full state document field by field) |
 
 ## Systems
 
@@ -46,8 +48,8 @@ screenshot tour: 10 screens rendered, no errors.
 | Wilderness generation (noise terrain, 4 biomes, resources, enemies, NPC, repair) | Auto-tested | 30 seeds × constraints; repair carves L-corridors |
 | Mist of Discovery (undiscovered hidden; charted edges; toggle) | Auto + runtime | discovery persists; resets per universe by construction |
 | 8-direction movement, collision, camera, facing | Auto + runtime | diagonal speed normalized |
-| Combat (player melee, damage rules, variance on combat stream, i-frames, knockback) | Auto (rules) + runtime | one moveset |
-| Enemy AI (4 archetypes, idle/patrol/chase/windup/cooldown/dead) | Runtime | FSM transitions not unit-tested |
+| Combat (player melee, damage rules, variance on combat stream, i-frames, knockback) | Auto (rules + physics hitbox sweep) + runtime | one moveset |
+| Enemy AI (4 archetypes, idle/patrol/chase/windup/cooldown/dead) | Auto-tested (all transitions, strike timing, dodge, aggro-on-hit, death-once, deterministic patrol off the persisted streams) + runtime | tuning values still guesses |
 | Rewards (drops on rewards stream, XP, level-up, class unlock evaluation) | Auto-tested | |
 | Resource nodes + harvest persistence + regrowth | Auto-tested | |
 | Expedition lifecycle (active/completed/aborted/defeated, resolve once) | Auto-tested | |
@@ -61,7 +63,8 @@ screenshot tour: 10 screens rendered, no errors.
 | Difficulty: 6 presets + custom, 4 functional parameters, validation, frozen per universe | Auto + runtime | 6 parameters flagged "not yet functional" in UI |
 | Main menu / new game / load / settings / settlement / map / HUD / pause / decision / death | Runtime | placeholder visuals, code-built UI |
 | Debug overlay (F3) | Runtime | |
-| Test runner + 51 tests | Runtime | `run_tests.ps1` / `run_tests.sh` |
+| Test runner + 62 tests | Runtime | `run_tests.ps1` / `run_tests.sh` |
+| Two-process save → quit → relaunch → Continue check | Runtime (passes) | `check_relaunch.ps1` / `check_relaunch.sh` → `tools/relaunch_check.tscn` |
 
 ## Not started
 
@@ -74,7 +77,6 @@ is a palette + density variant, not a dungeon layout).
 
 1 Fresh game ✔ auto · 2 Stable generation ✔ auto · 3 Variable wilderness ✔ auto · 4 Exploration ✔
 auto+runtime · 5 Combat ✔ runtime (no script errors in tour) · 6 Resources ✔ auto · 7 Construction
-✔ auto (invalid attempts consume nothing) · 8 Save/reload ✔ auto (exit+relaunch not yet exercised
-by a human) · 9 Morality vs reputation ✔ auto · 10 Grace period ✔ auto · 11 Universe transfer ✖
+✔ auto (invalid attempts consume nothing) · 8 Save/reload ✔ auto incl. a real process restart (`check_relaunch`); not yet exercised by a human · 9 Morality vs reputation ✔ auto · 10 Grace period ✔ auto · 11 Universe transfer ✖
 rules undefined (character-survives-replacement is tested) · 12 Resurrection idempotency ✔ auto ·
 13 Save recovery ✔ auto · 14 Content extensibility ✔ by construction (data-driven, referential checks).

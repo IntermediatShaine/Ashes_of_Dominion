@@ -2,7 +2,8 @@
 
 Medieval-fantasy action RPG / settlement prototype. Godot 4.x, GDScript, Windows PC, single-player.
 
-This repository is the **foundation checkpoint** from the master development directive: the smallest
+This folder is the Godot project root (`game/` in the GitHub repository). It is the **foundation
+checkpoint** from the master development directive: the smallest
 coherent gameplay loop running on the real architecture (three-scope state, deterministic generation,
 versioned crash-safe saves), with placeholder visuals.
 
@@ -41,6 +42,12 @@ The runner prints one line per test file and `=== N tests, M failed ===`, exit c
 **A run is only green if there are also no `SCRIPT ERROR` lines** — a runtime script error aborts
 the test that hit it, so `run_tests.ps1` / `run_tests.sh` grep for them and fail the run.
 Smoke test: `godot --headless --path . --quit-after 60` must exit 0 with no errors.
+
+Persistence across a real restart (save → engine exits → new process → Continue):
+
+```powershell
+.\check_relaunch.ps1 -Godot "C:\path\to\Godot_v4.5.1-stable_win64_console.exe"   # or ./check_relaunch.sh <godot>
+```
 
 Optional rendered walkthrough (writes PNGs of every screen, needs a GPU/display):
 `godot --path . res://tools/screenshot_tour.tscn -- --out=C:/temp/shots`
@@ -82,7 +89,7 @@ scripts/services/      autoloads: Content (data), Session (state + services), Ro
 scripts/interface/     menus, settlement screen, world map, HUD, UiKit
 scenes/                one .tscn per screen; UI is built in code from those roots
 tests/                 unit / deterministic / persistence / integration + test_runner.tscn
-tools/                 screenshot_tour (rendered smoke test)
+tools/                 screenshot_tour (rendered smoke test), relaunch_check (two-process save check)
 docs/                  architecture, game_state, implementation_status, technical_decisions,
                        known_issues, development_roadmap
 ```

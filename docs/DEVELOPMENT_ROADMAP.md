@@ -11,6 +11,10 @@
 
 **Exit criteria:** A reproducible working baseline, or a specific documented blocker list.
 
+**Status 2026-11-01: met.** `game/` imported, Godot 4.5.1 confirmed, import/tests/smoke/relaunch
+checks green (see `IMPLEMENTATION_STATUS.md`). Remaining Phase 0 item: reconcile the external
+Codex/M2 line of work (owner decision, `DECISIONS.md`).
+
 ## Phase 1 — Playable vertical slice
 
 - Starting village with UI, direct player controls and three-quarter exploration.
@@ -21,6 +25,11 @@
 - Save/reload that preserves all committed gameplay state.
 
 **Exit criteria:** Play the full expedition loop from start to finish and continue successfully after reloading.
+
+**Status 2026-11-01: automated-complete, not yet played by a human.** Every item is implemented
+and covered by tests (the settlement is a management screen rather than a walkable village —
+see `game/docs/technical_decisions.md` §10). The exit criterion is met only once the owner has
+played it on Windows.
 
 ## Phase 2 — Expand the demo
 

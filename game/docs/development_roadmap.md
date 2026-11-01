@@ -1,9 +1,12 @@
 # Development roadmap
 
-## Current checkpoint — DONE (foundation + first playable loop)
+## Current checkpoint — DONE (foundation + first playable loop + combat/relaunch verification)
 
 Phases A–F of the directive are implemented and automated-test verified; the loop in §5.2 runs
-end-to-end in the engine (see implementation_status.md). Visuals are placeholders.
+end-to-end in the engine (see implementation_status.md). Visuals are placeholders. On 2026-11-01
+the project was imported into the GitHub repository as `game/`, re-verified on Godot 4.5.1, and
+the two weakest-verified steps (enemy encounter / combat, quit → relaunch → continue) received
+automated coverage (62 tests + `check_relaunch`).
 
 ## Continuation record — exact next task
 
@@ -12,8 +15,8 @@ end-to-end in the engine (see implementation_status.md). Visuals are placeholder
 1. Open the project in Godot 4.5.1 on Windows, press F5, play the loop once: new game → build →
    map → expedition → fight → gather → survivor decision → return → build → save → quit → relaunch
    → Continue. Confirm the loaded state matches.
-2. Run `.\run_tests.ps1 -Godot <path to console exe>` — expect `51 tests, 0 failed` and no
-   `SCRIPT ERROR`.
+2. Run `.\run_tests.ps1 -Godot <path to console exe>` — expect `62 tests, 0 failed` and no
+   `SCRIPT ERROR`; then `.\check_relaunch.ps1 -Godot <path>` — expect `RELAUNCH CHECK PASSED`.
 3. Record findings in `docs/known_issues.md`.
 
 **Files involved:** everything under `scenes/`, `scripts/interface/`, `scripts/gameplay/exploration/`
@@ -25,8 +28,8 @@ controls feel acceptable (movement speed, attack reach, enemy aggression) or the
 
 ## Next milestones (necessary)
 
-1. **Combat feel + enemy tests** — unit-test the FSM transitions with a fake player; add a
-   physics-driven automated test for the hitbox sweep; tune `balance.json`.
+1. **Combat feel** — FSM and hitbox tests exist now; what remains is tuning `balance.json` /
+   `enemies.json` from a human play session.
 2. **Save during exploration** — persist the active area state (player cell, enemy states,
    gathered nodes) or decide explicitly that expeditions are atomic.
 3. **Generation versioning** — keep old generator paths behind `generation_version` so a bump

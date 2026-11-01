@@ -1,6 +1,9 @@
 # Technical architecture
 
-**Status: proposed target; no imported Godot implementation has been audited.**
+**Status: implemented in `game/` and audited on 2026-11-01.** The authoritative, detailed
+description is `game/docs/architecture.md` and `game/docs/game_state.md`; this file keeps the
+intended boundaries and invariants at summary level. Where this file says "proposed", the
+`game/docs/` files say what was actually built.
 
 ## Runtime target
 
@@ -32,7 +35,9 @@ Prior discussion described three state scopes:
 2. **Universe state:** seed and world layers, settlements, factions/NPC relations, territory, NPC state, events, threats, expeditions, in-game day, companions and separate combat/rewards/events random streams.
 3. **Multiverse state:** natural/forced transfer counts, already-resolved resurrection rolls and a pending transition record to make resumption safe after interruption.
 
-The universe may be replaced by transfer while persistent character progression survives. This is a **design discussion**, not verified implemented code. Confirm and transcribe the original v0.3 addendum before treating exact data fields as definitive.
+The universe may be replaced by transfer while persistent character progression survives. The
+three scopes above are implemented (`game/scripts/models/`) and tested; exact fields are listed in
+`game/docs/game_state.md`. Universe transfer *rules* are not implemented (only `return_home`).
 
 ## Persistence and RNG invariants to preserve
 
@@ -49,4 +54,7 @@ Use explicit interfaces/signals and stable identifiers. Prefer data-defined race
 
 ## Proposed Godot location
 
-When prior code is added, prefer `game/` as project root **only if it does not disrupt the existing architecture**. Do not fabricate an empty `project.godot` or claim a playable game based on documentation alone.
+The project root is `game/` (`game/project.godot`). Autoloads: `Content` (data), `Session` (state
+owner + bound services), `Router` (scenes). Layout: `scripts/core`, `models`, `persistence`,
+`generation`, `gameplay` (pure rules + scene-side exploration controllers), `services`,
+`interface`; `scenes/`; `data/*.json`; `tests/`; `tools/`.

@@ -7,10 +7,13 @@ Reproducible defects and deliberate limitations. Nothing here is hidden behind a
 - **No manual verification on Windows yet.** All runtime checks ran on Linux (headless tests, Xvfb +
   llvmpipe screenshot tour). Input feel, window handling and the save path on Windows are
   unverified.
-- **Enemy FSM is not unit-tested.** Only the `take_hit` / `_strike` entry points and the live tour
-  exercised it. Chase/patrol tuning values are guesses.
-- **Hitbox sweep is runtime-only.** The player's attack `Area2D` sweep is verified by the tour
-  (enemies took damage) but not by an automated test with physics-driven overlaps.
+- **Combat tuning values are guesses.** The enemy FSM and the hitbox sweep are now automated-tested
+  (`tests/integration/test_enemy_fsm.gd`, `test_combat_physics.gd`), but detect radii, windups,
+  reach and cooldowns in `data/enemies.json` / `data/balance.json` have never been felt by a player.
+- **A dead protagonist can still start a swing programmatically.** `_try_attack()` does not check
+  `combatant.is_alive`; in play this cannot happen because `_physics_process` stops polling input
+  once dead and the exploration scene disables input on death. Harmless today; worth a guard when
+  attacks get more entry points (abilities, companions).
 - **Route preview can leak shape.** With the Mist on, the dashed preview of an uncharted route
   still reveals where the intermediate waypoints are. Days and danger stay estimates. Options:
   draw a straight dashed line to the destination for uncharted segments.
