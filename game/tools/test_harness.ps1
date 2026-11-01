@@ -155,3 +155,6 @@ exit 0
     Remove-Item -LiteralPath $root -Recurse -Force -ErrorAction SilentlyContinue
   }
 }
+# Do not leak the last intentionally failing child's exit code to CI's pwsh
+# epilogue. Unhandled assertion/fixture exceptions above still terminate nonzero.
+exit 0

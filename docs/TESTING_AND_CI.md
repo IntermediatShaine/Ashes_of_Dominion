@@ -116,8 +116,13 @@ These were fixture-development failures, not passing checks.
 The initial [hosted attempt](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/41330707244)
 failed workflow validation because job-level `env` cannot reference `runner.temp`; moved that
 configuration into a step via `GITHUB_ENV`. No checks ran in that failed attempt.
-Hosted workflow results will be recorded after the corrected branch is published. No Linux runtime success
-or human/manual play acceptance is inferred from local Windows results. The regression suite
+The [next hosted attempt](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/41330853999)
+passed game import, all 66 tests, boot, relaunch and 20 PowerShell harness cases on both operating
+systems. It then failed because the self-test leaked the last intentionally failing child's
+exit code to GitHub's PowerShell epilogue. Added explicit success exit after all assertions and
+cleanup; exceptions still terminate nonzero. Bash failure injection was skipped in that attempt.
+Final hosted workflow results will be recorded after the corrected branch is published. No
+human/manual play acceptance is inferred from automated results. The regression suite
 still includes the four Mist renderer tests, nine deterministic generation tests and thirteen
 save-system tests. `game/scripts/`, `game/scenes/`, `game/data/`, `game/tests/`, and the relaunch
 scene/script are unchanged; no save schema, RNG, generator or scene-reference changes.
