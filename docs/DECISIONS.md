@@ -59,6 +59,30 @@ authoritative), merged feature-by-feature into `game/`, or retired. Until decide
 go into `game/`. **Affected systems.** Potentially everything if a merge is chosen. **Save
 implications.** The two lines may have different save schemas; a merge needs a migration plan.
 
+### 2026-11-01 — Reputation gates read faction standing only; thresholds reuse the standing bands
+
+**Decision.** Narrative options and prompt variants are gated with `requires_reputation` /
+`prompts_by_reputation` on faction `player_reputation`; morality is never an input. Threshold
+values in content use the existing `ReputationRules.label` bands (Friendly ≥ 20, Neutral,
+Distrusted ≤ −20) so the settlement screen's standing label predicts how a faction will treat you.
+**Rationale.** Keeps the morality/reputation separation mechanical, not just conceptual, and
+gives the player one readable scale per faction. **Alternatives.** Hidden per-encounter
+thresholds (rejected: unreadable); morality-based reactions (rejected: breaks the separation).
+**Affected systems.** DecisionRules, exploration HUD, content validation. **Save implications.**
+None (no new persisted fields; `decision_log` unchanged).
+
+### 2026-11-01 — Decision selection is data-driven (biome, landmarks, priority), one NPC per area
+
+**Decision.** `DecisionRules.select_for_area` picks the lowest-`priority` unresolved decision for
+the area's biome and (optionally) landmark; a resolved decision gives way to the next one.
+**Rationale.** The generator supports one event NPC per area; sequencing by priority keeps the
+survivor first and makes the patrol reachable on the next marches trip without new generator
+work. **Consequence.** The NPC cell is a repair input, so defining a new decision for a biome can
+add a carved corridor to an existing universe's area where all decisions were already resolved
+(documented in `game/docs/known_issues.md`); no `generation_version` bump was made because the
+project has no shipped saves. **Provisional.** A dialogue wound (`health` effect) never kills;
+hostile patrols that spawn riders are deferred.
+
 ### 2026-11-01 — Death penalty remains provisional
 
 `game/data/balance.json → expedition.defeat_loses_haul = true` (carried loot is lost, earned XP is

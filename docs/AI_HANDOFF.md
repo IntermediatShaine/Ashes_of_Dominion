@@ -75,8 +75,26 @@ run `run_tests.ps1` and `check_relaunch.ps1`, record findings in `game/docs/know
 tune `game/data/balance.json` / `enemies.json` if controls or combat feel wrong.
 
 After that, in order (from `game/docs/development_roadmap.md`): save during exploration (or
-declare expeditions atomic), generation versioning, a second decision with
-faction-relation consequences.
+declare expeditions atomic), generation versioning, hostile patrols as combat encounters and a
+decision that changes faction–faction relations (Phase 2A delivered the second decision and
+reputation-gated reactions).
+
+## Claude handoff — Phase 2A (second decision + faction reactivity), 2026-11-01
+
+- Branch `feature/second-decision-reputation`, based on main `aec6ce9` (after Codex PR #4, which is
+  untouched).
+- `game/data/decisions.json`: new `crown_patrol` (marches; `appears_at_landmarks` crossroads + border
+  fort; `priority` 20 after the survivor's 10); five options with distinct consequences.
+- `DecisionRules`: `select_for_area`, `reputation_gate_passes`, `prompt_for`, `visible_options`,
+  `blocking_reason` (pack then reputation), `health` effect (floor 1). `ExpeditionService.build_area`
+  uses the selector; `ExplorationHud.show_decision` takes the universe; `ExplorationController` mirrors
+  a dialogue wound onto the live body; `SurvivorNpc` takes colour/prompt from the definition;
+  `ContentDb` validates decision references.
+- Tests: `unit/test_decisions.gd` (9), `integration/test_crown_patrol.gd` (3); `test_core_loop.gd`
+  assertion updated (resolved decision → next decision, not "no NPC"). Full suite 78/0; smoke and
+  relaunch checks pass. Human play still unverified.
+- Next recommended: hostile patrols as real combat (spawn riders from a decision outcome on the
+  encounter stream), then a decision that moves faction–faction relations / territory.
 
 ## Codex handoff — issue #3, 2026-11-01
 

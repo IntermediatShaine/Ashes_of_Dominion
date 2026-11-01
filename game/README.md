@@ -66,8 +66,9 @@ Optional rendered walkthrough (writes PNGs of every screen, needs a GPU/display)
 1. **New Game** → name, background (3 archetypes), difficulty preset or custom sliders, Mist on/off, seed, slot → **Begin**.
 2. **Emberfall** (settlement screen): status, factions, resources, buildings. Build when you can afford it.
 3. **World Map**: click a known place, pick route A/B, **Begin Expedition**.
-4. **Exploration**: fight (red things), gather (diamonds, E), talk to the survivor (!), walk to the
-   gold ring on the right edge and press E to return. Esc → Retreat keeps your pack.
+4. **Exploration**: fight (red things), gather (diamonds, E), talk to the figure marked (!) — the
+   stranded survivor first, later a Crown patrol whose offer depends on how the Crown regards you —
+   walk to the gold ring on the right edge and press E to return. Esc → Retreat keeps your pack.
    If you fall, the curse returns you to Emberfall; what you carried stays where you fell.
 5. Returning autosaves; **Save Game** also works any time in Emberfall. **Continue** loads the newest slot.
 
