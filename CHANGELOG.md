@@ -4,6 +4,12 @@ Significant development changes to **Ashes of Dominion** are recorded here. Do n
 
 ## Unreleased
 
+### Fixed — 2026-11-01 (`codex/issue-3-mist-preview`)
+- Prevented selected uncharted routes from revealing hidden intermediate waypoint geometry.
+- Added four renderer regression tests; 66 tests pass on Windows Godot 4.5.1 headless, with
+  successful import, boot and save/relaunch checks. No schema or generator changes.
+- Inventoried the recovered v0.3.1-m1 archive without merging it; see `docs/CODEX_ISSUE_3_AUDIT.md`.
+
 ### Added — 2026-11-01 (`feature/import-godot-project`)
 - Imported the Godot 4.5 project into `game/` from the owner's `D:\Ashes of Dominion` folder:
   three-scope state, versioned crash-safe saves, deterministic world/wilderness generation, route

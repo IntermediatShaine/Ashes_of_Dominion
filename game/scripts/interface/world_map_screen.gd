@@ -181,6 +181,7 @@ func _draw() -> void:
 	var u := Session.universe()
 	var g := Session.world
 	var selected_edges: Array = _routes[_route_index]["edge_ids"] if not _routes.is_empty() else []
+	var has_uncharted := false
 	# edges
 	for eid in g.edge_ids():
 		var e: Dictionary = g.edges[eid]
@@ -188,8 +189,10 @@ func _draw() -> void:
 		var b := String(e["b"])
 		var revealed := u.revealed_edge_ids.has(eid) or not u.mist_enabled()
 		var on_route := selected_edges.has(eid)
-		if not revealed and not on_route:
-			if _is_visible_node(a) and _is_visible_node(b):
+		if not revealed:
+			if on_route:
+				has_uncharted = true
+			elif _is_visible_node(a) and _is_visible_node(b):
 				_dashed(_map_pos(a), _map_pos(b), Color(0.5, 0.45, 0.4, 0.25), 1.0)
 			continue
 		var color := Color(0.55, 0.5, 0.45, 0.8)
@@ -197,10 +200,12 @@ func _draw() -> void:
 		if on_route:
 			color = UiKit.ACCENT
 			width = 4.0
-		if revealed:
-			draw_line(_map_pos(a), _map_pos(b), color, width)
-		else:
-			_dashed(_map_pos(a), _map_pos(b), color, width)
+		draw_line(_map_pos(a), _map_pos(b), color, width)
+	# A preview is an indication of destination, not a survey of hidden edges.
+	# Keep charted edges above, but never draw uncharted waypoint positions.
+	if has_uncharted:
+		var nodes: Array = _routes[_route_index]["node_ids"]
+		_dashed(_map_pos(String(nodes.front())), _map_pos(String(nodes.back())), UiKit.ACCENT, 4.0)
 	# nodes
 	for id in g.node_ids():
 		if not _is_visible_node(String(id)):

@@ -14,9 +14,10 @@ Reproducible defects and deliberate limitations. Nothing here is hidden behind a
   `combatant.is_alive`; in play this cannot happen because `_physics_process` stops polling input
   once dead and the exploration scene disables input on death. Harmless today; worth a guard when
   attacks get more entry points (abilities, companions).
-- **Route preview can leak shape.** With the Mist on, the dashed preview of an uncharted route
-  still reveals where the intermediate waypoints are. Days and danger stay estimates. Options:
-  draw a straight dashed line to the destination for uncharted segments.
+- **Mist preview corrected (issue #3).** Uncharted and partly charted selections draw a straight
+  dashed origin-to-destination indication; only charted edges retain their actual geometry.
+  Four renderer integration tests cover hidden-waypoint movement, partial discovery, charted /
+  Mist-off behavior and unchanged route/state data. Automated on Windows; human visual review remains open.
 - **Old generation versions are not kept.** `generation_version` is validated (≤ current) but
   there is only one generator; bumping the version will make older universes regenerate
   differently unless the old algorithm is preserved behind a version switch.
