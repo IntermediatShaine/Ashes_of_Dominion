@@ -1,0 +1,62 @@
+{
+	"_comment": "Persistent landmark layer. Positions are strategic-map coordinates and NEVER change between universes. known_at_start landmarks are on the map from day one; the rest are discovered by completing an expedition to a neighbouring landmark.",
+	"emberfall": {
+		"name": "Emberfall",
+		"kind": "village",
+		"biome": "marches",
+		"position": [420, 380],
+		"known_at_start": true,
+		"description": "What is left of home. The only place the curse will return you to.",
+		"explorable": false
+	},
+	"ashen_crossroads": {
+		"name": "Ashen Crossroads",
+		"kind": "ruin",
+		"biome": "marches",
+		"position": [600, 320],
+		"known_at_start": true,
+		"description": "A burned waystation where three old roads meet. Marauders pick over the wreckage.",
+		"explorable": true,
+		"danger": 1
+	},
+	"greywood_edge": {
+		"name": "Greywood Edge",
+		"kind": "forest",
+		"biome": "eldergrove",
+		"position": [300, 220],
+		"known_at_start": true,
+		"description": "Where the Marches give way to the old forest. Timber, forage, and things that wait in the wet.",
+		"explorable": true,
+		"danger": 1
+	},
+	"cinder_pass": {
+		"name": "Cinder Pass",
+		"kind": "pass",
+		"biome": "ashen_wastes",
+		"position": [760, 480],
+		"known_at_start": false,
+		"description": "The Legion's road out of the Wastes. Scrap iron and worse.",
+		"explorable": true,
+		"danger": 3
+	},
+	"aurel_border_fort": {
+		"name": "Aurel Border Fort",
+		"kind": "fort",
+		"biome": "marches",
+		"position": [860, 260],
+		"known_at_start": false,
+		"description": "The Crown's eye on the Marches. Its hinterland is patrolled and picked clean.",
+		"explorable": true,
+		"danger": 2
+	},
+	"sunken_chapel": {
+		"name": "Sunken Chapel",
+		"kind": "dungeon",
+		"biome": "crypt",
+		"position": [520, 560],
+		"known_at_start": false,
+		"description": "A flooded shrine from before the Kingdoms. Something still keeps watch below.",
+		"explorable": true,
+		"danger": 3
+	}
+}

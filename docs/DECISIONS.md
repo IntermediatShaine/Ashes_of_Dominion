@@ -21,9 +21,13 @@
 - Companion capture and ransom rules, exact resurrection costs and multiverse transfer conditions.
 - The exact Godot 4 patch version, game save schema, random stream algorithms and generated map representation.
 
-## Earlier technical discussion, not yet verified in source
+## Earlier technical discussion — now implemented in `game/`
 
-A Claude exchange describing a v0.3 addendum proposed the separation of character, universe and multiverse state, seeded independent RNG streams, resolved resurrection rolls and pending multiverse transfers. The full addendum and the code are not included in this repository yet. Treat these as historical design context until reviewed against the original material and actual implementation.
+The separation of character, universe and multiverse state, seeded independent RNG streams,
+resolved resurrection rolls stored before use and explicit pending multiverse transitions are
+implemented and automated-tested in `game/` (see `game/docs/game_state.md`). No "v0.3 addendum"
+document exists; the ideas were carried into the rebuild. Universe **transfer** rules themselves
+are still undefined (only the `return_home` resurrection outcome exists).
 
 ## Decision records
 
@@ -32,3 +36,31 @@ For every material new decision, add a dated entry below noting rationale, alter
 ### 2026-11-01 — Repository as the shared AI project reference
 
 A GitHub repository is the common reference for documentation and eventually Godot source. Changes should be synchronized through commits, not assumed from prior AI conversations.
+
+### 2026-11-01 — `game/` is the Godot project root; engine is Godot 4.5.1-stable
+
+**Decision.** The project from `D:\Ashes of Dominion` was imported unchanged into `game/`; the
+repository root keeps the cross-assistant documentation. `project.godot` declares feature `4.5`;
+all recorded test evidence is from the official 4.5.1-stable build. **Rationale.** The directive
+asked for `game/` unless an existing structure argued otherwise; the existing project had no
+nested layout to preserve. The "Godot 4.7.2" named in the design document does not exist.
+**Alternatives.** Project at repository root (rejected: mixes engine files with collaboration
+docs). **Affected systems.** Tooling paths only. **Save implications.** None.
+
+### 2026-11-01 — The imported `game/` project is the repository's only implementation (provisional)
+
+**Decision.** `game/` (the 2026-10-28 rebuild) is committed and treated as the working baseline.
+A separate line of work — Codex's "AshesOfDominion-unified-foundation" v0.3.1-m1 and Claude's
+M2/M2b/M2.1 packages (walkable village, headless world engine checkpoint, backend-first
+corrections) — exists outside the repository and was not inspected on 2026-11-01. **Rationale.**
+Only `game/` was accessible and could be executed and tested. **Open for the owner.** Decide
+whether that other line of work should be imported and audited (and if so, which project is
+authoritative), merged feature-by-feature into `game/`, or retired. Until decided, new features
+go into `game/`. **Affected systems.** Potentially everything if a merge is chosen. **Save
+implications.** The two lines may have different save schemas; a merge needs a migration plan.
+
+### 2026-11-01 — Death penalty remains provisional
+
+`game/data/balance.json → expedition.defeat_loses_haul = true` (carried loot is lost, earned XP is
+kept) is the only implemented consequence. The design leaves the penalty open; see
+`game/docs/technical_decisions.md` §9. Not a final rule.

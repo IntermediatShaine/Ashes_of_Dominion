@@ -1,0 +1,39 @@
+{
+	"_comment": "Definitions only. Instances are stored in SettlementState.buildings. Effects: population_capacity, storage_capacity, military_strength are additive; production is per in-game day.",
+	"shelter": {
+		"name": "Shelter",
+		"category": "housing",
+		"description": "A dry roof and a wall between you and the night. Lets more people stay.",
+		"cost": {"wood": 10},
+		"max_count": 4,
+		"requires": [],
+		"effects": {"population_capacity": 4}
+	},
+	"woodcutters_camp": {
+		"name": "Woodcutter's Camp",
+		"category": "production",
+		"description": "Villagers fell timber from the Greywood edge each day.",
+		"cost": {"wood": 8, "stone": 4},
+		"max_count": 2,
+		"requires": [],
+		"effects": {"production": {"wood": 2}}
+	},
+	"storehouse": {
+		"name": "Storehouse",
+		"category": "storage",
+		"description": "Keeps the rain off what you bring back. Raises the storage cap.",
+		"cost": {"wood": 12, "stone": 8},
+		"max_count": 2,
+		"requires": [],
+		"effects": {"storage_capacity": 50}
+	},
+	"palisade": {
+		"name": "Palisade",
+		"category": "defense",
+		"description": "Sharpened stakes around the village. The first thing a raider will see.",
+		"cost": {"wood": 15, "stone": 10},
+		"max_count": 1,
+		"requires": ["shelter"],
+		"effects": {"military_strength": 5}
+	}
+}

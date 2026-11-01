@@ -1,0 +1,44 @@
+{
+	"human": {
+		"name": "Human",
+		"description": "Adaptable and numerous. Welcome in the Golden Kingdoms, tolerated most places.",
+		"attribute_modifiers": {},
+		"playable": true
+	},
+	"elf": {
+		"name": "Elf",
+		"description": "Long-lived children of Eldergrove.",
+		"attribute_modifiers": {"dexterity": 1, "intelligence": 1, "endurance": -1},
+		"playable": true
+	},
+	"dwarf": {
+		"name": "Dwarf",
+		"description": "Stone-born folk of the Ironspine.",
+		"attribute_modifiers": {"strength": 1, "endurance": 1, "dexterity": -1},
+		"playable": true
+	},
+	"orc": {
+		"name": "Orc",
+		"description": "Hard clans of the contested borderlands.",
+		"attribute_modifiers": {"strength": 2, "intelligence": -1},
+		"playable": true
+	},
+	"draconic": {
+		"name": "Draconic",
+		"description": "Scaled bloodlines said to descend from the old wyrms.",
+		"attribute_modifiers": {"strength": 1, "willpower": 1, "dexterity": -1},
+		"playable": true
+	},
+	"demonkin": {
+		"name": "Demonkin",
+		"description": "Marked by the Ashen Wastes. Feared almost everywhere.",
+		"attribute_modifiers": {"willpower": 2, "endurance": -1},
+		"playable": true
+	},
+	"celestial": {
+		"name": "Celestial",
+		"description": "Touched by something above the sky. Rare and distrusted by the dark powers.",
+		"attribute_modifiers": {"willpower": 1, "intelligence": 1, "strength": -1},
+		"playable": true
+	}
+}

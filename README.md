@@ -2,13 +2,26 @@
 
 > A planned single-player medieval-fantasy action RPG blending direct combat, procedural exploration, settlement management, faction politics, and consequential morality.
 
-**Status:** Design documented. Source code and playable features have **not yet been verified in this repository**. This repository currently contains documentation, not a functioning Godot build.
+**Status:** Design documented; a **first playable vertical slice** lives in [`game/`](game/) (Godot 4.5.1,
+GDScript, placeholder visuals). The full expedition loop — village → map → route → seeded wilderness →
+8-direction movement → combat → resources → return → construction → save → relaunch → continue — is
+covered by 62 automated tests and a two-process relaunch check. It has **not yet been played by a human**.
+See [implementation status](docs/IMPLEMENTATION_STATUS.md) for the evidence.
 
 ## Vision
 
 Begin as a survivor of a devastated frontier village. Explore uncertain wilderness, develop a character, build and govern a settlement, and eventually influence the conflicts of entire civilizations. Choices should have lasting consequences, and no prescribed hero/villain path should be required.
 
-**Target:** Windows PC • Keyboard and mouse • 2.5D pixel art • Godot 4 with GDScript (installed engine version to be confirmed).
+**Target:** Windows PC • Keyboard and mouse • 2.5D pixel art • Godot 4 with GDScript (verified on 4.5.1-stable).
+
+## Running the game
+
+1. Install [Godot 4.5.1](https://godotengine.org/download) (standard build, no .NET needed).
+2. Godot → **Import** → `game/project.godot` → **Import & Edit**, then **F5**.
+3. Tests, from `game/`: `.\run_tests.ps1 -Godot <godot_console.exe>` (or `./run_tests.sh <godot>`),
+   and `.\check_relaunch.ps1 -Godot <godot_console.exe>` for the save → quit → relaunch → continue check.
+
+Controls and the full layout are in [`game/README.md`](game/README.md).
 
 ## Where to start
 
@@ -23,7 +36,9 @@ Begin as a survivor of a devastated frontier village. Explore uncertain wilderne
 
 ## Implementation location
 
-When actual Godot source is added, keep the Godot project root in `game/` unless there is an established existing structure. **Do not add an empty or fake `project.godot`.** Import and audit any code already produced by Claude before changing the architecture.
+The Godot project root is `game/`. Its own documentation (`game/docs/`) is the detailed technical
+reference: architecture, state scopes, technical decisions, known issues, roadmap. Keep rules out
+of scene scripts and keep the tests green; see [AI handoff](docs/AI_HANDOFF.md) for the working rules.
 
 ## Contributing
 

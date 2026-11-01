@@ -1,0 +1,24 @@
+{
+	"crown_of_aurel": {
+		"name": "Crown of Aurel",
+		"type": "human_kingdom",
+		"region": "golden_kingdoms",
+		"description": "The nearest of the Golden Kingdoms. Its border fort watches the Marches and its patrols burned Emberfall by 'accident'.",
+		"aggression": 0.35,
+		"territory": ["aurel_border_fort"],
+		"relations": {"ashen_legion": -80},
+		"ancestry_attitudes": {"human": 10, "elf": 0, "dwarf": 5, "orc": -30, "draconic": -10, "demonkin": -60, "celestial": 20},
+		"mixed_ancestry_penalty": -40
+	},
+	"ashen_legion": {
+		"name": "Ashen Legion",
+		"type": "demonic_warhost",
+		"region": "ashen_wastes",
+		"description": "A warlord's host pushing out of the Wastes through Cinder Pass.",
+		"aggression": 0.8,
+		"territory": ["cinder_pass"],
+		"relations": {"crown_of_aurel": -80},
+		"ancestry_attitudes": {"human": -20, "elf": -30, "dwarf": -20, "orc": 10, "draconic": 0, "demonkin": 30, "celestial": -70},
+		"mixed_ancestry_penalty": -30
+	}
+}

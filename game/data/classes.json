@@ -1,0 +1,21 @@
+{
+	"_comment": "Only 'survivor' is playable in the slice. The other entries exist to exercise the prerequisite evaluator (ClassRules) and show the extension shape; they are unlocked automatically when prerequisites are met but cannot yet be switched to from the UI.",
+	"survivor": {
+		"name": "Survivor",
+		"tier": 0,
+		"description": "Nothing special. Alive, which is more than most of Emberfall can say.",
+		"prerequisites": {}
+	},
+	"warden": {
+		"name": "Warden",
+		"tier": 1,
+		"description": "A protector of the rebuilt village. Heroic combat specialization (placeholder).",
+		"prerequisites": {"min_level": 5, "min_morality": 20}
+	},
+	"reaver": {
+		"name": "Reaver",
+		"tier": 1,
+		"description": "One who takes what the Marches will not give. Villainous combat specialization (placeholder).",
+		"prerequisites": {"min_level": 5, "max_morality": -20}
+	}
+}
