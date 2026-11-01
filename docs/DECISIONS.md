@@ -29,6 +29,8 @@ implemented and automated-tested in `game/` (see `game/docs/game_state.md`). No 
 document exists; the ideas were carried into the rebuild. Universe **transfer** rules themselves
 are still undefined (only the `return_home` resurrection outcome exists).
 
+**Phase 2C proposal status (2026-11-01):** [The expedition-save ADR](PHASE_2C_ARCHITECTURE_PROPOSAL.md) is **not an adopted decision**. The [Codex issue #3 audit](CODEX_ISSUE_3_AUDIT.md) subsequently recovered and statically inspected the separate v0.3.1-m1 archive; older statements about inaccessibility below are historical and do not authorize a replacement of game/.
+
 ## Decision records
 
 For every material new decision, add a dated entry below noting rationale, alternatives considered, affected systems and save-migration implications.
