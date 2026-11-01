@@ -141,6 +141,33 @@ func _validate_references() -> void:
 		for r in DictUtil.get_dict(table("enemies")[id], "drops").keys():
 			if not table("resources").has(String(r)):
 				load_errors.append("enemy %s drops unknown resource %s" % [id, String(r)])
+	for id in table("decisions").keys():
+		var dd: Dictionary = table("decisions")[id]
+		for b in DictUtil.get_array(dd, "appears_in_biomes"):
+			if not table("biomes").has(String(b)):
+				load_errors.append("decision %s appears in unknown biome %s" % [id, String(b)])
+		for l in DictUtil.get_array(dd, "appears_at_landmarks"):
+			if not table("landmarks").has(String(l)):
+				load_errors.append("decision %s appears at unknown landmark %s" % [id, String(l)])
+		for v in DictUtil.get_array(dd, "prompts_by_reputation"):
+			if not table("factions").has(DictUtil.get_string(v, "faction")):
+				load_errors.append("decision %s prompt variant references unknown faction" % id)
+		var opts := DictUtil.get_dict(dd, "options")
+		for oid in opts.keys():
+			var opt: Dictionary = opts[oid]
+			var gate := DictUtil.get_dict(opt, "requires_reputation")
+			if not gate.is_empty() and not table("factions").has(DictUtil.get_string(gate, "faction")):
+				load_errors.append("decision %s option %s gates on unknown faction" % [id, oid])
+			var eff := DictUtil.get_dict(opt, "effects")
+			for f in DictUtil.get_dict(eff, "reputation").keys():
+				if not table("factions").has(String(f)):
+					load_errors.append("decision %s option %s affects unknown faction %s" % [id, oid, String(f)])
+			for r in DictUtil.get_dict(eff, "haul").keys():
+				if not table("resources").has(String(r)):
+					load_errors.append("decision %s option %s hauls unknown resource %s" % [id, oid, String(r)])
+			for r in DictUtil.get_dict(opt, "requires_haul").keys():
+				if not table("resources").has(String(r)):
+					load_errors.append("decision %s option %s requires unknown resource %s" % [id, oid, String(r)])
 	var presets := difficulty_presets()
 	for pid in presets.keys():
 		for param in difficulty_parameters().keys():

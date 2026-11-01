@@ -83,6 +83,7 @@ carries `kind` so a transfer kind can be added without changing the save schema,
 
 - `ExpeditionRecord.resolved` → haul, discovery, calendar, threat, history apply once.
 - `MoralityRules.apply_event` / `ReputationRules.apply_event` keyed by event id.
-- `decision_log` → a narrative decision resolves once per universe.
+- `decision_log` → a narrative decision resolves once per universe; a refused option (pack or
+  reputation gate) leaves the decision open.
 - Resurrection outcome keyed by death id; transition keyed by transition id.
 - `world_modifications.harvested` → a resource node cannot be gathered twice (until regrowth).

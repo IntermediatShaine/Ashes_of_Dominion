@@ -8,9 +8,9 @@ human played it). Everything below was run on Godot 4.5.1-stable headless (tests
 virtual display with software OpenGL (screenshot tour). **Nothing has been manually played on a
 real Windows machine yet** — that is the first thing to do (see development_roadmap.md).
 
-Last test run (2026-11-01, Godot 4.5.1-stable official, Linux headless, from the GitHub `game/`
-checkout): `=== 62 tests, 0 failed ===`, no `SCRIPT ERROR`; smoke test `--quit-after 60` exit 0;
-two-process relaunch check (`check_relaunch.sh`) PASSED. The screenshot tour (10 screens, no
+Last test run (2026-11-01, Godot 4.5.1-stable official, Linux headless, branch
+`feature/second-decision-reputation`): `=== 78 tests, 0 failed ===`, no `SCRIPT ERROR`; smoke test
+`--quit-after 60` exit 0; two-process relaunch check (`check_relaunch.sh`) PASSED. The screenshot tour (10 screens, no
 errors) was last run on 2026-10-28 and was not repeated on 2026-11-01 (no display available).
 
 ## Checkpoint loop (directive §5.2)
@@ -59,13 +59,15 @@ errors) was last run on 2026-10-28 and was not repeated on 2026-11-01 (no displa
 | Settlement (stats, storage cap, 4 buildings, construction all-or-nothing, daily production/food) | Auto-tested | governance policies: schema only |
 | World simulation tick (per day on expedition resolution) | Auto-tested | production + food + morale only |
 | Morality (character) vs reputation (universe), ancestry attitudes, mixed-ancestry penalty | Auto-tested | |
-| One narrative decision with persistent consequences | Auto + runtime | "stranded survivor": help / rob / ignore |
-| Two factions, territory, relations | Auto-tested | no faction AI; relations never change yet |
+| Narrative decisions with persistent consequences (2) | Auto-tested + runtime | "stranded survivor" (help / rob / ignore); "Crown patrol" at the Ashen Crossroads / Aurel Border Fort (escort / trade / bribe / defy / fight) — `test_decisions.gd`, `test_crown_patrol.gd` |
+| Faction reactivity: reputation-gated prompts and options (`requires_reputation`, `prompts_by_reputation`) | Auto-tested + runtime | the Crown patrol reads Crown standing only (never morality): Friendly ≥ 20 unlocks the escort job, Distrusted ≤ −20 refuses trade and exposes "fight"; thresholds = `ReputationRules.label` bands |
+| Per-area decision selection (`DecisionRules.select_for_area`: biome, optional landmarks, priority) | Auto-tested | one NPC per area; the next unresolved decision replaces a resolved one |
+| Two factions, territory, relations | Auto-tested | no faction AI; faction–faction relations never change yet (player reputation does) |
 | Grace period + awareness bands | Auto-tested | information only; no raids |
 | Difficulty: 6 presets + custom, 4 functional parameters, validation, frozen per universe | Auto + runtime | 6 parameters flagged "not yet functional" in UI |
 | Main menu / new game / load / settings / settlement / map / HUD / pause / decision / death | Runtime | placeholder visuals, code-built UI |
 | Debug overlay (F3) | Runtime | |
-| Test runner + 62 tests | Runtime | `run_tests.ps1` / `run_tests.sh` |
+| Test runner + 78 tests | Runtime | `run_tests.ps1` / `run_tests.sh` |
 | Two-process save → quit → relaunch → Continue check | Runtime (passes) | `check_relaunch.ps1` / `check_relaunch.sh` → `tools/relaunch_check.tscn` |
 
 ## Not started

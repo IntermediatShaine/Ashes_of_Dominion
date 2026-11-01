@@ -1,14 +1,30 @@
 # Implementation status
 
-**Last verified: 2026-11-01** on branch `codex/issue-3-mist-preview`, with the official
-**Godot 4.5.1-stable** Windows build (headless). Project root: [`game/`](../game/).
+**Last verified: 2026-11-01** on branch `feature/second-decision-reputation` (Phase 2A), with the
+official **Godot 4.5.1-stable** Linux build (headless). Project root: [`game/`](../game/).
 
 Verification levels: **Planned** (design only) · **Implemented** (code present and inspected) ·
 **Tested** (automated test executed and passing, command recorded) · **Runtime** (executed in
 the engine, not asserted by a test) · **Manual** (a human played it) · **Unverified** (claimed
 elsewhere, not inspected here).
 
-## Evidence from the 2026-11-01 session
+## Evidence — Phase 2A, 2026-11-01 (`feature/second-decision-reputation`)
+
+| Check | Command (run from `game/`) | Observed |
+| --- | --- | --- |
+| Project imports | `godot --headless --path . --import` | exit 0, no errors |
+| Automated tests | `./run_tests.sh <godot>` | `=== 78 tests, 0 failed ===`, no `SCRIPT ERROR` (two expected `WARNING` lines from the save-recovery tests) |
+| Boot smoke test | `godot --headless --path . --quit-after 60` | exit 0 |
+| Save → quit → relaunch → Continue | `./check_relaunch.sh <godot>` | `RELAUNCH CHECK PASSED` |
+| Manual play | — | **Not done** |
+
+New in Phase 2A: `unit/test_decisions.gd` (9) and `integration/test_crown_patrol.gd` (3) — selection
+priority, reputation bands and threshold edges, every Crown-patrol choice, once-only resolution,
+save/load of the choice, hostile reaction for a Hunted character, survivor regression. One existing
+assertion in `test_core_loop.gd` was updated: a resolved decision now gives way to the next one
+(the Crown patrol) instead of leaving the area without an NPC.
+
+## Evidence — import session, 2026-11-01
 
 | Check | Command (run from `game/`) | Observed |
 | --- | --- | --- |
@@ -54,8 +70,9 @@ scripted exploration playthrough, defeat → resurrection once, **enemy FSM 7**,
 | Rewards, XP, level-up, class unlock evaluation | Tested | class switching has no UI/effect |
 | Settlement (stats, storage cap, 4 buildings, daily production/food, morale) | Tested | governance policies are schema only |
 | Morality (character) vs faction reputation (universe) | Tested | distinct, event-id idempotent |
-| One narrative decision with persistent consequences | Tested | "stranded survivor" |
-| Two factions, territory, grace period / awareness bands | Tested | no faction AI, no raids |
+| Narrative decisions with persistent consequences (2) | Tested | "stranded survivor"; **"Crown patrol"** (Phase 2A) at the Ashen Crossroads / Aurel Border Fort: escort / trade / bribe / defy / fight, each with distinct morality, reputation, haul, recruit or health effects |
+| Faction reactivity (Phase 2A) | Tested | the Crown patrol's prompt and options depend on Crown standing only: Friendly (≥ 20) unlocks the escort job, Distrusted/Hunted (≤ −20) refuses trade and exposes "fight"; morality never enters the gate |
+| Two factions, territory, grace period / awareness bands | Tested | no faction AI, no raids, no faction–faction relation changes |
 | Difficulty presets + custom, frozen per universe | Tested | 6 of 10 parameters are stored but unused |
 | Main menu, new game, load, settings, settlement, map, HUD, pause, death | Runtime | code-built UI, placeholder `_draw()` visuals |
 | Walkable settlement, companions, armies, faction AI, raids, universe transfer rules, inventory/equipment, skills, audio, pixel art | Planned | not started |

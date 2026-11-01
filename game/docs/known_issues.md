@@ -33,8 +33,17 @@ Reproducible defects and deliberate limitations. Nothing here is hidden behind a
   discovery speed, companion mortality, cheats) are stored but read by nothing.
 - **Class unlock has no effect** beyond `unlocked_classes`; switching class has no UI and no
   gameplay consequence.
-- **Decision NPC appears in marches/eldergrove areas only until resolved**, then never again in
-  that universe (one decision defined).
+- **Each decision resolves once per universe**, then its NPC never appears again there. Two are
+  defined: the stranded survivor (marches/eldergrove) and the Crown patrol (crossroads/border fort,
+  after the survivor). The Crown patrol's `fight` option wounds the protagonist through dialogue
+  (never below 1 health) but spawns no actual riders — hostile patrols as combat encounters are a
+  later feature.
+- **Reputation gate reasons use prettified ids** ("Crown Of Aurel"): rules have no access to the
+  content tables, so faction display names are not available to `DecisionRules.blocking_reason`.
+- **Adding a decision to a biome can change an existing universe's area repair.** The NPC cell is
+  part of the reachability repair input, so an area that previously had no NPC (all decisions
+  resolved) may get one extra carved corridor once a new decision is defined for it. Terrain seeds,
+  resources and enemies are unchanged; no `generation_version` bump was made for Phase 2A.
 - **The crypt "dungeon" is a biome variant** (dense walls, sentinels), not an enclosed dungeon layout.
 - **Camera limits assume the map is at least the viewport size**; smaller maps would show
   outside-of-map space (current map 1408×960 px > 1280×720).

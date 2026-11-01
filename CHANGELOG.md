@@ -4,6 +4,21 @@ Significant development changes to **Ashes of Dominion** are recorded here. Do n
 
 ## Unreleased
 
+### Added — 2026-11-01 (`feature/second-decision-reputation`, Phase 2A)
+- Second narrative encounter, **the Crown patrol**, at the Ashen Crossroads and the Aurel Border
+  Fort (after the survivor): escort (Friendly only; +morality, +Crown, −Legion, iron), trade
+  (rations, +Crown), bribe (spends iron), defy (−Crown, +Legion, a deserter recruit), fight
+  (Distrusted only; wound, −Crown, −morality, a looted blade).
+- Faction reactivity in the decision system: `requires_reputation` option gates (shown disabled
+  with the reason, or hidden with `hide_when_blocked`), `prompts_by_reputation` prompt variants,
+  `health` effects, `npc_color` / `npc_prompt` per decision. Thresholds follow the existing
+  Friendly / Neutral / Distrusted bands.
+- Data-driven per-area decision selection (`DecisionRules.select_for_area`: biome, optional
+  `appears_at_landmarks`, `priority`), replacing first-by-id; content validation for decision
+  references.
+- `tests/unit/test_decisions.gd` (9) and `tests/integration/test_crown_patrol.gd` (3); suite now
+  78 tests.
+
 ### Fixed — 2026-11-01 (`codex/issue-3-mist-preview`)
 - Prevented selected uncharted routes from revealing hidden intermediate waypoint geometry.
 - Added four renderer regression tests; 66 tests pass on Windows Godot 4.5.1 headless, with

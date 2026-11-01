@@ -81,7 +81,7 @@ func build_area() -> WildernessMap:
 	var node := world.node(e.destination_id)
 	var biome_id: String = node["biome"]
 	var mods := DictUtil.get_dict(u.world_modifications, e.destination_id)
-	var decision_id := _available_decision_for_biome(biome_id)
+	var decision_id := DecisionRules.select_for_area(content.table("decisions"), u, biome_id, e.destination_id)
 	var params := {
 		"biome": content.get_def("biomes", biome_id),
 		"danger": int(node["danger"]),
@@ -92,16 +92,6 @@ func build_area() -> WildernessMap:
 		"regrowth_days": DictUtil.get_int(content.balance("expedition"), "resource_regrowth_days", 10),
 	}
 	return WildernessGenerator.generate(u.world_seed, u.generation_version, e.destination_id, biome_id, params, content.balance("wilderness"))
-
-
-func _available_decision_for_biome(biome_id: String) -> String:
-	var decisions: Dictionary = content.table("decisions")
-	for did in DictUtil.sorted_keys(decisions):
-		if not DecisionRules.is_available(universe(), String(did)):
-			continue
-		if DictUtil.get_array(decisions[did], "appears_in_biomes").has(biome_id):
-			return String(did)
-	return ""
 
 
 ## Called by the exploration scene when a resource node is harvested.
