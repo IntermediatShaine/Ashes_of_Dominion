@@ -12,7 +12,7 @@ const SCENES := {
 	"exploration": "res://scenes/exploration/exploration.tscn",
 }
 const SETTINGS_PATH := "user://settings.json"
-const DEFAULT_SETTINGS := {"window_mode": "windowed", "debug_overlay": false}
+const DEFAULT_SETTINGS := {"window_mode": "windowed", "debug_overlay": false, "diagnostic_logging": false}
 
 var settings: Dictionary = DEFAULT_SETTINGS.duplicate()
 var current_scene_key: String = ""
@@ -35,6 +35,7 @@ func _ready() -> void:
 func go(key: String) -> void:
 	assert(SCENES.has(key), "Unknown scene key " + key)
 	current_scene_key = key
+	Telemetry.record_event("scene_" + key)
 	debug_extra.clear()
 	get_tree().paused = false
 	if navigation_hook.is_valid():
@@ -50,6 +51,7 @@ func _change(path: String) -> void:
 
 
 func quit() -> void:
+	Telemetry.record_event("application_quit")
 	get_tree().quit()
 
 
@@ -79,7 +81,25 @@ func save_settings() -> OpResult:
 	return OpResult.success()
 
 
+func set_diagnostic_logging(enabled: bool) -> OpResult:
+	var previous := DictUtil.get_bool(settings, "diagnostic_logging", false)
+	var result := Telemetry.set_enabled(enabled)
+	if not result.ok:
+		return result
+	settings["diagnostic_logging"] = enabled
+	var saved := save_settings()
+	if not saved.ok:
+		settings["diagnostic_logging"] = previous
+		Telemetry.set_enabled(previous)
+	return saved
+
+
 func apply_settings() -> void:
+	# This must run in headless mode too; only window settings are graphical.
+	var logging := Telemetry.set_enabled(DictUtil.get_bool(settings, "diagnostic_logging", false))
+	if not logging.ok:
+		settings["diagnostic_logging"] = false
+		push_warning("Optional diagnostic logging unavailable: " + logging.error)
 	if DisplayServer.get_name() == "headless":
 		return
 	match String(settings.get("window_mode", "windowed")):

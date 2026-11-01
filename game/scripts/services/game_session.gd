@@ -52,6 +52,7 @@ func new_game(options: Dictionary, slot: int) -> OpResult:
 	if not w.ok:
 		_unbind()
 		return w
+	Telemetry.record_event("game_created", {"slot": slot})
 	state_changed.emit()
 	return OpResult.success(s)
 
@@ -59,6 +60,7 @@ func new_game(options: Dictionary, slot: int) -> OpResult:
 func load_slot(slot: int) -> OpResult:
 	var r := repository.load_slot(slot)
 	if not r.ok:
+		Telemetry.record_event("game_load_failed", {"slot": slot})
 		return r
 	_bind(r.value)
 	current_slot = slot
@@ -68,11 +70,14 @@ func load_slot(slot: int) -> OpResult:
 	# Finish anything a crash interrupted, then persist the recovered state.
 	var rec := transitions.recover_pending()
 	if not rec.ok:
+		Telemetry.record_event("game_load_failed", {"slot": slot})
 		return rec
 	if rec.value is Dictionary and DictUtil.get_bool(rec.value, "recovered", false):
 		last_messages.append("Completed an interrupted transition.")
 		pending_expedition_summary = DictUtil.get_dict(rec.value, "result")
 		save_game()
+	Telemetry.record_event("game_loaded", {"slot": slot})
+	_telemetry_state_check()
 	state_changed.emit()
 	return OpResult.success(save)
 
@@ -102,10 +107,18 @@ func save_game() -> OpResult:
 		return OpResult.failure("No game to save")
 	if current_slot == 0:
 		return OpResult.failure("No save slot selected")
+	var started := Time.get_ticks_msec()
 	save.universe.rng_states = rng.to_dict()
+	_telemetry_state_check()
 	var r := repository.write(current_slot, save)
+	Telemetry.record_event("save_succeeded" if r.ok else "save_failed", {"slot": current_slot, "elapsed_ms": Time.get_ticks_msec() - started})
 	game_saved.emit(current_slot, r)
 	return r
+
+
+func _telemetry_state_check() -> void:
+	if Telemetry.is_enabled() and save != null:
+		Telemetry.record_event("state_checked", {"errors": save.validate().size()})
 
 
 func construct_building(definition_id: String) -> OpResult:
@@ -114,6 +127,7 @@ func construct_building(definition_id: String) -> OpResult:
 	var u := save.universe
 	var r := ConstructionRules.build(u.home_settlement(), definition_id, Content.table("buildings"), u.id_counters, u.current_day)
 	if r.ok:
+		Telemetry.record_event("building_built")
 		# New housing lets waiting recruits move in.
 		SettlementRules.settle_recruits(u.home_settlement(), Content.table("buildings"))
 		state_changed.emit()
@@ -121,6 +135,7 @@ func construct_building(definition_id: String) -> OpResult:
 
 
 func end_session() -> void:
+	Telemetry.record_event("game_ended")
 	_unbind()
 	state_changed.emit()
 

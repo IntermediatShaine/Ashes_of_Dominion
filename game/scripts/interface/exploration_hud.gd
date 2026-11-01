@@ -137,14 +137,23 @@ func _build_pause(root: Control) -> PanelContainer:
 	p.set_anchors_preset(Control.PRESET_CENTER)
 	p.offset_left = -180
 	p.offset_right = 180
-	p.offset_top = -120
-	p.offset_bottom = 120
+	p.offset_top = -175
+	p.offset_bottom = 175
 	p.visible = false
 	root.add_child(p)
 	var col := UiKit.vbox(8)
 	p.add_child(col)
 	col.add_child(UiKit.title("Paused", 24))
 	col.add_child(UiKit.button("Resume", func(): toggle_pause(false), 330))
+	var logging := CheckBox.new()
+	logging.text = "Record local diagnostic logs"
+	logging.button_pressed = DictUtil.get_bool(Router.settings, "diagnostic_logging", false)
+	logging.toggled.connect(func(on: bool):
+		var result := Router.set_diagnostic_logging(on)
+		if not result.ok:
+			logging.set_pressed_no_signal(not on)
+			toast("Cannot change diagnostic logging setting", 4.0))
+	col.add_child(logging)
 	col.add_child(UiKit.button("Retreat to Emberfall (keep pack)", func():
 		toggle_pause(false)
 		retreat_requested.emit(), 330))

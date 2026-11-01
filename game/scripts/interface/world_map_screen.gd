@@ -174,6 +174,7 @@ func _on_begin() -> void:
 	if not r.ok:
 		_status.text = r.error
 		return
+	Telemetry.record_event("expedition_started")
 	Router.go("exploration")
 
 
