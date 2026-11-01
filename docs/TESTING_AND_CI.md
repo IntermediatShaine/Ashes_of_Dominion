@@ -122,6 +122,11 @@ systems. It then failed because the self-test leaked the last intentionally fail
 exit code to GitHub's PowerShell epilogue. Added explicit success exit after all assertions and
 cleanup; exceptions still terminate nonzero. Bash failure injection was skipped in that attempt.
 Final hosted workflow results will be recorded after the corrected branch is published. No
+The [following attempt](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/41331100145)
+passed PowerShell failure injection, then exposed a self-test message mismatch: Bash correctly
+returned 1 for import failure but said `CHECK FAILED: import` instead of `import failed`.
+The self-test now accepts either explicit stage-specific message; nonzero status is still required.
+Final hosted workflow results will be recorded after this fixture correction. No
 human/manual play acceptance is inferred from automated results. The regression suite
 still includes the four Mist renderer tests, nine deterministic generation tests and thirteen
 save-system tests. `game/scripts/`, `game/scenes/`, `game/data/`, `game/tests/`, and the relaunch

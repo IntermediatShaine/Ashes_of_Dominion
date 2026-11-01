@@ -109,7 +109,7 @@ exit 0
     foreach ($case in @("import-exit", "import-error")) {
       Remove-Item -LiteralPath $env:AOD_FAKE_TRACE -ErrorAction SilentlyContinue
       $env:AOD_FAKE_CASE = $case
-      Invoke-Wrapper $wrapper $fake -Evidence 'import failed'
+      Invoke-Wrapper $wrapper $fake -Evidence '(import failed|CHECK FAILED: import)'
       if (@(Get-Content $env:AOD_FAKE_TRACE).Count -ne 1) { throw "Continued after failed import" }
     }
   }
@@ -138,7 +138,7 @@ exit 0
   $autoload = Join-Path $project "scripts/services/content_db.gd"
   $autoloadSource = Get-Content -LiteralPath $autoload -Raw
   "extends Node`nthis is deliberately invalid GDScript`n" | Set-Content -LiteralPath $autoload
-  Invoke-Wrapper "check_relaunch" $engine -Evidence 'import failed'
+  Invoke-Wrapper "check_relaunch" $engine -Evidence '(import failed|CHECK FAILED: import)'
   $autoloadSource | Set-Content -LiteralPath $autoload
   $env:AOD_FAKE_CASE = "real-state-mismatch"
   $relaunch = Join-Path $project "tools/relaunch_check.gd"
