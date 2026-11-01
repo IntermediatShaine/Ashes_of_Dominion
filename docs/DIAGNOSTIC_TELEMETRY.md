@@ -10,7 +10,7 @@ The logger is separate from game-save data and does not modify the expedition ch
 - Up to **five** per-application-session JSON Lines (.jsonl) logs, oldest rotated first, across restarts. Switching OFF and ON during the same running application appends to its existing session log; events while OFF are not written. Session file creation is delayed until enabled.
 - Each file is limited to **1 MiB** to bound disk use. Once full, that session stops recording additional events. The next application launch starts another bounded file.
 - Settings contains **Delete stored diagnostic logs**, which first switches logging off, then removes the logs. Existing logs otherwise remain on disk after opting out (but no new data is appended).
-- Each entry has a UTC timestamp, an allowlisted event name and optionally numerical/boolean metrics. Free-form gameplay text, user-entered character names, world seeds, locations, file paths, narrative choices, identifiers and raw error messages are not written. This is diagnostic metadata, not a full replay or combat-state dump.
+- Each entry has a UTC timestamp, an allowlisted event name and optionally numerical/boolean metrics. Free-form gameplay text, user-entered character names, world seeds, locations, file paths, narrative choices, account/character/universe IDs and raw error messages are not written. Numeric save-slot indices are recorded to help locate save failures. This is diagnostic metadata, not a full replay or combat-state dump.
 
 ## What is observed while enabled
 

@@ -45,10 +45,12 @@ func test_game_events_are_logged_only_while_opted_in() -> void:
 	assert_ok(created)
 	Router.go("settlement")
 	assert_ok(Session.save_game())
+	assert_ok(Session.load_slot(1))
 	var path := Telemetry.log_paths()[0]
 	var recorded := read_text(path)
 	assert_true(recorded.contains("session_started"))
 	assert_true(recorded.contains("game_created"))
+	assert_true(recorded.contains("game_loaded"))
 	assert_true(recorded.contains("save_succeeded"))
 	assert_true(recorded.contains("state_checked"))
 	assert_true(recorded.contains("scene_settlement"))
