@@ -113,7 +113,10 @@ a native process before the passing 20-case run. The first real import fixture w
 and did not compile during import; corrected to a referenced autoload as described above.
 These were fixture-development failures, not passing checks.
 
-Hosted workflow results will be recorded after the branch is published. No Linux runtime success
+The initial [hosted attempt](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/41330707244)
+failed workflow validation because job-level `env` cannot reference `runner.temp`; moved that
+configuration into a step via `GITHUB_ENV`. No checks ran in that failed attempt.
+Hosted workflow results will be recorded after the corrected branch is published. No Linux runtime success
 or human/manual play acceptance is inferred from local Windows results. The regression suite
 still includes the four Mist renderer tests, nine deterministic generation tests and thirteen
 save-system tests. `game/scripts/`, `game/scenes/`, `game/data/`, `game/tests/`, and the relaunch

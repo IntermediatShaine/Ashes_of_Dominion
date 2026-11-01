@@ -23,8 +23,6 @@ jobs:
         os: [ubuntu-24.04, windows-2022]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
-    env:
-      AOD_TEST_LOG_DIR: ${{ runner.temp }}/aod-logs
     defaults:
       run:
         shell: pwsh
@@ -33,7 +31,9 @@ jobs:
         with:
           persist-credentials: false
       - name: Install checksum-verified official Godot
-        run: ./game/tools/install_ci_godot.ps1 -Destination "${{ runner.temp }}/godot"
+        run: |
+          "AOD_TEST_LOG_DIR=$env:RUNNER_TEMP/aod-logs" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          ./game/tools/install_ci_godot.ps1 -Destination "${{ runner.temp }}/godot"
       - name: Headless import
         run: ./game/tools/verify.ps1 -Godot $env:GODOT -Check import
       - name: Automated game tests
