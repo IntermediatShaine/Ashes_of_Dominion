@@ -101,6 +101,7 @@ After hardening, executed from `game/` with that engine as `$engine`:
 | --- | --- |
 | `.\run_tests.ps1 -Godot $engine` | exit 0; import accepted; 66 tests, 0 failed; only two expected recovery warnings |
 | `.\run_tests.ps1 -Godot $engine -Filter mist_preview` | exit 0; 4 tests, 0 failed |
+| `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\run_tests.ps1 -Godot $engine -Filter mist_preview` | Windows PowerShell 5.1: exit 0; 4 tests, 0 failed |
 | `.\tools\verify.ps1 -Godot $engine -Check smoke` | exit 0; import and 60-frame boot accepted |
 | `.\check_relaunch.ps1 -Godot $engine` | exit 0; write and fresh-process state comparison accepted |
 | `.\tools\test_harness.ps1 -Godot $engine` | exit 0; 20/20 controlled cases accepted; all 18 negative cases returned nonzero |
@@ -121,13 +122,26 @@ passed game import, all 66 tests, boot, relaunch and 20 PowerShell harness cases
 systems. It then failed because the self-test leaked the last intentionally failing child's
 exit code to GitHub's PowerShell epilogue. Added explicit success exit after all assertions and
 cleanup; exceptions still terminate nonzero. Bash failure injection was skipped in that attempt.
-Final hosted workflow results will be recorded after the corrected branch is published. No
 The [following attempt](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/41331100145)
 passed PowerShell failure injection, then exposed a self-test message mismatch: Bash correctly
 returned 1 for import failure but said `CHECK FAILED: import` instead of `import failed`.
 The self-test now accepts either explicit stage-specific message; nonzero status is still required.
-Final hosted workflow results will be recorded after this fixture correction. No
-human/manual play acceptance is inferred from automated results. The regression suite
+Final tested engineering revision: `76d89d3a1df3cf53ccd16b55e5a58a90af116845`.
+[PR workflow run 41331300938](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/41331300938)
+completed successfully on **both** Ubuntu 24.04 and Windows Server 2022:
+
+| Hosted check | Ubuntu 24.04 | Windows Server 2022 |
+| --- | --- | --- |
+| SHA-512 engine archive + exact version | passed | passed |
+| Headless import | passed | passed |
+| Game tests | 66 tests, 0 failed | 66 tests, 0 failed |
+| Startup smoke test | passed | passed |
+| Two-process save/relaunch comparison | passed | passed |
+| PowerShell harness cases | 20/20, including 18 rejected failures | 20/20, including 18 rejected failures |
+| Bash harness cases | 20/20, including 18 rejected failures | intentionally not scheduled |
+| Log artifact upload | passed | passed |
+
+No human/manual play acceptance is inferred from automated results. The regression suite
 still includes the four Mist renderer tests, nine deterministic generation tests and thirteen
 save-system tests. `game/scripts/`, `game/scenes/`, `game/data/`, `game/tests/`, and the relaunch
 scene/script are unchanged; no save schema, RNG, generator or scene-reference changes.

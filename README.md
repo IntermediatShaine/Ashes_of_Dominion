@@ -5,8 +5,10 @@
 **Status:** Design documented; a **first playable vertical slice** lives in [`game/`](game/) (Godot 4.5.1,
 GDScript, placeholder visuals). The full expedition loop — village → map → route → seeded wilderness →
 8-direction movement → combat → resources → return → construction → save → relaunch → continue — is
-covered by 62 automated tests and a two-process relaunch check. It has **not yet been played by a human**.
+covered by 66 automated tests and a two-process relaunch check. It has **not yet been played by a human**.
 See [implementation status](docs/IMPLEMENTATION_STATUS.md) for the evidence.
+Godot 4.5.1 Linux/Windows CI and harness failure-injection results are documented in
+[testing and CI](docs/TESTING_AND_CI.md).
 
 ## Vision
 

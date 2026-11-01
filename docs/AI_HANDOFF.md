@@ -117,6 +117,9 @@ faction-relation consequences.
   failure injection in disposable project copies. Local PowerShell: 20/20 harness cases;
   66 game tests; focused Mist 4/4; import, smoke and relaunch pass.
 - See `docs/TESTING_AND_CI.md` for exact commands, fixture corrections and hosted status.
+- Hosted engineering revision `76d89d3`: [run 41331300938](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/41331300938)
+  passed Linux and Windows: 66 game tests each; 20 PowerShell harness cases each plus 20 Bash
+  cases on Linux; import, startup, relaunch and log upload successful.
 - Gameplay, content, RNG, save schemas and scenes untouched; Claude's narrative/faction work
   remains independent. Human play and branch-protection configuration remain owner actions.
 

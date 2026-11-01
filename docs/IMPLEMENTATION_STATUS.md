@@ -1,7 +1,7 @@
 # Implementation status
 
-**Last verified: 2026-11-01** on branch `codex/issue-3-mist-preview`, with the official
-**Godot 4.5.1-stable** Windows build (headless). Project root: [`game/`](../game/).
+**Last verified: 2026-11-01** on branch `codex/ci-test-hardening`, with the official
+**Godot 4.5.1-stable** Linux and Windows builds (headless). Project root: [`game/`](../game/).
 
 Verification levels: **Planned** (design only) · **Implemented** (code present and inspected) ·
 **Tested** (automated test executed and passing, command recorded) · **Runtime** (executed in
@@ -98,6 +98,9 @@ Local Windows Godot 4.5.1: **66 tests, 0 failed**, Mist **4/4**, import/boot/rel
 **20/20 harness cases** including 18 intentional failures rejected. Linux/Windows workflow
 added with pinned action SHAs and SHA-512-verified engine. Hosted status and exact commands:
 [`TESTING_AND_CI.md`](TESTING_AND_CI.md). Gameplay source and save format unchanged.
+Hosted engineering revision `76d89d3`: [run 41331300938](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/41331300938)
+**passed on Linux and Windows**, including 66 tests per platform, import/boot/relaunch,
+20 PowerShell harness cases per platform and 20 Bash cases on Linux.
 
 ## How to update status
 
