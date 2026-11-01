@@ -1,5 +1,7 @@
 # Development roadmap
 
+**Phase 2C update (2026-11-01):** This file records the historical 62-test foundation and original priorities. The Mist-preview fix was merged in PR #4 and Codex reported **66 tests, 0 failures**; manual gameplay remains unverified. The new **unapproved** persistence and generation plan is in [../../docs/PHASE_2C_DEVELOPMENT_ROADMAP.md](../../docs/PHASE_2C_DEVELOPMENT_ROADMAP.md).
+
 ## Current checkpoint — DONE (foundation + first playable loop + combat/relaunch verification)
 
 Phases A–F of the directive are implemented and automated-test verified; the loop in §5.2 runs
@@ -34,7 +36,7 @@ controls feel acceptable (movement speed, attack reach, enemy aggression) or the
    gathered nodes) or decide explicitly that expeditions are atomic.
 3. **Generation versioning** — keep old generator paths behind `generation_version` so a bump
    never changes an existing universe.
-4. **Mist preview leak** — hide uncharted route geometry (straight dashed line).
+4. **Mist preview leak — completed in PR #4** — the uncharted route geometry is hidden; 4 integration tests added (66 total).
 5. **Second decision + faction relation changes** — make reputation matter (e.g. Crown patrols
    near the fort are hostile below a threshold).
 
