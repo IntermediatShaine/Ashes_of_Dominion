@@ -1,6 +1,6 @@
 class_name DiagnosticLog
 extends RefCounted
-## Local, opt-in diagnostics. No network activity, identifiers, player names,
+## Local, opt-in diagnostics. No network activity, account IDs, player names,
 ## world seeds, paths, user text, or free-form error messages are collected.
 ## One log per application session (even if recording is toggled off/on).
 ## At most five JSONL files, each capped at 1 MiB, are kept on disk.
@@ -67,7 +67,7 @@ func set_enabled(on: bool) -> OpResult:
 	var stamp := int(Time.get_unix_time_from_system() * 1000.0)
 	var previous := log_paths()
 	if not previous.is_empty():
-		var newest_name := previous.back().get_file()
+		var newest_name: String = previous.back().get_file()
 		stamp = maxi(stamp, newest_name.trim_prefix("session_").trim_suffix(".jsonl").to_int() + 1)
 	var path := _directory.path_join("session_%016d.jsonl" % stamp)
 	while FileAccess.file_exists(path):
