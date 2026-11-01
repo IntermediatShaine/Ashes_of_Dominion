@@ -1,5 +1,7 @@
 # Implementation status
 
+**Newer evidence note, 2026-11-01:** The 62-test result below is the earlier Claude checkpoint, not the latest merged state. Codex PR #4 later reported **66 tests, 0 failures** on official Windows Godot 4.5.1, with clean import, 60-frame boot and two-process relaunch. This documentation-only Phase 2C review did **not** rerun the engine. See [../../docs/CODEX_ISSUE_3_AUDIT.md](../../docs/CODEX_ISSUE_3_AUDIT.md); the mid-expedition save and generation version-dispatch work remain unimplemented.
+
 Verification levels (directive §24.2): **Implemented** (files exist) · **Static** (parses, imports) ·
 **Auto-tested** (automated tests pass) · **Runtime** (executed in the engine) · **Manual** (a
 human played it). Everything below was run on Godot 4.5.1-stable headless (tests) and under a
