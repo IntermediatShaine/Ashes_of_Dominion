@@ -1,0 +1,139 @@
+name: Build downloadable game
+
+on:
+  pull_request:
+    paths:
+      - 'game/**'
+      - '.github/workflows/distribute-game.yml'
+  push:
+    branches: [main]
+    tags: ['v*']
+    paths:
+      - 'game/**'
+      - '.github/workflows/distribute-game.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: distribute-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Export portable Windows and Linux builds
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - name: Install checksum-verified Godot 4.5.1 editor
+        shell: pwsh
+        run: ./game/tools/install_ci_godot.ps1 -Destination "${{ runner.temp }}/godot"
+      - name: Run game tests before distributing
+        shell: bash
+        run: bash ./game/run_tests.sh "$GODOT"
+      - name: Export using checksum-verified official templates
+        shell: bash
+        run: bash ./game/tools/build_distributions.sh
+      - name: Upload portable game downloads
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ashes-of-dominion-portable-builds
+          path: |
+            dist/Ashes-of-Dominion-Windows-x64.zip
+            dist/Ashes-of-Dominion-Linux-x64.zip
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14
+
+  windows-smoke:
+    name: Launch the exported Windows game
+    needs: build
+    runs-on: windows-2022
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.1.8
+        with:
+          name: ashes-of-dominion-portable-builds
+          path: distributions
+      - name: Launch packaged Windows executable
+        shell: pwsh
+        run: |
+          Expand-Archive -Path distributions/Ashes-of-Dominion-Windows-x64.zip -DestinationPath player -Force
+          if (!(Test-Path player/AshesOfDominion.exe) -or !(Test-Path player/AshesOfDominion.pck)) {
+            throw "Windows executable or PCK missing"
+          }
+          $exe = (Resolve-Path player/AshesOfDominion.exe).Path
+          $proc = Start-Process -FilePath $exe -ArgumentList '--headless', '--quit-after', '60' -NoNewWindow -PassThru -Wait
+          if ($proc.ExitCode -ne 0) { throw "Exported Windows game failed: exit $($proc.ExitCode)" }
+          Write-Output "EXPORTED WINDOWS GAME PASSED"
+
+  publish:
+    name: Publish tested builds to GitHub Releases
+    needs: [build, windows-smoke]
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.1.8
+        with:
+          name: ashes-of-dominion-portable-builds
+          path: distributions
+      - name: Validate download checksums
+        shell: bash
+        run: (cd distributions && sha256sum --check SHA256SUMS.txt)
+      - name: Publish preview or versioned release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<'EOF'
+          ### Play Ashes of Dominion
+          This is an **early playable prototype**, not a finished or installer-signed release.
+
+          Choose the Windows x64 or Linux x86_64 ZIP from the assets below. Extract the whole ZIP and launch AshesOfDominion.exe (Windows) or AshesOfDominion.x86_64 (Linux). Keep its .pck file alongside the executable. **Godot is not required.**
+
+          Windows may show a SmartScreen warning for this unsigned game. Linux users may need to set the executable bit after extraction (chmod +x AshesOfDominion.x86_64).
+
+          Saves are stored separately in your application-data folder. Optional diagnostic telemetry is off by default.
+
+          SHA256SUMS.txt contains checksums of both ZIP downloads.
+          EOF
+          files=(distributions/Ashes-of-Dominion-Windows-x64.zip distributions/Ashes-of-Dominion-Linux-x64.zip distributions/SHA256SUMS.txt)
+          if [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
+            if gh release view preview >/dev/null 2>&1; then
+              # The preview tag intentionally follows the latest tested main build.
+              gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/preview" \
+                -f sha="$GITHUB_SHA" -F force=true >/dev/null
+              gh release upload preview "${files[@]}" --clobber
+              gh release edit preview --title "Ashes of Dominion - Latest playable preview" \
+                --notes-file release-notes.md --prerelease
+            else
+              gh release create preview "${files[@]}" --target "$GITHUB_SHA" \
+                --title "Ashes of Dominion - Latest playable preview" \
+                --notes-file release-notes.md --prerelease
+            fi
+          else
+            git fetch origin main
+            git merge-base --is-ancestor "$GITHUB_SHA" origin/main || {
+              echo "Release tag does not reference a commit on main" >&2; exit 1;
+            }
+            tag="$GITHUB_REF_NAME"
+            if gh release view "$tag" >/dev/null 2>&1; then
+              echo "Release $tag already exists; refusing to replace versioned assets" >&2
+              exit 1
+            fi
+            gh release create "$tag" "${files[@]}" --verify-tag \
+              --title "Ashes of Dominion $tag" --notes-file release-notes.md
+          fi
+          echo "DOWNLOAD RELEASE PUBLISHED"
