@@ -2,6 +2,7 @@
 
 **Stage 1 of 3: Village architecture and foundation.** Written 2026-11-05.
 Branch `feature/stage1-village-foundation`, based on `main` at `eaadfdf`.
+Pull request: https://github.com/IntermediatShaine/Ashes_of_Dominion/pull/10
 
 **Status: READY FOR CODEX**, on automated evidence (below). Nothing here has been played by a
 person; that is the main open item and it is listed under *Unresolved*.
@@ -446,8 +447,15 @@ management screen is instantiated through `settlement_legacy` instead of `settle
 The new tests were checked against deliberate breakage (level not loaded, cost not deducted, views
 not refreshed, sites never solid, sprites not following the registry): each made tests fail.
 
-Hosted CI (`game-tests.yml`, `distribute-game.yml`) runs on the pull request; see the PR for its
-result. The PowerShell harness self-test could not be run locally (no `pwsh` here).
+Hosted CI on pull request #10, commit `301ae19` (the last commit before this note was added):
+
+| Workflow | Result |
+| --- | --- |
+| Godot reliability — `windows-2022` ([run 42064300085](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/42064300085)) | success: 138 tests, 0 failed; relaunch check passed; harness self-test 20 cases (PowerShell) |
+| Godot reliability — `ubuntu-24.04` (same run) | success: 138 tests, 0 failed; smoke; relaunch check passed; harness self-test 20 cases each for Bash and PowerShell |
+| Build downloadable game ([run 42064300302](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/42064300302)) | success: Windows and Linux exports built; the exported Windows game launched |
+
+The PowerShell harness self-test was not run locally (no `pwsh` here); the hosted runs cover it.
 
 ## 7. Unresolved
 
@@ -456,7 +464,8 @@ result. The PowerShell harness self-test could not be run locally (no `pwsh` her
 - **No human has played this.** Movement feel, the size and readability of the village, whether
   interaction ranges feel right, the interface at other window sizes — all unseen by a person.
   The rendered screenshots were taken at 1280×720 with a software renderer.
-- **Windows** is covered only by hosted CI.
+- **Windows** is covered only by hosted CI (tests, relaunch check, launch of the exported game
+  as far as the main menu).
 - **The exported Windows build** was not run here; the Linux export was (table above). CI launches
   the Windows build as far as the main menu.
 

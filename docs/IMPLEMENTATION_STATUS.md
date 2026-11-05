@@ -30,7 +30,7 @@ Full detail, interfaces and data formats: [`game/docs/handoffs/01_CLAUDE_TO_CODE
 | Save → quit → relaunch → Continue, now including village state | `./check_relaunch.sh <godot>` | `RELAUNCH CHECK PASSED … 3 buildings` on both engines (hearth, a camp with a worker, an unfinished upgrade with a builder, time of day, player position) |
 | Rendered tour | `xvfb-run -a godot --path . --rendering-driver opengl3 res://tools/screenshot_tour.tscn` | 16 screens, no script errors; village screens inspected |
 | Exported Linux build (official 4.5.1 templates) | `--export-release "Linux/X11"`, then the binary: `--headless --quit-after 60`; `relaunch_check` write + verify; screenshot tour under Xvfb | export clean; exit 0; relaunch passed; tour completed through the village |
-| PowerShell harness self-test, Windows | — | **Not run locally** (no `pwsh`); see the pull request's CI |
+| Hosted CI on PR #10, commit `301ae19` | [Godot reliability run 42064300085](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/42064300085), [Build downloadable game run 42064300302](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/42064300302) | Windows and Linux: 138 tests, 0 failed; relaunch check passed; harness self-test 20 cases per shell; exports built and the exported Windows game launched. (The PowerShell harness was not run locally — no `pwsh`.) |
 | Manual play | — | **Not done** |
 
 New tests (54): `unit/test_settlement_service.gd` (19), `persistence/test_settlement_persistence.gd` (5),

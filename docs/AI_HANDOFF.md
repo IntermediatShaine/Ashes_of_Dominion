@@ -101,7 +101,8 @@ reputation-gated reactions).
 
 ## Handoff record — Stage 1 (village architecture and foundation), 2026-11-05
 
-- **Date and commit/branch:** 2026-11-05, `feature/stage1-village-foundation`, base `eaadfdf`.
+- **Date and commit/branch:** 2026-11-05, `feature/stage1-village-foundation`, base `eaadfdf`,
+  pull request #10 (hosted CI green on Windows and Linux at `301ae19`).
 - **Files changed:** see the file tables in `game/docs/handoffs/01_CLAUDE_TO_CODEX.md` §2. Not
   touched: the test/relaunch wrappers, the harness, the CI workflows, `tests/test_runner.gd`.
 - **Working behavior:** walkable village (hearth, shelter, workshop, stockpile, watchpost, four
