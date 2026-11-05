@@ -126,6 +126,10 @@ New unless marked *(changed)*. Paths are relative to `game/`.
 | `tools/build_village_theme.gd` | regenerates the theme (overwrites it) |
 | `tools/placeholder_art/generate_placeholders.py` | regenerates the placeholder PNGs (Pillow) |
 
+Housekeeping: the four `.gd.uid` files Godot generates for scripts merged earlier
+(`diagnostic_log.gd`, `telemetry.gd` and their two tests) were missing from the repository and
+are added here, so an import no longer leaves untracked files behind.
+
 Not touched: `tools/verify.*`, `tools/test_harness.ps1`, `tools/install_ci_godot.ps1`,
 `run_tests.*`, `check_relaunch.*`, `.github/workflows/*`, `tests/test_runner.gd`. The harness
 still finds the line it patches in `relaunch_check.gd`.
@@ -492,9 +496,6 @@ The PowerShell harness self-test was not run locally (no `pwsh` here); the hoste
   still active). Not addressed; Phase 2C territory.
 - **Telemetry** has no events for village actions except `building_built` (the allow-list was
   left alone).
-- **Four `.gd.uid` files** for scripts merged earlier (`diagnostic_log`, `telemetry` and their two
-  tests) are generated on import and are not in the repository. They show up as untracked; this
-  branch does not add them.
 - `docs/TESTING_AND_CI.md`, `docs/CODEX_HANDOFF.md` and `game/docs/implementation_status.md`
   still describe earlier test counts.
 
