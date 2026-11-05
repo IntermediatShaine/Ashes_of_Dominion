@@ -4,6 +4,22 @@ Reproducible defects and deliberate limitations. Nothing here is hidden behind a
 
 ## Defects / gaps
 
+### Stage 2 update (2026-11-05)
+
+Workshop crafting/production and staffed Watchpost defense now function. Three
+POIs support persistent gathering/rescue/guards/equipment/lore/shrine decisions
+and save/Continue mid-map. Legacy generated-wilderness checkpoints remain
+unsupported. The demo POIs use salvage; older wilderness content still uses
+iron for compatibility. Guards stay defeated, but surviving enemies' partial
+health is not checkpointed. Buildings still take damage only through the
+service; no raids or automatic wear were enabled. Placeholder layouts and combat
+tuning require human playtesting. Windows 4.5.1 tests and scripted rendering
+passed; Stage 2 exports/other viewport sizes have not been tested.
+
+The Stage 1 Workshop/Watchpost and POI save gaps below are superseded where
+noted above; all other historical limitations remain unless the Stage 2
+[handoff](handoffs/02_CODEX_TO_GEMINI.md) explicitly says otherwise.
+
 ### Village (Stage 1, 2026-11-05)
 
 - **No human has played the village.** Everything about it is verified by automated tests and by

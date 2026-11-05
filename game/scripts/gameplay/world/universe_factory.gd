@@ -79,7 +79,7 @@ static func create(world_seed: int, difficulty: Dictionary, world_settings: Dict
 
 	# threat / protagonist
 	u.threat_state = ThreatRules.init_state(DictUtil.get_int(difficulty, "grace_period_expeditions", 5))
-	u.protagonist_condition = {"health": ProgressionRules.max_health(character, content.balance("character"))}
+	u.protagonist_condition = {"health": ProgressionRules.max_health(character, content.balance("character")), "tools": [], "equipment": "", "equipment_attack": 0}
 	var errors := u.validate()
 	if not errors.is_empty():
 		return OpResult.failure("Universe invalid: " + "; ".join(errors))

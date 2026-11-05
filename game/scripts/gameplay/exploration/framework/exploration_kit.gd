@@ -32,6 +32,7 @@ static func spawn_player(entities: Node, position: Vector2, world_size: Vector2,
 	player.name = "Player"
 	player.set_script(PlayerScript)
 	player.setup(Session.character(), DictUtil.get_int(Session.universe().protagonist_condition, "health", 1), Content.balance("character"), Content.balance("combat"))
+	player.combatant.attack += DictUtil.get_int(Session.universe().protagonist_condition, "equipment_attack")
 	player.combat_enabled = combat_enabled
 	player.position = position
 	entities.add_child(player)

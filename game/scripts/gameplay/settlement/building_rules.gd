@@ -105,6 +105,10 @@ static func upgrade_blocking_reasons(s: SettlementState, instance: Dictionary, b
 
 static func cost_blocking_reasons(s: SettlementState, cost: Dictionary) -> Array[String]:
 	var reasons: Array[String] = []
+	var error := ResourceTransaction.validate_amounts(cost, cost)
+	if error != "":
+		reasons.append(error)
+		return reasons
 	for r in DictUtil.sorted_keys(cost):
 		var need := DictUtil.get_int(cost, String(r))
 		if s.resource_amount(String(r)) < need:

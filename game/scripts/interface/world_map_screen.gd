@@ -57,6 +57,9 @@ func _build_ui() -> void:
 	var u := Session.universe()
 	col.add_child(UiKit.muted("Day %d · Mist of Discovery %s" % [u.current_day, "on" if u.mist_enabled() else "off"], 13))
 	col.add_child(UiKit.muted("Click a known place to plan an expedition.", 13))
+	for id in Content.ids("pois"):
+		var poi_id := String(id)
+		col.add_child(UiKit.button(String(Content.table("pois")[poi_id]["name"]), func(): _begin_poi(poi_id), 300))
 	col.add_child(UiKit.separator())
 	_info_box = UiKit.vbox(4)
 	col.add_child(_info_box)
@@ -73,6 +76,20 @@ func _build_ui() -> void:
 	col.add_child(UiKit.muted("Legend: ◆ village  ● place  ○ waypoint  — travelled route  ··· unknown", 12))
 	col.add_child(UiKit.button("Back to Emberfall  [Esc]", func(): Router.go("settlement"), 300))
 	_refresh_panel()
+
+
+func _begin_poi(id: String) -> void:
+	# A failed departure write can be retried without making a second trip.
+	if PoiRules.active_id(Session.expeditions) != id:
+		var r := PoiRules.start(Session.expeditions, id)
+		if not r.ok:
+			_status.text = r.error
+			return
+	var saved := Session.save_game()
+	if not saved.ok:
+		_status.text = "SAVE FAILED: " + saved.error + ". Choose this destination again to retry."
+		return
+	Router.go("poi")
 
 
 func _unhandled_input(event: InputEvent) -> void:

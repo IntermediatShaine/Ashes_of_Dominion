@@ -14,6 +14,7 @@ const SCENES := {
 	"settlement_legacy": "res://scenes/settlement/settlement.tscn",
 	"world_map": "res://scenes/world_map/world_map.tscn",
 	"exploration": "res://scenes/exploration/exploration.tscn",
+	"poi": "res://scenes/exploration/poi.tscn",
 }
 const SETTINGS_PATH := "user://settings.json"
 const DEFAULT_SETTINGS := {"window_mode": "windowed", "debug_overlay": false, "diagnostic_logging": false}

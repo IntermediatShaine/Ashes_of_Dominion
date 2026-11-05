@@ -55,6 +55,9 @@ func _build_hud() -> void:
 	hud.worker_change_requested.connect(func(target_id: String, delta: int): change_workers(target_id, delta))
 	hud.job_cancel_requested.connect(func(job_id: String): cancel_job(job_id))
 	hud.rest_requested.connect(rest_until_dawn)
+	hud.craft_requested.connect(func(recipe_id: String):
+		var result := service.craft(recipe_id)
+		hud.toast(("Crafted." + _autosave_suffix()) if result.ok else result.error, 4.0))
 	hud.save_requested.connect(save_game)
 	hud.leave_requested.connect(leave_village)
 	hud.settings_requested.connect(open_settings)

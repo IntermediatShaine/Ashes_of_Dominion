@@ -1,0 +1,351 @@
+{
+	"character": {
+		"archetype_id": "village_hunter",
+		"background": "You hunted the Greywood for Emberfall's table. You know the trails better than the soldiers who burned them.",
+		"base_attributes": {
+			"dexterity": 7.0,
+			"endurance": 6.0,
+			"intelligence": 4.0,
+			"strength": 5.0,
+			"willpower": 5.0
+		},
+		"character_id": "chr_4adf4e2df6df",
+		"character_name": "Relaunch",
+		"created_at_unix": 1793892551.0,
+		"current_class": "survivor",
+		"experience": 5.0,
+		"learned_skills": [],
+		"level": 1.0,
+		"morality": 15.0,
+		"morality_log": [
+			{
+				"delta": 15.0,
+				"id": "u001_e7a57472:stranded_survivor:help",
+				"kind": "stranded_survivor",
+				"universe_id": "u001_e7a57472"
+			}
+		],
+		"permanent_unlocks": [],
+		"persistent_character_flags": {
+
+		},
+		"persistent_lore": [],
+		"primary_ancestry": "human",
+		"secondary_ancestry": "",
+		"unlocked_classes": [
+			"survivor"
+		]
+	},
+	"meta": {
+		"character_name": "Relaunch",
+		"day": 5.0,
+		"engine_version": "4.5.1-stable (official)",
+		"game_version": "0.1.0",
+		"level": 1.0,
+		"save_count": 2.0,
+		"saved_at_text": "2026-11-05 15:29:11",
+		"saved_at_unix": 1793892551.0,
+		"slot": 2.0,
+		"universe_id": "u001_e7a57472"
+	},
+	"multiverse": {
+		"completed_transition_ids": [],
+		"forced_transfer_count": 0.0,
+		"id_counters": {
+
+		},
+		"natural_transfer_count": 0.0,
+		"pending_transition": null,
+		"persistent_multiverse_flags": {
+
+		},
+		"resolved_resurrection_outcomes": {
+
+		},
+		"universe_counter": 1.0
+	},
+	"schema_version": 2,
+	"universe": {
+		"active_expedition_id": "",
+		"companion_states": {
+
+		},
+		"current_day": 5.0,
+		"death_count": 0.0,
+		"decision_log": {
+			"stranded_survivor": "help"
+		},
+		"difficulty": {
+			"cheats_enabled": 0.0,
+			"companion_mortality": 1.0,
+			"custom": false,
+			"discovery_speed_multiplier": 0.75,
+			"enemy_damage_multiplier": 0.75,
+			"enemy_health_multiplier": 0.8,
+			"expansion_speed_multiplier": 0.75,
+			"faction_aggression_multiplier": 0.75,
+			"grace_period_expeditions": 6.0,
+			"preset_id": "normal",
+			"raid_frequency_multiplier": 0.75,
+			"resource_abundance_multiplier": 1.3
+		},
+		"discovered_landmark_ids": [
+			"ashen_crossroads",
+			"emberfall",
+			"greywood_edge"
+		],
+		"expedition_history": [
+			"exp_000001"
+		],
+		"expeditions": {
+			"exp_000001": {
+				"destination_id": "ashen_crossroads",
+				"ended_day": 5.0,
+				"enemies_defeated": 1.0,
+				"events": [
+					{
+						"decision_id": "stranded_survivor",
+						"kind": "decision",
+						"option": "help"
+					}
+				],
+				"exit_reason": "returned",
+				"expedition_id": "exp_000001",
+				"experience_gained": 5.0,
+				"haul": {
+					"food": 1.0,
+					"wood": 2.0
+				},
+				"origin_id": "emberfall",
+				"resolved": true,
+				"route_edge_ids": [
+					"e_emberfall__wp_00",
+					"e_ashen_crossroads__wp_00"
+				],
+				"route_node_ids": [
+					"emberfall",
+					"wp_00",
+					"ashen_crossroads"
+				],
+				"started_day": 1.0,
+				"status": "completed",
+				"travel_days": 2.0
+			}
+		},
+		"factions": {
+			"ashen_legion": {
+				"aggression": 0.8,
+				"faction_id": "ashen_legion",
+				"flags": {
+
+				},
+				"player_reputation": -20.0,
+				"relations": {
+					"crown_of_aurel": -80.0
+				},
+				"reputation_log": [],
+				"territory": [
+					"cinder_pass"
+				]
+			},
+			"crown_of_aurel": {
+				"aggression": 0.35,
+				"faction_id": "crown_of_aurel",
+				"flags": {
+
+				},
+				"player_reputation": 20.0,
+				"relations": {
+					"ashen_legion": -80.0
+				},
+				"reputation_log": [
+					{
+						"day": 1.0,
+						"delta": 10.0,
+						"id": "u001_e7a57472:stranded_survivor:help",
+						"kind": "stranded_survivor"
+					}
+				],
+				"territory": [
+					"aurel_border_fort"
+				]
+			}
+		},
+		"generation_version": 1.0,
+		"home_settlement_id": "stl_emberfall",
+		"id_counters": {
+			"bld": 1.0,
+			"exp": 1.0
+		},
+		"location": {
+			"entry_id": "spawn",
+			"map_id": "village_emberfall",
+			"return_stack": []
+		},
+		"npc_states": {
+
+		},
+		"protagonist_condition": {
+			"health": 44.0
+		},
+		"revealed_edge_ids": [
+			"e_emberfall__wp_00",
+			"e_ashen_crossroads__wp_00"
+		],
+		"rng_states": {
+			"combat": {
+				"draws": 0.0,
+				"name": "combat",
+				"seed": "3855048662198688836",
+				"state": "-6069892558328590970"
+			},
+			"encounter": {
+				"draws": 0.0,
+				"name": "encounter",
+				"seed": "4641678329848476858",
+				"state": "7511596892620383300"
+			},
+			"events": {
+				"draws": 0.0,
+				"name": "events",
+				"seed": "7501151235134188293",
+				"state": "-5078529250155355021"
+			},
+			"rewards": {
+				"draws": 1.0,
+				"name": "rewards",
+				"seed": "3146275998249314297",
+				"state": "6396688574520202730"
+			},
+			"route": {
+				"draws": 0.0,
+				"name": "route",
+				"seed": "4564459789861921145",
+				"state": "-523500069821463849"
+			},
+			"world_geometry": {
+				"draws": 0.0,
+				"name": "world_geometry",
+				"seed": "-4487183613054757336",
+				"state": "8580145525856655002"
+			}
+		},
+		"settlements": {
+			"stl_emberfall": {
+				"base_population_capacity": 8.0,
+				"base_storage_capacity": 40.0,
+				"buildings": [
+					{
+						"built_day": 1.0,
+						"condition": 100,
+						"definition_id": "shelter",
+						"instance_id": "bld_000001",
+						"level": 1,
+						"site_id": ""
+					}
+				],
+				"construction_jobs": [],
+				"discipline": 30.0,
+				"display_name": "Emberfall",
+				"event_counter": 0,
+				"events": [],
+				"freedom": 60.0,
+				"job_counter": 0,
+				"landmark_id": "emberfall",
+				"loyalty": 50.0,
+				"military_strength": 0.0,
+				"morale": 44.0,
+				"pending_recruits": 0.0,
+				"policies": {
+
+				},
+				"productivity": 50.0,
+				"resident_counter": 7,
+				"residents": [
+					{
+						"assigned_to": "",
+						"joined_day": 1,
+						"name": "",
+						"origin": "founder",
+						"resident_id": "res_000001"
+					},
+					{
+						"assigned_to": "",
+						"joined_day": 1,
+						"name": "",
+						"origin": "founder",
+						"resident_id": "res_000002"
+					},
+					{
+						"assigned_to": "",
+						"joined_day": 1,
+						"name": "",
+						"origin": "founder",
+						"resident_id": "res_000003"
+					},
+					{
+						"assigned_to": "",
+						"joined_day": 1,
+						"name": "",
+						"origin": "founder",
+						"resident_id": "res_000004"
+					},
+					{
+						"assigned_to": "",
+						"joined_day": 1,
+						"name": "",
+						"origin": "founder",
+						"resident_id": "res_000005"
+					},
+					{
+						"assigned_to": "",
+						"joined_day": 1,
+						"name": "",
+						"origin": "founder",
+						"resident_id": "res_000006"
+					},
+					{
+						"assigned_to": "",
+						"joined_day": 1,
+						"name": "",
+						"origin": "founder",
+						"resident_id": "res_000007"
+					}
+				],
+				"resources": {
+					"food": 5.0,
+					"iron": 0.0,
+					"stone": 2.0,
+					"wood": 12.0
+				},
+				"settlement_id": "stl_emberfall"
+			}
+		},
+		"story_flags": {
+
+		},
+		"territory_state": {
+			"aurel_border_fort": "crown_of_aurel",
+			"cinder_pass": "ashen_legion"
+		},
+		"threat_state": {
+			"awareness": 0.0,
+			"completed_expeditions": 1.0,
+			"grace_period": 6.0
+		},
+		"time_of_day_minutes": 480,
+		"universe_id": "u001_e7a57472",
+		"world_events": [],
+		"world_modifications": {
+			"ashen_crossroads": {
+				"harvested": {
+					"res_1_24": 1.0
+				}
+			}
+		},
+		"world_seed": "20261101",
+		"world_settings": {
+			"mist_enabled": true
+		}
+	}
+}

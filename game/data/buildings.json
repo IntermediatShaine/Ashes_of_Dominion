@@ -12,7 +12,7 @@
 		"effects": {"population_capacity": 1},
 		"upgrades": [
 			{"cost": {"wood": 12, "stone": 6}, "days": 1, "effects": {"population_capacity": 2, "storage_capacity": 10}},
-			{"cost": {"wood": 20, "stone": 14, "iron": 2}, "days": 2, "effects": {"population_capacity": 4, "storage_capacity": 20}}
+			{"cost": {"wood": 20, "stone": 14, "salvage": 2}, "days": 2, "effects": {"population_capacity": 4, "storage_capacity": 20}}
 		]
 	},
 	"shelter": {
@@ -25,7 +25,7 @@
 		"effects": {"population_capacity": 4},
 		"upgrades": [
 			{"cost": {"wood": 14, "stone": 6}, "days": 1, "effects": {"population_capacity": 7}},
-			{"cost": {"wood": 22, "stone": 12, "iron": 2}, "days": 2, "effects": {"population_capacity": 10}}
+			{"cost": {"wood": 22, "stone": 12, "salvage": 2}, "days": 2, "effects": {"population_capacity": 10}}
 		]
 	},
 	"workshop": {
@@ -37,9 +37,9 @@
 		"max_count": 1,
 		"requires": [],
 		"placement": "reserved",
-		"effects": {"worker_slots": 1},
+		"effects": {"worker_slots": 1, "production": {"wood": 1}, "production_per_worker": {"salvage": 1}},
 		"upgrades": [
-			{"cost": {"wood": 14, "stone": 10, "iron": 2}, "days": 2, "effects": {"worker_slots": 2}}
+			{"cost": {"wood": 14, "stone": 10, "salvage": 2}, "days": 2, "effects": {"worker_slots": 2, "production": {"wood": 2}, "production_per_worker": {"salvage": 2}}}
 		]
 	},
 	"stockpile": {
@@ -54,7 +54,7 @@
 		"effects": {"storage_capacity": 20},
 		"upgrades": [
 			{"cost": {"wood": 12, "stone": 8}, "days": 1, "effects": {"storage_capacity": 45}},
-			{"cost": {"wood": 20, "stone": 14, "iron": 2}, "days": 2, "effects": {"storage_capacity": 80}}
+			{"cost": {"wood": 20, "stone": 14, "salvage": 2}, "days": 2, "effects": {"storage_capacity": 80}}
 		]
 	},
 	"watchpost": {
@@ -66,9 +66,9 @@
 		"max_count": 1,
 		"requires": [],
 		"placement": "reserved",
-		"effects": {"military_strength": 2, "worker_slots": 1},
+		"effects": {"military_strength": 2, "worker_slots": 1, "military_strength_per_worker": 2},
 		"upgrades": [
-			{"cost": {"wood": 16, "stone": 10, "iron": 2}, "days": 2, "effects": {"military_strength": 5, "worker_slots": 2}}
+			{"cost": {"wood": 16, "stone": 10, "salvage": 2}, "days": 2, "effects": {"military_strength": 5, "worker_slots": 2, "military_strength_per_worker": 3}}
 		]
 	},
 	"woodcutters_camp": {

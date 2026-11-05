@@ -121,9 +121,9 @@ func snapshot() -> Dictionary:
 			"productivity": s.productivity,
 			"freedom": s.freedom,
 			"discipline": s.discipline,
-			"military_strength": SettlementRules.military_strength(s, defs),
+			"military_strength": defense_strength(),
 		},
-		"production": SettlementRules.daily_production(s, defs),
+		"production": SettlementRules.daily_production(s, defs, WorldSimulation.personal_production(save, s, content)),
 		"threat": {
 			"awareness": DictUtil.get_int(u.threat_state, "awareness"),
 			"label": DictUtil.get_string(band, "label"),
@@ -134,7 +134,15 @@ func snapshot() -> Dictionary:
 		"unplaced_buildings": unplaced,
 		"jobs": jobs,
 		"events": s.events.duplicate(true),
+		"crafting": content.table("recipes").duplicate(true),
+		"equipment": DictUtil.get_string(u.protagonist_condition, "equipment"),
+		"tools": DictUtil.get_array(u.protagonist_condition, "tools").duplicate(),
 	}
+
+
+func defense_strength() -> int:
+	var ward: int = int(MapStateStore.get_flag(universe(), "forgotten_shrine", "defense_bonus", 0))
+	return SettlementRules.military_strength(state(), building_defs()) + ward
 
 
 ## The universe clock as the settlement sees it: {day, minute_of_day, clock}.
@@ -378,10 +386,50 @@ func damage_building(instance_id: String, amount: int, cause: String = "") -> Op
 ## Adds resources to storage (respecting the storage cap). Returns
 ## {added, lost} like SettlementRules.add_resources.
 func add_resources(amounts: Dictionary) -> Dictionary:
+	var error := ResourceTransaction.validate_amounts(amounts, content.table("resources"))
+	if error != "":
+		return {"added": {}, "lost": {}, "error": error}
 	var result := SettlementRules.add_resources(state(), amounts, building_defs(), balance())
 	resources_changed.emit(state().resources.duplicate())
 	settlement_changed.emit("resources")
 	return result
+
+
+## Personal crafting requires a functioning workshop, never a worker. Unique
+## tools/equipment cannot be bought twice; costs and output commit together.
+func craft(recipe_id: String) -> OpResult:
+	var recipes: Dictionary = content.table("recipes")
+	if not recipes.has(recipe_id):
+		return OpResult.failure("Unknown recipe")
+	if universe().active_expedition() != null:
+		return OpResult.failure("Return to the village to craft")
+	var recipe: Dictionary = recipes[recipe_id]
+	var found := false
+	for b in state().buildings:
+		if String(b["definition_id"]) == String(recipe["requires"]) and BuildingRules.is_functional(b) and BuildingRules.level_of(b) >= int(recipe["level"]):
+			found = true
+	if not found:
+		return OpResult.failure("Requires a functioning %s at level %d" % [recipe["requires"], recipe["level"]])
+	var condition := universe().protagonist_condition
+	var tools := DictUtil.get_array(condition, "tools")
+	var tool := DictUtil.get_string(recipe, "tool")
+	var equipment := DictUtil.get_string(recipe, "equipment")
+	if (tool != "" and tools.has(tool)) or (equipment != "" and DictUtil.get_string(condition, "equipment") == equipment):
+		return OpResult.failure("Already crafted")
+	var paid := ResourceTransaction.spend(state(), DictUtil.get_dict(recipe, "cost"), content.table("resources"))
+	if not paid.ok:
+		return paid
+	if tool != "":
+		tools.append(tool)
+		condition["tools"] = tools
+	if equipment != "":
+		condition["equipment"] = equipment
+		condition["equipment_attack"] = DictUtil.get_int(recipe, "attack_bonus")
+	state().record_event("crafted", universe().current_day, {"recipe_id": recipe_id}, universe().time_of_day_minutes, _event_limit())
+	advance_time(DictUtil.get_int(recipe, "minutes"))
+	resources_changed.emit(state().resources.duplicate())
+	settlement_changed.emit("crafting")
+	return OpResult.success(recipe.duplicate(true))
 
 
 ## Brings a loaded state in line with the current content: names residents

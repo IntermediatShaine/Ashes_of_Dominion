@@ -33,7 +33,7 @@
 		"retreat_keeps_haul": true
 	},
 	"starting_settlement": {
-		"population": 6,
+		"population": 0,
 		"population_capacity": 8,
 		"storage_capacity": 40,
 		"loyalty": 50,
@@ -42,7 +42,7 @@
 		"freedom": 60,
 		"discipline": 30,
 		"military_strength": 0,
-		"resources": {"wood": 6, "stone": 2, "food": 8, "iron": 0}
+		"resources": {"wood": 6, "stone": 2, "food": 8, "salvage": 0, "iron": 0}
 	},
 	"settlement": {
 		"food_consumption_per_person_day": 0.1,

@@ -94,3 +94,13 @@ Significant development changes to **Ashes of Dominion** are recorded here. Do n
 - Established the central GitHub repository documentation and shared AI development instructions.
 - Imported the original comprehensive game design document.
 - Added proposed technical architecture, phased roadmap, implementation status and AI handoff records.
+# 2026-11-05 — Stage 2 village gameplay (Codex)
+
+- Added three explorable POIs on Claude's common framework, with persistent
+  resource gathering, rescue, guard encounters, equipment, lore and shrine choice.
+- Added Workshop crafting/production, worker defense at Watchposts, zero-resident
+  starts and validated resource transactions; kept building jobs/repair/upgrades.
+- Added schema-3 migration and POI Save/Continue; reused expedition/death services.
+- Windows Godot 4.5.1: 157 tests passed, startup/relaunch passed, seven rendered
+  screens inspected. Human playtesting and Stage 2 exports remain unverified.
+- Created `game/docs/handoffs/02_CODEX_TO_GEMINI.md`; Stage 3 is not implemented.

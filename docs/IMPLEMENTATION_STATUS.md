@@ -1,5 +1,44 @@
 # Implementation status
 
+## Latest evidence — Stage 2 village gameplay, 2026-11-05
+
+Branch `codex/stage2-village-gameplay`, base Claude Stage 1 `0e86cfc`.
+Project: `game/`; Windows engine observed as `4.5.1.stable.official.f62fdbde1`.
+Implemented: solo Survivor start; four functioning village buildings and L2
+upgrades/repair; Workshop crafting/production and staffed Watchpost defense;
+three framework-based POIs with persistent resources, rescue, equipment, lore
+and morality consequences; supported POI save/Continue and existing death return.
+Save schema 3 migrates schemas 1/2 while retaining legacy residents/iron/job costs.
+Full interfaces, limitations and presentation tasks:
+[`02_CODEX_TO_GEMINI.md`](../game/docs/handoffs/02_CODEX_TO_GEMINI.md).
+
+Commands below were run from `D:\Ashes of Dominion\current-repo\game`, with
+`$Godot = 'D:\Ashes of Dominion\.local-tools\ci-godot\Godot_v4.5.1-stable_win64_console.exe'`.
+
+| Executed check | Observed result |
+| --- | --- |
+| `& $Godot --version` | `4.5.1.stable.official.f62fdbde1` |
+| `./run_tests.ps1 -Godot $Godot` before changes | **138 tests, 0 failed**, import passed |
+| `./run_tests.ps1 -Godot $Godot` after changes | **157 tests, 0 failed**, import passed; two intentional save-recovery warnings, no script errors |
+| `./tools/verify.ps1 -Godot $Godot -Check smoke` | Import and 60-frame startup passed, exit 0 |
+| `./check_relaunch.ps1 -Godot $Godot` | Separate write/verify processes passed; whole document identical, including active POI, loot, tools, equipment, recruits, shrine choice and unfinished upgrade |
+| Rendered `res://tools/stage2_tour.tscn` with `--rendering-driver opengl3` | Seven PNGs, exit 0, empty stderr; inspected at 1280×720 on NVIDIA OpenGL |
+| `git diff --check` | Passed |
+
+Retained strict-runner logs: `D:\Ashes of Dominion\.local-tools\stage2-verification`.
+Tour screenshots: `C:\Users\varga\.codex\visualizations\2026\11\05\01a1acff-242a-76f1-bcdb-a4bf42fc8422\stage2`.
+The tour was launched hidden with `Start-Process`, private APPDATA/LOCALAPPDATA,
+`--path "D:\Ashes of Dominion\current-repo\game" --rendering-driver opengl3 res://tools/stage2_tour.tscn -- --out=<screenshot directory>`.
+A direct fixture-generation engine launch initially crashed before printing
+startup output; the same command succeeded with isolated application-data paths.
+The cause of that environment failure was not established. All reported checks
+above used isolated application data.
+
+**Not verified:** human play, other viewport sizes, Stage 2 export/release and
+Godot 4.7.2. No Stage 3 dashboard, raids, armies or full generated-wilderness
+checkpoint system was added. The new POI demo uses four resources; legacy iron
+content remains compatible. Older evidence below is historical.
+
 **Last verified: 2026-11-01** on branch `codex/ci-test-hardening`, with the official
 **Godot 4.5.1-stable** Linux and Windows builds (headless). Project root: [`game/`](../game/).
 **Last verified: 2026-11-01** on branch `feature/second-decision-reputation` (Phase 2A), with the

@@ -30,6 +30,6 @@ func _ready() -> void:
 func _on_continue() -> void:
 	var r := Session.continue_latest()
 	if r.ok:
-		Router.go("settlement")
+		Router.go(Session.resume_scene_key())
 	else:
 		UiKit.message(self, "Cannot continue", r.error)

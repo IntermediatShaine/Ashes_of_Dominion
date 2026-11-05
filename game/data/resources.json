@@ -2,5 +2,6 @@
 	"wood": {"name": "Wood", "color": "#8a5a2b", "node_name": "Deadfall timber"},
 	"stone": {"name": "Stone", "color": "#8c8c94", "node_name": "Loose stone"},
 	"food": {"name": "Food", "color": "#b5c23a", "node_name": "Forage"},
-	"iron": {"name": "Iron", "color": "#5d6b7a", "node_name": "Rusted scrap"}
+	"iron": {"name": "Iron", "color": "#5d6b7a", "node_name": "Rusted scrap"},
+	"salvage": {"name": "Salvage", "color": "#887e65", "node_name": "Salvaged fittings"}
 }

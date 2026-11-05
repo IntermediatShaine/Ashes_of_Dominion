@@ -161,7 +161,7 @@ static func from_dict(d: Dictionary) -> UniverseState:
 	u.active_expedition_id = DictUtil.get_string(d, "active_expedition_id")
 	u.story_flags = DictUtil.get_dict(d, "story_flags").duplicate(true)
 	u.decision_log = DictUtil.get_dict(d, "decision_log").duplicate(true)
-	u.protagonist_condition = DictUtil.int_map(DictUtil.get_dict(d, "protagonist_condition"))
+	u.protagonist_condition = DictUtil.get_dict(d, "protagonist_condition").duplicate(true)
 	u.death_count = DictUtil.get_int(d, "death_count")
 	u.id_counters = DictUtil.int_map(DictUtil.get_dict(d, "id_counters"))
 	u.rng_states = DictUtil.get_dict(d, "rng_states").duplicate(true)
@@ -201,6 +201,12 @@ func validate() -> Array[String]:
 		errors.append("threat awareness out of range")
 	if int(protagonist_condition.get("health", 1)) < 0:
 		errors.append("protagonist health must be >= 0")
+	if not (protagonist_condition.get("tools", []) is Array):
+		errors.append("protagonist tools must be an array")
+	if not (protagonist_condition.get("equipment", "") is String):
+		errors.append("protagonist equipment must be a string")
+	if DictUtil.get_int(protagonist_condition, "equipment_attack") < 0:
+		errors.append("equipment attack must be nonnegative")
 	return errors
 
 

@@ -1,0 +1,30 @@
+{
+	"basic_tools": {
+		"name": "Basic tools",
+		"requires": "workshop",
+		"level": 1,
+		"cost": {
+			"wood": 3,
+			"salvage": 2
+		},
+		"minutes": 120,
+		"tool": "basic_tools",
+		"description": "Personal tools add 1 wood per day while the Workshop functions.",
+		"production": {
+			"wood": 1
+		}
+	},
+	"reinforced_blade": {
+		"name": "Reinforced blade",
+		"requires": "workshop",
+		"level": 2,
+		"cost": {
+			"wood": 2,
+			"salvage": 4
+		},
+		"minutes": 180,
+		"equipment": "reinforced_blade",
+		"attack_bonus": 3,
+		"description": "Equip a blade: +3 melee attack. Replaces the tower blade."
+	}
+}

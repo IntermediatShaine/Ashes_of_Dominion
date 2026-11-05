@@ -80,6 +80,25 @@ func _write() -> int:
 	var f := Session.expeditions.finish("returned")
 	if not f.ok:
 		return _fail("finish expedition: " + f.error)
+	# Stage 2: a second rescue gives the two workers this scenario needs;
+	# tower equipment, shrine morality and POI once markers cross the process boundary.
+	for poi in ["lumber_camp", "ruined_watchtower", "forgotten_shrine"]:
+		var departure := PoiRules.start(Session.expeditions, poi)
+		if not departure.ok:
+			return _fail("start POI: " + departure.error)
+		var claims: Array[OpResult] = []
+		match poi:
+			"lumber_camp":
+				claims = [PoiRules.claim(Session.expeditions, "survivor"), PoiRules.claim(Session.expeditions, "timber_a")]
+			"ruined_watchtower":
+				claims = [PoiRules.enemy_defeated(Session.expeditions, "guard_a"), PoiRules.enemy_defeated(Session.expeditions, "guard_b"), PoiRules.claim(Session.expeditions, "cache")]
+			"forgotten_shrine":
+				claims = [PoiRules.claim(Session.expeditions, "inscription"), PoiRules.claim(Session.expeditions, "altar", "honor")]
+		for claim in claims:
+			if not claim.ok:
+				return _fail("POI reward: " + claim.error)
+		if not Session.expeditions.finish("returned").ok:
+			return _fail("return from POI")
 	# Village state (Stage 1): a building raised through the service, an
 	# upgrade left unfinished with a builder on it, a worker at a building,
 	# the clock moved inside the day, and the spot the player stands on.
@@ -87,6 +106,14 @@ func _write() -> int:
 	Session.settlement().base_storage_capacity = 200
 	Session.settlement().resources["wood"] = 60
 	Session.settlement().resources["stone"] = 30
+	Session.settlement().resources["salvage"] = 20
+	var workshop := village.request_construction("site_workshop", "workshop")
+	if not workshop.ok:
+		return _fail("workshop: " + workshop.error)
+	village.advance_time(1440)
+	var crafted := village.craft("basic_tools")
+	if not crafted.ok:
+		return _fail("crafting: " + crafted.error)
 	for request in [village.request_construction("site_hearth", "village_hearth"), village.request_construction("plot_1", "woodcutters_camp"), village.request_upgrade(String(Session.settlement().building_at_site("site_shelter").get("instance_id", "")))]:
 		if not request.ok:
 			return _fail("village request: " + request.error)
@@ -96,6 +123,11 @@ func _write() -> int:
 		if not assignment.ok:
 			return _fail("village worker: " + assignment.error)
 	village.advance_time(95)
+	# Save while away: Continue must resume this map, not strand an active trip at home.
+	if not PoiRules.start(Session.expeditions, "lumber_camp").ok:
+		return _fail("checkpoint departure")
+	if not PoiRules.claim(Session.expeditions, "timber_b").ok:
+		return _fail("checkpoint harvest")
 	Session.travel.remember_position(Vector2(512, 640))
 	var w := Session.save_game()
 	if not w.ok:
@@ -134,10 +166,16 @@ func _verify() -> int:
 	# Spot-check the invariants a player would notice.
 	if Session.settlement().buildings.is_empty():
 		return _fail("shelter missing after reload")
-	if Session.universe().expedition_history.size() != 1:
+	if Session.universe().expedition_history.size() != 4:
 		return _fail("expedition history lost")
-	if Session.expeditions.active() != null:
-		return _fail("expedition still active after reload")
+	if Session.expeditions.active() == null or Session.resume_scene_key() != "poi":
+		return _fail("POI checkpoint was not restored")
+	if PoiRules.claim(Session.expeditions, "timber_b").ok:
+		return _fail("checkpoint reward duplicated after restart")
+	if Session.universe().protagonist_condition.get("equipment", "") != "tower_blade" or not DictUtil.get_array(Session.universe().protagonist_condition, "tools").has("basic_tools"):
+		return _fail("equipment or crafted tools lost after restart")
+	if Session.settlement_service.defense_strength() != 2:
+		return _fail("shrine ward lost after restart")
 	if Session.character().morality <= 0:
 		return _fail("decision consequence lost")
 	# Village progress a player would notice.
@@ -149,7 +187,7 @@ func _verify() -> int:
 	var shelter := village.inspect_site("site_shelter")
 	if int(shelter.get("level", 0)) != 1 or String((shelter.get("job", {}) as Dictionary).get("kind", "")) != "upgrade" or ((shelter.get("job", {}) as Dictionary).get("builders", []) as Array).size() != 1:
 		return _fail("unfinished shelter upgrade lost after reload")
-	if Session.universe().time_of_day_minutes != 575:
+	if Session.universe().time_of_day_minutes != 695:
 		return _fail("time of day lost after reload")
 	if MapLocation.position(Session.universe().location) != Vector2(512, 640):
 		return _fail("player position lost after reload")

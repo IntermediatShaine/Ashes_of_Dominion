@@ -94,15 +94,21 @@ func test_map_geometry() -> void:
 		assert_true(errors.contains(fragment), "reports: " + fragment)
 
 
+func maps_reserved_for_test() -> Dictionary:
+	var maps := Content.table("maps").duplicate(true)
+	maps["lumber_camp"]["status"] = MapRegistry.STATUS_RESERVED
+	return maps
+
+
 func test_map_registry_and_reserved_poi_ids() -> void:
 	var maps := Content.table("maps")
 	assert_eq(MapRegistry.ids_of_kind(maps, MapRegistry.KIND_POI), ["forgotten_shrine", "lumber_camp", "ruined_watchtower"] as Array[String])
 	for id in ["lumber_camp", "ruined_watchtower", "forgotten_shrine"]:
 		var def := MapRegistry.describe(maps, id)
 		assert_eq(def["kind"], MapRegistry.KIND_POI, id)
-		assert_eq(def["status"], MapRegistry.STATUS_RESERVED, id)
+		assert_eq(def["status"], MapRegistry.STATUS_IMPLEMENTED, id)
 		assert_true(String(def["name"]) != "", id)
-		assert_true(MapRegistry.enter_blocking_reason(maps, id).contains("not built yet"), id + " cannot be entered yet")
+		assert_eq(MapRegistry.enter_blocking_reason(maps, id), "", id + " is implemented")
 	assert_eq(MapRegistry.map_for_settlement(maps, "stl_emberfall"), VILLAGE_MAP)
 	assert_eq(MapRegistry.enter_blocking_reason(maps, VILLAGE_MAP), "")
 	assert_eq(MapRegistry.scene_key(maps, VILLAGE_MAP), "settlement")
@@ -130,7 +136,8 @@ func test_travel_enter_leave_and_return_destinations() -> void:
 	assert_eq(travel.home_map_id(), VILLAGE_MAP)
 
 	var before := save.universe.location.duplicate(true)
-	assert_fail(travel.enter("lumber_camp"), "reserved, not built")
+	var reserved := maps_reserved_for_test()
+	assert_true(MapRegistry.enter_blocking_reason(reserved, "lumber_camp").contains("not built yet"), "reserved content is still refused")
 	assert_fail(travel.enter("atlantis"), "unknown")
 	assert_eq(save.universe.location, before, "a refused journey changes nothing")
 	assert_eq(seen, [])

@@ -189,9 +189,9 @@ func test_expedition_objects_pick_up_registry_art_when_it_exists() -> void:
 	# entry with their id is added; then they use it — no code change.
 	var holder := Node2D.new()
 	tree.root.add_child(holder)
-	assert_true(VisualSprite.attach_if_registered(holder, "actor.enemy.marauder") == null, "no entry: code-drawn")
-	Visuals.override_entry("actor.enemy.marauder", {"texture": "res://assets/placeholders/common/missing.png"})
-	var sprite := VisualSprite.attach_if_registered(holder, "actor.enemy.marauder")
+	assert_true(VisualSprite.attach_if_registered(holder, "actor.enemy.test_unregistered") == null, "no entry: code-drawn")
+	Visuals.override_entry("actor.enemy.test_unregistered", {"texture": "res://assets/placeholders/common/missing.png"})
+	var sprite := VisualSprite.attach_if_registered(holder, "actor.enemy.test_unregistered")
 	assert_true(sprite != null)
 	assert_eq(sprite.get_parent(), holder)
 	assert_eq(sprite.texture, Visuals.texture("placeholder.missing"))

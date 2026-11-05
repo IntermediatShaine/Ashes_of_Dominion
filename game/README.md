@@ -2,6 +2,16 @@
 
 Medieval-fantasy action RPG / settlement prototype. Godot 4.x, GDScript, Windows PC, single-player.
 
+**Stage 2 source build (2026-11-05):** new games start alone. Inspect the ruined
+Shelter with **E**, use **M** to open the map and choose **Abandoned Lumber Camp**.
+Gather timber with **E**, rescue the survivor, return and rebuild. **V** opens
+management; rest advances construction. The Workshop inspection offers crafting.
+The Watchtower has real-time melee combat (**Space / left click**) and a guarded
+equipment/lore cache; the Shrine offers a persistent morality choice. POI Save
+and main-menu Continue restore the map, pack, health and position. Existing
+generated wilderness remains available through the route map. The published
+preview download may predate this branch. See [Gemini handoff](docs/handoffs/02_CODEX_TO_GEMINI.md).
+
 This folder is the Godot project root (`game/` in the GitHub repository). It is the **foundation
 checkpoint** from the master development directive: the smallest
 coherent gameplay loop running on the real architecture (three-scope state, deterministic generation,

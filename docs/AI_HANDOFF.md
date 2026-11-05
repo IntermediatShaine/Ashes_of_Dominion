@@ -1,5 +1,29 @@
 # AI collaboration handoff
 
+## Latest handoff — Stage 2, 2026-11-05
+
+Codex branch `codex/stage2-village-gameplay` builds on Claude's Stage 1 at
+`0e86cfc`. Open **`D:\Ashes of Dominion\current-repo\game\project.godot`**
+on this workstation; sibling project copies were not modified.
+Read [`game/docs/handoffs/02_CODEX_TO_GEMINI.md`](../game/docs/handoffs/02_CODEX_TO_GEMINI.md)
+for mechanics, API extensions, schema-3 data, visuals and Gemini's presentation tasks.
+
+Verified on Windows Godot 4.5.1: baseline 138/0, final **157/0**, import/startup,
+extended two-process relaunch and seven rendered screenshots. Exact commands
+and limitations are in `IMPLEMENTATION_STATUS.md`. No human playtest or Stage 2
+export was performed. Stage 3 remains Gemini's assignment.
+
+Important changes: actual new games have zero residents; regression staffing
+fixtures explicitly retain six. New village upgrade costs use salvage, while
+legacy iron and old job costs remain valid. Workshop tools/equipment are in
+universe state, shrine morality/lore in character state and shrine consequence
+in map flags. POI rewards/guard defeats are once-only saved events. No generator
+or named RNG behavior changed; original resurrection bookkeeping is reused.
+
+Next: review this branch, then have Gemini connect the final management UI to
+the existing service snapshots/requests. Test human input feel and readability
+before treating placeholder combat balance as final. Historical entries follow.
+
 ## Project and source of truth
 
 **Ashes of Dominion** is a Windows Godot 4 / GDScript game with a comprehensive specification in
