@@ -233,6 +233,41 @@ func test_all_four_buildings_are_interactable_and_show_the_settlement_state() ->
 	assert_eq(int(service.inspect_site("site_stockpile")["condition"]), 55, "the damaged one was shown as damaged")
 
 
+func test_four_building_sites_are_interactable_and_can_be_built_on() -> void:
+	_new_game()
+	var scene: Node = await _open_village()
+	var service := Session.settlement_service
+	var m: MapDefinition = scene.map_def
+	_stock()
+	var choices := ["woodcutters_camp", "storehouse", "shelter", "palisade"]
+	var plots := ["plot_1", "plot_2", "plot_3", "plot_4"]
+	assert_ok(scene.request_improvement("site_shelter", "build"))   # the palisade requires a shelter
+	for i in plots.size():
+		var site_id: String = plots[i]
+		var view: Node = scene.site_views[site_id]
+		# an empty plot is open ground: stand on it and it is the interaction target
+		await _stand_at(scene, m.site_rect(m.site(site_id)).get_center())
+		assert_eq(scene.player._interact_target, view.interaction_area(), site_id + " is in reach")
+		assert_eq(scene.hud._prompt.text, "[E] Inspect the empty plot")
+		scene.player._interact_target.interact(scene.player)
+		assert_eq(scene.hud.inspected_site_id(), site_id)
+		var text: String = scene.hud.panel_text("inspect")
+		assert_true(text.contains("Empty plot") and text.contains("Free building plot"), text)
+		var offered: Array = scene.hud.offered_improvements("inspect")
+		assert_true(offered.has({"site_id": site_id, "action": "build", "definition_id": choices[i]}), "%s offers %s" % [site_id, choices[i]])
+		for offer in offered:
+			assert_ne(String(offer["definition_id"]), "workshop", "reserved buildings are not offered on plots")
+		# build through the card's own request, as the button does
+		scene.hud.improvement_requested.emit(site_id, "build", choices[i])
+		assert_eq(String(service.inspect_site(site_id)["definition_id"]), choices[i])
+		assert_eq(view.visual_id(), "building.%s.level_1" % choices[i])
+		assert_true(view.is_solid())
+		assert_true(scene.hud.panel_text("inspect").contains(String(service.inspect_site(site_id)["name"])), "the open card follows the change")
+		scene.hud.close_modal()
+		await _stand_at(scene, m.entry_position("spawn"))
+	assert_eq(Session.settlement().buildings.size(), 5)
+
+
 func test_hearth_and_shortcut_open_village_management() -> void:
 	_new_game()
 	var scene: Node = await _open_village()
@@ -563,11 +598,16 @@ func test_interface_is_styled_by_the_theme_only() -> void:
 		assert_true(root.theme.get_type_variation_base(variation) != &"", "theme defines the variation " + String(variation))
 	assert_true(used.size() >= 6)
 	# icons come from the visual registry
+	# (newer engines add TextureRects of their own inside some containers, so
+	# only the interface's icons — the ones tagged with a visual id — count)
 	var icons := 0
 	for node in root.find_children("*", "TextureRect", true, false):
+		if not node.has_meta("visual_id"):
+			continue
 		icons += 1
-		assert_true(Visuals.has_visual(String(node.get_meta("visual_id", ""))), "icon uses a registered visual id")
-	assert_true(icons >= 5)
+		assert_true(Visuals.has_visual(String(node.get_meta("visual_id"))), "icon uses a registered visual id")
+		assert_eq((node as TextureRect).texture, Visuals.ui_texture(String(node.get_meta("visual_id"))))
+	assert_true(icons >= 5, "resource and population icons are shown")
 
 
 func _assert_no_overrides(node: Node) -> void:

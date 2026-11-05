@@ -10,7 +10,24 @@ The Godot project lives in [`game/`](../game/) (open `game/project.godot`). Its 
 (`game/docs/`, `game/README.md`) are the detailed technical reference and are kept with the code;
 the files in this `docs/` folder are the cross-assistant summary.
 
-## Current state (2026-11-01)
+## Current state (2026-11-05) — Stage 1 of the Claude → Codex → Gemini sequence
+
+Branch `feature/stage1-village-foundation` (base `main` `eaadfdf`): the home scene is a
+**walkable village** on a shared exploration framework, backed by one authoritative settlement
+state behind `SettlementService`, with every image reached through a **visual registry**. Save
+schema is **2** (migration from 1 tested on a real save). `138 tests, 0 failed` on Godot 4.5.1
+and on 4.7.2; smoke, two-process relaunch and an exported Linux build checked. **Not played by a
+person.**
+
+**The hand-over document for the next assistant is
+[`game/docs/handoffs/01_CLAUDE_TO_CODEX.md`](../game/docs/handoffs/01_CLAUDE_TO_CODEX.md)** —
+files, data formats, the service API and signals, choices, evidence, open problems, how to
+continue. Art swapping: [`game/docs/ART_SWAP_GUIDE.md`](../game/docs/ART_SWAP_GUIDE.md).
+
+What follows below is the state as recorded on 2026-11-01, kept for history; where it says the
+settlement is a management screen or that a walkable village is not started, Stage 1 supersedes it.
+
+## State recorded 2026-11-01
 
 - **Engine:** verified on Godot **4.5.1-stable (official)**; `project.godot` declares feature
   `4.5`. The "4.7.2" mentioned in the design document does not exist. 4.4 will probably open it;
@@ -59,7 +76,10 @@ transition exactly once. Details: `game/docs/game_state.md`, `game/docs/technica
    `godot --headless --path . --quit-after 60`, `./check_relaunch.sh <godot>`.
 3. Keep rules out of scene scripts (`scripts/gameplay/*` is pure; scenes call services).
 4. Any generator change bumps `UniverseState.CURRENT_GENERATION_VERSION`; any save layout change
-   bumps `SaveGame.SCHEMA_VERSION` and adds a `SaveMigrator` step plus a test.
+   bumps `SaveGame.SCHEMA_VERSION` and adds a `SaveMigrator` step plus a test (schema is 2 since
+   Stage 1; `_migrate_1_to_2` and its fixture are the pattern to follow).
+   Settlement values change only through `SettlementService`; images are named only in
+   `game/data/visuals/visual_registry.json`.
 5. Never draw from `randf()`/global RNG in gameplay; use the named `RngStream`s.
 6. Godot 4.5 pitfalls recorded in `game/docs/known_issues.md` (no `:=` from Variant; `self.`
    inside `RngStream`; lambdas capture locals by value — use a Dictionary for counters in tests).
@@ -78,6 +98,27 @@ After that, in order (from `game/docs/development_roadmap.md`): save during expl
 declare expeditions atomic), generation versioning, hostile patrols as combat encounters and a
 decision that changes faction–faction relations (Phase 2A delivered the second decision and
 reputation-gated reactions).
+
+## Handoff record — Stage 1 (village architecture and foundation), 2026-11-05
+
+- **Date and commit/branch:** 2026-11-05, `feature/stage1-village-foundation`, base `eaadfdf`.
+- **Files changed:** see the file tables in `game/docs/handoffs/01_CLAUDE_TO_CODEX.md` §2. Not
+  touched: the test/relaunch wrappers, the harness, the CI workflows, `tests/test_runner.gd`.
+- **Working behavior:** walkable village (hearth, shelter, workshop, stockpile, watchpost, four
+  plots, gate); inspection cards; construction, upgrade and repair with jobs that advance per
+  in-game day; worker assignment; Village Management (Overview / Buildings) at the hearth or
+  with V; visual registry and theme; travel with return destinations; three reserved POI ids.
+- **Test commands and observed results:** `IMPLEMENTATION_STATUS.md`, Stage 1 evidence table.
+- **Untested behavior or known limitations:** never played by a person; Windows only through CI;
+  Workshop and most worker slots have no effect; no real-time clock; full list in the handoff
+  §7 and `game/docs/known_issues.md`.
+- **Save/schema/determinism implications:** `SCHEMA_VERSION` 1 → 2 with `_migrate_1_to_2`
+  (tested on a real `main` save). `generation_version` unchanged (no generator touched). No
+  runtime RNG stream is drawn by anything new; resident names come from `StableHash`.
+- **Decisions requiring owner review:** `DECISIONS.md` 2026-11-05 entries — the village starts as
+  ruins; free "rest until dawn"; the old management screen kept but unreachable; engine pin.
+- **Next smallest actionable change:** play it once on Windows. Then Stage 2 (Codex) starts from
+  the handoff's §8.
 
 ## Claude handoff — Phase 2A (second decision + faction reactivity), 2026-11-01
 

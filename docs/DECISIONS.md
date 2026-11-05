@@ -90,3 +90,62 @@ hostile patrols that spawn riders are deferred.
 `game/data/balance.json → expedition.defeat_loses_haul = true` (carried loot is lost, earned XP is
 kept) is the only implemented consequence. The design leaves the penalty open; see
 `game/docs/technical_decisions.md` §9. Not a final rule.
+
+### 2026-11-05 — Engine version: 4.7.2-stable exists; the project stays pinned to 4.5.1 for now
+
+**Correction.** Earlier entries say "Godot 4.7.2" does not exist. As of 2026-11-05 it does
+(official build `4.7.2.stable.official.ed1daf0bf`). **Finding.** The full suite (138 tests), the
+smoke test and the relaunch check pass unmodified on it. **Decision (provisional).**
+`project.godot` keeps declaring 4.5 and CI keeps its checksum-pinned 4.5.1, because the pin and
+the export templates belong to the CI/release setup and were not part of Stage 1. **Open for the
+owner.** Whether to move the pin to 4.7.2 (editor, CI installer, export templates and
+`config/features` together). **Save implications.** None.
+
+### 2026-11-05 — The village starts as ruins; buildings exist only once built
+
+**Decision.** Emberfall opens with the Village Hearth, Shelter, Workshop, Stockpile and Watchpost
+as ruins on reserved sites and four free plots. A building instance is created when it is
+(re)built; a ruin is a site without one. **Rationale.** It matches the story (a destroyed
+village), leaves the starting numbers and every existing rule untouched, and makes "rebuild" the
+first thing a player does. **Alternatives.** Start with working level-1 buildings (rejected: it
+changes housing, storage and threat from day one and needs rebalancing); level-0 instances
+(rejected: every rule that counts buildings would have to learn to skip them). **Affected
+systems.** Settlement rules, construction, save format. **Save implications.** Schema 2;
+`game/docs/game_state.md`.
+
+### 2026-11-05 — Save schema 2
+
+**Decision.** `SaveGame.SCHEMA_VERSION` 1 → 2: time of day, location, building level / condition
+/ site, residents instead of a head count, construction jobs, settlement event log. Migration
+`_migrate_1_to_2` plus `SettlementService.normalize()` for the parts that depend on content
+(names, sites). **Verification.** A save written by `main` before the change is kept as a
+fixture and migrated in tests. **Not affected.** `generation_version`, world generation, the
+runtime RNG streams, character and multiverse scopes. This is independent of the unapproved
+Phase 2C expedition-checkpoint proposal and does not implement any of it.
+
+### 2026-11-05 — Images are named only in the visual registry
+
+**Decision.** Objects reference stable visual ids; `game/data/visuals/visual_registry.json` maps
+them to images; collisions and interaction areas come from layout data. A test fails if a script
+or scene contains an image path. **Scope reached.** Village, protagonist, interface icons.
+Expedition enemies, resource nodes and NPCs switch to registry art as soon as an entry with
+their id exists; expedition terrain is still drawn from biome palettes. **Save implications.**
+None.
+
+### 2026-11-05 — Provisional: resting at the hearth passes the night for the price of a day's food
+
+**Decision.** Village Management offers "Rest until dawn", which advances the clock to the next
+dawn and runs the normal daily tick. **Rationale.** Construction now takes days; without a way
+to let time pass in the village, finished work could only be seen after an expedition.
+**Provisional.** It has no cost beyond food and no risk. Whether resting should be limited,
+cost something, or be replaced by a running clock is a design question for the owner and
+Stage 2. **Save implications.** None beyond the clock field.
+
+### 2026-11-05 — The earlier management screen is kept, unreachable, for one more stage
+
+**Decision.** `settlement` now opens the village; the previous screen stays in the project under
+the router key `settlement_legacy` with its test. **Rationale.** It is working, tested code that
+shows a few things in a denser form; removing it is cheap later and not reversible in spirit
+once the dashboard work starts from the village interface. **Open for the owner.** Delete it
+when the Stage 3 dashboard exists.
+

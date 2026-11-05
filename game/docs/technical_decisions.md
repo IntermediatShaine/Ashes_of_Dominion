@@ -54,10 +54,11 @@ The design says death "should not be free" but leaves the penalty open. The only
 implemented is fictional and configurable: `balance.json → expedition.defeat_loses_haul`. XP
 already earned is kept (it belongs to the character). Revisit when the death rules are designed.
 
-### 10. Settlement is a management screen, not a walkable scene
+### 10. Settlement is a management screen, not a walkable scene — superseded 2026-11-05
 Cheaper and sufficient for the checkpoint; the exploration scene already proves the 2.5D walkable
 presentation, and the settlement's state is where the gameplay is. A walkable Emberfall is on
-the roadmap.
+the roadmap. **Superseded by §15–§20**: home is now the walkable village; the screen survives as
+`settlement_legacy`.
 
 ### 11. UI built in code via `UiKit`
 Hand-written `.tscn` for complex Control trees is error-prone without the editor; building in
@@ -79,3 +80,59 @@ Days/danger remain estimates. No discovery or route-planning state is changed by
 A 150-line runner (`tests/test_runner.gd`) run as a scene so autoloads exist; tests are plain
 `TestCase` subclasses. Runtime script errors abort the test that hit them and are not visible to
 the runner, so the wrapper scripts fail the run on any `SCRIPT ERROR` output.
+
+### 15. Ruins are sites without a building, not level-0 buildings
+**Problem.** The village has to start with a Hearth, Shelter, Workshop, Stockpile and Watchpost
+that can be walked up to and inspected, yet the starting balance (nothing built, capacity 8,
+storage 40) and every rule that counts `buildings` had to stay as they were. **Decision.** A
+building instance exists only once built (`level` ≥ 1). The layout reserves a site for each named
+building; a reserved site with no instance is shown and inspected as that building's ruin
+(level 0, condition 0, one improvement: rebuild). **Trade-off.** Two ways to address a thing
+(`inspect_site`, `inspect_building`); in exchange `buildings.size()`, `building_count`,
+`max_count`, `requires` and the threat formula mean what they always meant, and no existing
+rule test needed to change. **Destroyed** is different from **ruin**: an instance whose condition reaches 0
+keeps its level and site and can be repaired.
+
+### 16. `population` is derived from the resident roster
+**Problem.** Residents and worker assignments need people with identities; a separate head count
+would be a second copy of the same fact. **Decision.** `SettlementState.residents` is the truth;
+`population` is a computed property (assignable for old callers) and is no longer written to
+saves. **Trade-off.** Names must come from somewhere: a content name pool, picked by
+`StableHash` of the universe seed and the resident id — no RNG stream is drawn, so generation
+and the runtime streams are untouched.
+
+### 17. Content-dependent repair of loaded state happens in `normalize()`, not in the migration
+**Problem.** A schema-1 save has a head count and buildings without sites; turning those into
+named residents and placed buildings needs the name pool and the village layout. A migration
+that read content files would change meaning whenever they changed. **Decision.** The migration
+writes only neutral, content-free values; `SettlementService.normalize()` (run by `Session`
+after binding any save) names the unnamed and places the unplaced, deterministically and
+idempotently. On a current save it is a no-op.
+
+### 18. Construction is a request that may become a job
+**Decision.** `request_construction / upgrade / repair` validate, charge, then either finish at
+once (0 days) or append a job that advances one unit of work per in-game day (plus assigned
+builders) inside the existing daily settlement tick. **Why in the tick.** Expeditions already
+advance days through `WorldSimulation`; putting jobs there means work continues while the
+protagonist is away, with no second clock. **Compatibility.** The four original buildings keep
+0 build days, so `Session.construct_building` and its callers behave as before.
+
+### 19. Images only through the visual registry
+**Decision.** A JSON registry maps dotted visual ids to texture + region + frames + anchor +
+offset; the `Visuals` autoload resolves with parent-path fallback and a loud fallback image;
+`VisualSprite` re-resolves when the registry changes. Scripts and scenes contain no image paths
+(a test enforces it). Geometry that matters to gameplay (footprints, interaction areas) is layout
+data. **Alternatives.** Typed Resources per visual (rejected for now: needs the editor to edit,
+noisy diffs, and the project already standardised on JSON content); a TileMap for the village
+ground (deferred: one tiled texture plus rectangles is enough for a 44×30 map). **Trade-off.**
+No editor preview of the mapping; animation data is carried but not played yet.
+
+### 20. One framework for hand-authored maps, composition with the generated ones
+**Problem.** The village must not become a second movement/map architecture next to the
+expedition scene, and POIs are coming. **Decision.** Shared pieces are functions and small
+nodes (`ExplorationKit`, `InteractableArea`, `PlayerController`) used by both; hand-authored maps
+additionally share a base scene (`MapSceneBase`) driven by a `MapDefinition`. The expedition
+controller was changed only to spawn the player through the kit. **Why not one base class for
+everything.** The expedition area's map is generated data with enemies, harvesting and an
+expedition lifecycle; forcing it under the same base would have meant rewriting tested code for
+no behavioural gain.

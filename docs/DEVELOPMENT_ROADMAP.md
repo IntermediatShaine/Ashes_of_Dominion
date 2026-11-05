@@ -31,6 +31,9 @@ and covered by tests (the settlement is a management screen rather than a walkab
 see `game/docs/technical_decisions.md` §10). The exit criterion is met only once the owner has
 played it on Windows.
 
+**Status 2026-11-05 (Stage 1 of Claude → Codex → Gemini):** the starting village is now walkable
+(`game/docs/handoffs/01_CLAUDE_TO_CODEX.md`). Still not played by a human.
+
 ## Phase 2 — Expand the demo
 
 The first-demo design proposes **1 starting village, 3 biomes, 2 active factions, 4 enemy types, 3 archetypes, 1 small dungeon and 4 functional buildings**. Add an initial morality/reputation interaction, difficulty controls and faction awareness after an adjustable grace period.

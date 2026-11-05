@@ -4,6 +4,43 @@ Significant development changes to **Ashes of Dominion** are recorded here. Do n
 
 ## Unreleased
 
+### Added — 2026-11-05 (`feature/stage1-village-foundation`, Stage 1: village architecture and foundation)
+- **Walkable village.** Home is now a three-quarter top-down map you walk around: Village
+  Hearth, Shelter, Workshop, Stockpile and Watchpost (ruins until rebuilt), four free building
+  plots, a gate to the world map. Walk up to anything and press E to see what it is, its level
+  and condition, and what can be improved. Uses the expedition scene's player controller.
+- **Settlement state and `SettlementService`.** Building levels, condition and sites; a resident
+  roster with worker assignments; construction jobs that advance per in-game day; a persistent
+  event log; time of day. One service for snapshots, validation, requests and change signals;
+  the interface and village objects hold no settlement values.
+- **Building levels.** Shelter, hearth, stockpile, workshop and watchpost can be upgraded;
+  upgrades and the new buildings take in-game days. Residents can be put to work at the
+  Woodcutter's Camp (+1 wood each) and on construction jobs.
+- **Village Management** (Overview / Buildings) at the hearth or with **V** — deliberately minimal.
+- **Visual registry.** `game/data/visuals/visual_registry.json` maps stable visual ids to
+  images; the `Visuals` autoload resolves them; 40 placeholder images; `assets/pixellab/` for
+  final art; `ui/themes/village_theme.tres` for the village interface. Art is swapped by editing
+  the registry (`game/docs/ART_SWAP_GUIDE.md`). The protagonist is drawn from it everywhere.
+- **Shared exploration framework** for hand-authored maps, travel with return destinations and
+  persistent per-map state; `lumber_camp`, `ruined_watchtower` and `forgotten_shrine` registered
+  as reserved ids (not built).
+- **Save schema 2** with a migration from schema 1, tested against a real save from `main`.
+- Tests: 84 → **138**, 0 failed on Godot 4.5.1 and on 4.7.2; the relaunch check now also covers
+  village state; an exported Linux build was run through the village.
+
+### Changed — 2026-11-05
+- The router key `settlement` opens the village; the earlier management screen is kept under
+  `settlement_legacy` and is not reachable in play.
+- Returning from an expedition puts you at the village gate; after a defeat, by the hearth.
+  Continue puts you back where you stood when the game was saved.
+- Saving happens from the pause menu in the village, and automatically when work is ordered or
+  the night is rested through.
+
+### Not yet included — 2026-11-05
+- Nobody has played the village; nothing was run on Windows outside CI.
+- The Workshop has no effect yet; no real-time clock; no building damage or wear; the three POIs
+  are identifiers only.
+
 ### Engineering — Phase 2B (2026-11-01)
 - Hardened PowerShell/Bash test and relaunch wrappers with import checking, strict completion
   evidence, isolated application data and optional retained logs.

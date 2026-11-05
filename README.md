@@ -3,7 +3,7 @@
 > A planned single-player medieval-fantasy action RPG blending direct combat, procedural exploration, settlement management, faction politics, and consequential morality.
 
 **Status:** Design documented; a **first playable vertical slice** lives in [`game/`](game/) (Godot 4.5.1,
-GDScript, placeholder visuals). The full expedition loop — village → map → route → seeded wilderness →
+GDScript, placeholder visuals). The full expedition loop — walkable village → map → route → seeded wilderness →
 8-direction movement → combat → resources → return → construction → save → relaunch → continue — is
 covered by automated tests and a two-process relaunch check. Full manual gameplay
 acceptance has not yet been completed.
