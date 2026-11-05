@@ -24,7 +24,7 @@
 		"entries": {
 			"spawn": [22.0, 18.5],
 			"hearth": [22.0, 16.0],
-			"gate": [22.0, 26.5]
+			"gate": [22.0, 25.5]
 		},
 		"default_entry": "spawn",
 		"exits": [

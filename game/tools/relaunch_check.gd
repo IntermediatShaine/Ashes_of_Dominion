@@ -7,7 +7,7 @@ extends Node
 ##   godot --headless --path . res://tools/relaunch_check.tscn -- --phase=verify
 ##
 ## Phase "write" plays a short loop headless (new game → build → expedition →
-## gather → return → autosave), then writes the full in-memory state to
+## gather → return → village work → autosave), then writes the full in-memory state to
 ## user://_relaunch_check/expected.json and exits 0. Phase "verify", run in
 ## a fresh process, uses the Continue path (latest slot), writes
 ## observed.json, compares the two documents field by field and exits 0 on
@@ -80,6 +80,23 @@ func _write() -> int:
 	var f := Session.expeditions.finish("returned")
 	if not f.ok:
 		return _fail("finish expedition: " + f.error)
+	# Village state (Stage 1): a building raised through the service, an
+	# upgrade left unfinished with a builder on it, a worker at a building,
+	# the clock moved inside the day, and the spot the player stands on.
+	var village := Session.settlement_service
+	Session.settlement().base_storage_capacity = 200
+	Session.settlement().resources["wood"] = 60
+	Session.settlement().resources["stone"] = 30
+	for request in [village.request_construction("site_hearth", "village_hearth"), village.request_construction("plot_1", "woodcutters_camp"), village.request_upgrade(String(Session.settlement().building_at_site("site_shelter").get("instance_id", "")))]:
+		if not request.ok:
+			return _fail("village request: " + request.error)
+	var upgrade_job := String(Session.settlement().job_at_site("site_shelter").get("job_id", ""))
+	var camp := String(Session.settlement().building_at_site("plot_1").get("instance_id", ""))
+	for assignment in [village.assign_idle_worker(upgrade_job), village.assign_idle_worker(camp)]:
+		if not assignment.ok:
+			return _fail("village worker: " + assignment.error)
+	village.advance_time(95)
+	Session.travel.remember_position(Vector2(512, 640))
 	var w := Session.save_game()
 	if not w.ok:
 		return _fail("save_game: " + w.error)
@@ -123,6 +140,22 @@ func _verify() -> int:
 		return _fail("expedition still active after reload")
 	if Session.character().morality <= 0:
 		return _fail("decision consequence lost")
+	# Village progress a player would notice.
+	var village := Session.settlement_service
+	if int(village.inspect_site("site_hearth").get("level", 0)) != 1:
+		return _fail("hearth lost after reload")
+	if String(village.inspect_site("plot_1").get("definition_id", "")) != "woodcutters_camp" or (village.inspect_site("plot_1").get("workers", []) as Array).size() != 1:
+		return _fail("woodcutter's camp or its worker lost after reload")
+	var shelter := village.inspect_site("site_shelter")
+	if int(shelter.get("level", 0)) != 1 or String((shelter.get("job", {}) as Dictionary).get("kind", "")) != "upgrade" or ((shelter.get("job", {}) as Dictionary).get("builders", []) as Array).size() != 1:
+		return _fail("unfinished shelter upgrade lost after reload")
+	if Session.universe().time_of_day_minutes != 575:
+		return _fail("time of day lost after reload")
+	if MapLocation.position(Session.universe().location) != Vector2(512, 640):
+		return _fail("player position lost after reload")
+	for resident in Session.settlement().residents:
+		if String(resident.get("name", "")) == "":
+			return _fail("a resident lost their name after reload")
 	# The runtime streams must continue, not restart: a draw after reload
 	# must differ from the first draw of a freshly seeded stream.
 	var fresh := RngRegistry.from_dict({}, Session.universe().world_seed)

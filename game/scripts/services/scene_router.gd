@@ -7,7 +7,11 @@ const SCENES := {
 	"new_game": "res://scenes/menus/new_game.tscn",
 	"load_game": "res://scenes/menus/load_game.tscn",
 	"settings": "res://scenes/menus/settings_menu.tscn",
-	"settlement": "res://scenes/settlement/settlement.tscn",
+	# "settlement" is home: since Stage 1 the walkable village. The earlier
+	# management screen is kept, unreachable in normal play, until the village
+	# dashboard replaces everything it showed.
+	"settlement": "res://scenes/village/village.tscn",
+	"settlement_legacy": "res://scenes/settlement/settlement.tscn",
 	"world_map": "res://scenes/world_map/world_map.tscn",
 	"exploration": "res://scenes/exploration/exploration.tscn",
 }
