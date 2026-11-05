@@ -22,6 +22,8 @@ const DATA_FILES := {
 	"residents": "res://data/residents.json",
 	"village_layouts": "res://data/village/village_layouts.json",
 	"maps": "res://data/maps/maps.json",
+	"pois": "res://data/pois.json",
+	"recipes": "res://data/recipes.json",
 }
 
 var _tables: Dictionary = {}
@@ -178,6 +180,51 @@ func _validate_references() -> void:
 				load_errors.append("difficulty preset %s missing parameter %s" % [pid, param])
 	_validate_building_levels()
 	_validate_maps_and_layouts()
+	_validate_stage2()
+
+
+func _validate_stage2() -> void:
+	for id in table("recipes"):
+		var recipe: Dictionary = table("recipes")[id]
+		var error := ResourceTransaction.validate_amounts(DictUtil.get_dict(recipe, "cost"), table("resources"))
+		if error != "":
+			load_errors.append("recipe %s: %s" % [id, error])
+		if not table("buildings").has(DictUtil.get_string(recipe, "requires")) or DictUtil.get_int(recipe, "level") < 1 or DictUtil.get_int(recipe, "minutes") < 0:
+			load_errors.append("recipe %s has invalid requirements or duration" % id)
+		var production_error := ResourceTransaction.validate_amounts(DictUtil.get_dict(recipe, "production"), table("resources"))
+		if production_error != "":
+			load_errors.append("recipe %s: %s" % [id, production_error])
+	for id in table("pois"):
+		var poi: Dictionary = table("pois")[id]
+		var definition := MapDefinition.from_dict(DictUtil.get_dict(poi, "layout"))
+		# POIs have no village building sites; validate geometry and entries only.
+		for error in definition.validate():
+			load_errors.append("POI %s: %s" % [id, error])
+		if definition.map_id != id or not table("maps").has(id):
+			load_errors.append("POI %s has a mismatched map id" % id)
+		var keys := {}
+		var enemy_keys := {}
+		for spawn in DictUtil.get_array(poi, "enemies"):
+			enemy_keys[DictUtil.get_string(spawn, "id")] = true
+			if not table("enemies").has(DictUtil.get_string(spawn, "enemy_id")):
+				load_errors.append("POI %s references an unknown enemy" % id)
+		for object in DictUtil.get_array(poi, "objects") + DictUtil.get_array(poi, "enemies"):
+			var key := DictUtil.get_string(object, "id")
+			if key == "" or keys.has(key):
+				load_errors.append("POI %s has a duplicate/empty object id" % id)
+			keys[key] = true
+			var at := DictUtil.get_array(object, "at")
+			if at.size() != 2 or not definition.is_position_free(Vector2(float(at[0]), float(at[1])) * definition.cell_size, [], 12):
+				load_errors.append("POI %s object %s is outside walkable ground" % [id, key])
+			for guard in DictUtil.get_array(object, "requires_defeated"):
+				if not enemy_keys.has(guard):
+					load_errors.append("POI %s object %s requires an unknown enemy" % [id, key])
+			var effects: Array = [object]
+			effects.append_array(DictUtil.get_dict(object, "choices").values())
+			for effect in effects:
+				var error := ResourceTransaction.validate_amounts(DictUtil.get_dict(effect, "reward"), table("resources"))
+				if error != "":
+					load_errors.append("POI %s object %s: %s" % [id, key, error])
 
 
 ## Upgrade levels, placement and worker production of building definitions.
@@ -191,6 +238,9 @@ func _validate_building_levels() -> void:
 			load_errors.append("building %s has unknown placement '%s'" % [id, placement])
 		for level in range(1, BuildingRules.max_level(bd) + 1):
 			var spec := BuildingRules.level_spec(bd, level)
+			var cost_error := ResourceTransaction.validate_amounts(DictUtil.get_dict(spec, "cost"), resources)
+			if cost_error != "":
+				load_errors.append("building %s level %d: %s" % [id, level, cost_error])
 			for r in DictUtil.get_dict(spec, "cost").keys():
 				if not resources.has(String(r)):
 					load_errors.append("building %s level %d cost references unknown resource %s" % [id, level, String(r)])

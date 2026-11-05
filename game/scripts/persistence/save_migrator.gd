@@ -27,6 +27,24 @@ static func migrate(raw: Dictionary) -> OpResult:
 	result.value = data
 	return result
 
+
+## Stage 2 uses existing extension dictionaries for equipment, tools and POI
+## flags. Preserve legacy residents, iron and outstanding job costs verbatim.
+static func _migrate_2_to_3(data: Dictionary) -> Dictionary:
+	var u := DictUtil.get_dict(data, "universe")
+	var condition := DictUtil.get_dict(u, "protagonist_condition")
+	if not condition.has("tools"):
+		condition["tools"] = []
+	if not condition.has("equipment"):
+		condition["equipment"] = ""
+	if not condition.has("equipment_attack"):
+		condition["equipment_attack"] = 0
+	u["protagonist_condition"] = condition
+	for s in DictUtil.get_dict(u, "settlements").values():
+		if s is Dictionary and s.get("resources") is Dictionary and not s["resources"].has("salvage"):
+			s["resources"]["salvage"] = 0
+	return data
+
 ## Schema 1 -> 2 (walkable village, Stage 1).
 ##
 ## Adds the universe clock's time of day and the protagonist's location, and

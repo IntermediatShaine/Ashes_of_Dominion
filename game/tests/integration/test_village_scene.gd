@@ -37,6 +37,9 @@ func after_each() -> void:
 func _new_game(seed_value: int = 2468) -> void:
 	var d := DifficultyRules.from_preset("easy", Content.table("difficulty"))
 	assert_ok(Session.new_game({"name": "Villager", "archetype_id": "village_hunter", "difficulty": d.value, "mist_enabled": true, "seed": seed_value}, 1))
+	# Preserve the Stage 1 staffing scenarios; solo start has its own acceptance test.
+	Session.settlement().population = 6
+	Session.settlement_service.normalize()
 
 
 func _open_village() -> Node:
@@ -57,7 +60,7 @@ func _close_village() -> void:
 
 func _stock() -> void:
 	Session.settlement().base_storage_capacity = 1000
-	Session.settlement().resources = {"wood": 300, "stone": 300, "iron": 40, "food": 100}
+	Session.settlement().resources = {"wood": 300, "stone": 300, "iron": 40, "salvage": 40, "food": 100}
 
 
 func _physics(frames: int) -> void:

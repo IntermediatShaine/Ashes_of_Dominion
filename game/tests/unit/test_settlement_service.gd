@@ -17,7 +17,7 @@ func _service(seed_value: int = 4242) -> SettlementService:
 func _stock(svc: SettlementService, wood: int = 200, stone: int = 200, iron: int = 50, food: int = 200) -> void:
 	# Tests need room to pay for things; the storage cap is not under test here.
 	svc.state().base_storage_capacity = 1000
-	svc.state().resources = {"wood": wood, "stone": stone, "iron": iron, "food": food}
+	svc.state().resources = {"wood": wood, "stone": stone, "iron": iron, "salvage": iron, "food": food}
 
 
 func _site(svc: SettlementService, site_id: String) -> Dictionary:
@@ -342,7 +342,7 @@ func test_damage_destroys_and_repair_restores() -> void:
 	svc.advance_time(FULL_DAY)
 	var post_id := DictUtil.get_string(s.building_at_site("site_watchpost"), "instance_id")
 	assert_ok(svc.assign_idle_worker(post_id))
-	assert_eq(SettlementRules.military_strength(s, defs), 2)
+	assert_eq(SettlementRules.military_strength(s, defs), 4, "staffed watchpost adds readiness")
 	assert_eq(svc.validate_repair(post_id), ["Nothing to repair"] as Array[String])
 	var hit := svc.damage_building(post_id, 250, "raid")
 	assert_ok(hit)

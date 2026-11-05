@@ -3,7 +3,7 @@ extends RefCounted
 ## The complete persisted game: metadata + the three state scopes.
 
 ## Bump when the on-disk layout changes; add a migration in SaveMigrator.
-const SCHEMA_VERSION: int = 2
+const SCHEMA_VERSION: int = 3
 const GAME_VERSION: String = "0.1.0"
 
 var schema_version: int = SCHEMA_VERSION

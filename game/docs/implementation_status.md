@@ -1,5 +1,14 @@
 # Implementation status
 
+**Latest, 2026-11-05 — Stage 2:** Windows Godot 4.5.1, **157 tests, 0 failed**
+(baseline 138), import/60-frame startup/extended two-process relaunch passed.
+Seven rendered screenshots inspected at 1280×720; human play remains unverified.
+Village gameplay, Workshop crafting, worker defense and three persistent POIs
+are implemented on Claude's framework. Schema 3 migrates schemas 1 and 2.
+See [handoff 02](handoffs/02_CODEX_TO_GEMINI.md) and
+[exact verification evidence](../../docs/IMPLEMENTATION_STATUS.md).
+Earlier counts and outstanding-work descriptions below are historical.
+
 **Newer evidence note, 2026-11-01:** The 62-test result below is the earlier Claude checkpoint, not the latest merged state. Codex PR #4 later reported **66 tests, 0 failures** on official Windows Godot 4.5.1, with clean import, 60-frame boot and two-process relaunch. This documentation-only Phase 2C review did **not** rerun the engine. See [../../docs/CODEX_ISSUE_3_AUDIT.md](../../docs/CODEX_ISSUE_3_AUDIT.md); the mid-expedition save and generation version-dispatch work remain unimplemented.
 
 Verification levels (directive §24.2): **Implemented** (files exist) · **Static** (parses, imports) ·

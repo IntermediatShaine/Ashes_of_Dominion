@@ -203,7 +203,7 @@ func resolve(expedition_id: String) -> OpResult:
 		summary["lost"] = e.haul.duplicate()
 
 	# 2. discovery (completed expeditions chart the route and reveal neighbours)
-	if e.status == ExpeditionRecord.STATUS_COMPLETED:
+	if e.status == ExpeditionRecord.STATUS_COMPLETED and not content.table("pois").has(e.destination_id):
 		for eid in e.route_edge_ids:
 			u.reveal_edge(eid)
 		for nid in e.route_node_ids:
@@ -229,7 +229,7 @@ func resolve(expedition_id: String) -> OpResult:
 	u.protagonist_condition["health"] = ProgressionRules.max_health(save.character, content.balance("character"))
 
 	# 5. threat progression (exactly once per expedition)
-	ThreatRules.on_expedition_resolved(u.threat_state, settlement.buildings.size(), content.balance("threat"))
+	ThreatRules.on_expedition_resolved(u.threat_state, settlement.buildings.size(), content.balance("threat"), SettlementService.new(save, content).defense_strength())
 
 	# 6. bookkeeping
 	e.resolved = true

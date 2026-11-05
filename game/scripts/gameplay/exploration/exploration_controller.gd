@@ -155,7 +155,7 @@ func _on_experience(_amount: int, levels: int) -> void:
 		hud.toast("Level %d! You feel steadier." % c.level, 3.0)
 		# Level-up heals (see balance.json); refresh the live combatant from state.
 		player.combatant.max_health = ProgressionRules.max_health(c, Content.balance("character"))
-		player.combatant.attack = ProgressionRules.attack(c, Content.balance("character"))
+		player.combatant.attack = ProgressionRules.attack(c, Content.balance("character")) + DictUtil.get_int(Session.universe().protagonist_condition, "equipment_attack")
 		player.combatant.defense = ProgressionRules.defense(c, Content.balance("character"))
 		player.combatant.health = DictUtil.get_int(Session.universe().protagonist_condition, "health", player.combatant.max_health)
 		player.move_speed = ProgressionRules.move_speed(c, Content.balance("character"))

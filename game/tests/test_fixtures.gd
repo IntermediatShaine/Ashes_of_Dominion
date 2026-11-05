@@ -16,6 +16,11 @@ static func new_save(seed_value: int = 12345, preset: String = "challenging", ar
 	s.character = c.value
 	s.universe = u.value
 	s.multiverse = m
+	# Legacy regression scenarios deliberately model a six-resident village.
+	# Actual new games start alone; Stage 2 acceptance tests exercise that path.
+	for i in 6:
+		s.universe.home_settlement().add_resident("founder", 1)
+	PopulationRules.ensure_names(s.universe.home_settlement(), PopulationRules.name_pool(Content), seed_value)
 	return s
 
 

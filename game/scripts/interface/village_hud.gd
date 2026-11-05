@@ -20,6 +20,7 @@ signal improvement_requested(site_id: String, action: String, definition_id: Str
 signal worker_change_requested(target_id: String, delta: int)
 signal job_cancel_requested(job_id: String)
 signal rest_requested()
+signal craft_requested(recipe_id: String)
 signal save_requested()
 signal leave_requested()
 signal settings_requested()
@@ -363,6 +364,12 @@ func _add_site_details(box: VBoxContainer, view: Dictionary, with_description: b
 	if has_building:
 		var effects := _effects_text(DictUtil.get_dict(view, "effects"))
 		box.add_child(_label("Provides: " + (effects if effects != "" else "nothing yet"), "SmallLabel", true))
+		if DictUtil.get_string(view, "definition_id") == "workshop":
+			for id in Content.ids("recipes"):
+				var recipe_id := String(id)
+				var recipe: Dictionary = Content.table("recipes")[recipe_id]
+				box.add_child(_label("%s — %s · %d minutes · Workshop L%d" % [recipe["description"], _cost_text(recipe["cost"]), recipe["minutes"], recipe["level"]], "SmallLabel", true))
+				box.add_child(_button("Craft " + String(recipe["name"]), func(): craft_requested.emit(recipe_id), "SmallButton"))
 		var slots := DictUtil.get_int(view, "worker_slots")
 		if slots > 0:
 			box.add_child(_worker_row("Workers %d / %d%s" % [DictUtil.get_array(view, "workers").size(), slots, _names_suffix(DictUtil.get_array(view, "workers"))], DictUtil.get_string(view, "instance_id")))
@@ -570,6 +577,8 @@ func _effects_text(effects: Dictionary) -> String:
 		parts.append("storage +%d" % DictUtil.get_int(effects, "storage_capacity"))
 	if DictUtil.get_int(effects, "military_strength") != 0:
 		parts.append("defence +%d" % DictUtil.get_int(effects, "military_strength"))
+	if DictUtil.get_int(effects, "military_strength_per_worker") != 0:
+		parts.append("defence +%d per worker" % DictUtil.get_int(effects, "military_strength_per_worker"))
 	var production := DictUtil.get_dict(effects, "production")
 	for rid in DictUtil.sorted_keys(production):
 		parts.append("%s +%d a day" % [_resource_name(String(rid)).to_lower(), DictUtil.get_int(production, String(rid))])

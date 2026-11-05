@@ -33,6 +33,26 @@ are still undefined (only the `return_home` resurrection outcome exists).
 
 ## Decision records
 
+### 2026-11-05 — Stage 2 bounded gameplay decisions
+
+The Stage 2 assignment authorizes solo new-game starts (zero residents),
+salvage in the three new demo POIs, personal crafting without hired workers,
+and saved consequences. Existing saves keep their populations and iron; old
+wilderness content remains compatible. POIs use Claude's map framework and
+standard expedition records, with local map buttons rather than changing the
+seeded route graph. A shrine ward grants data-defined defense; Watchpost
+staffing also grants defense, reducing later awareness growth to a minimum
+of one per trip after the unchanged difficulty grace period. No raids or faction
+simulation are implied. Rebuilding a ruin still uses Claude's `build` action;
+`repair` restores condition on an existing building. Time remains turn-based
+through rest/expeditions, with recipe-defined crafting minutes added.
+
+Schema 3 adds neutral equipment/tool defaults and salvage to migrated stock.
+Universe-bound gear does not become character progression. POI Continue is
+supported; the wider Phase 2C generated-wilderness checkpoint proposal remains
+outside scope. See `game/docs/handoffs/02_CODEX_TO_GEMINI.md` for contracts,
+tested evidence and provisional balance values.
+
 For every material new decision, add a dated entry below noting rationale, alternatives considered, affected systems and save-migration implications.
 
 ### 2026-11-01 — Repository as the shared AI project reference

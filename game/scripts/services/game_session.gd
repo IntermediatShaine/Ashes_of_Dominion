@@ -32,6 +32,13 @@ func has_game() -> bool:
 	return save != null
 
 
+## POIs resume at their checkpoint; legacy wilderness save policy is unchanged.
+func resume_scene_key() -> String:
+	if has_game() and expeditions.active() != null and PoiRules.active_id(expeditions) != "":
+		return "poi"
+	return "settlement"
+
+
 ## options: {name: String, archetype_id: String, difficulty: Dictionary,
 ##           mist_enabled: bool, seed: int}
 func new_game(options: Dictionary, slot: int) -> OpResult:

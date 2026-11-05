@@ -20,10 +20,7 @@ static func blocking_reasons(s: SettlementState, definition_id: String, building
 			var req_name := DictUtil.get_string(building_defs.get(String(req), {}), "name", String(req))
 			reasons.append("Requires " + req_name)
 	var cost := DictUtil.get_dict(d, "cost")
-	for r in DictUtil.sorted_keys(cost):
-		var need := DictUtil.get_int(cost, String(r))
-		if s.resource_amount(String(r)) < need:
-			reasons.append("Need %d %s (have %d)" % [need, String(r), s.resource_amount(String(r))])
+	reasons.append_array(BuildingRules.cost_blocking_reasons(s, cost))
 	return reasons
 
 

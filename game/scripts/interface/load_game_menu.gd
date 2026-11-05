@@ -44,7 +44,7 @@ func _load(slot: int) -> void:
 	if not r.ok:
 		_error.text = r.error
 		return
-	Router.go("settlement")
+	Router.go(Session.resume_scene_key())
 
 
 func _delete(slot: int) -> void:

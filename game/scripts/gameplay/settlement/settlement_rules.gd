@@ -13,14 +13,18 @@ static func storage_capacity(s: SettlementState, building_defs: Dictionary) -> i
 
 
 static func military_strength(s: SettlementState, building_defs: Dictionary) -> int:
-	return s.military_strength + _sum_effect(s, building_defs, "military_strength")
+	var strength := s.military_strength + _sum_effect(s, building_defs, "military_strength")
+	for b in s.buildings:
+		var effects := BuildingRules.effects_for(b, building_defs)
+		strength += mini(s.workers_assigned_to(String(b["instance_id"])).size(), DictUtil.get_int(effects, "worker_slots")) * DictUtil.get_int(effects, "military_strength_per_worker")
+	return strength
 
 
 ## resource_id -> units produced per day (before productivity scaling).
 ## A building's level decides its effects; residents assigned to it add
 ## `production_per_worker` each; a destroyed building produces nothing.
-static func daily_production(s: SettlementState, building_defs: Dictionary) -> Dictionary:
-	var out := {}
+static func daily_production(s: SettlementState, building_defs: Dictionary, bonus: Dictionary = {}) -> Dictionary:
+	var out := bonus.duplicate()
 	for b in s.buildings:
 		var effects := BuildingRules.effects_for(b, building_defs)
 		var prod := DictUtil.get_dict(effects, "production")
@@ -60,10 +64,10 @@ static func add_resources(s: SettlementState, amounts: Dictionary, building_defs
 ## Deterministic: no randomness is used here; `events` stream reserved for
 ## future random events. `day` is the calendar day that has just begun (used
 ## to date finished construction and log entries).
-static func tick_day(s: SettlementState, building_defs: Dictionary, settlement_balance: Dictionary, day: int = 0) -> Dictionary:
+static func tick_day(s: SettlementState, building_defs: Dictionary, settlement_balance: Dictionary, day: int = 0, production_bonus: Dictionary = {}) -> Dictionary:
 	var summary := {"produced": {}, "consumed": {}, "starved": false, "lost": {}, "jobs_completed": []}
 	# production, scaled by productivity (50 = nominal)
-	var prod := daily_production(s, building_defs)
+	var prod := daily_production(s, building_defs, production_bonus)
 	var scaled := {}
 	for r in DictUtil.sorted_keys(prod):
 		scaled[r] = int(round(int(prod[r]) * (float(s.productivity) / 50.0)))

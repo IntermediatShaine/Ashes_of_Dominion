@@ -1,0 +1,456 @@
+{
+	"lumber_camp": {
+		"name": "Abandoned Lumber Camp",
+		"travel_days": 1,
+		"layout": {
+			"map_id": "lumber_camp",
+			"name": "Abandoned Lumber Camp",
+			"cell_size": 32,
+			"width": 44,
+			"height": 30,
+			"border_cells": 1,
+			"ground": {
+				"base": "terrain.poi.lumber_camp",
+				"patches": [
+					{
+						"visual": "terrain.village.path",
+						"rect": [
+							21,
+							9,
+							2,
+							17
+						]
+					}
+				]
+			},
+			"entries": {
+				"arrival": [
+					22,
+					25
+				]
+			},
+			"default_entry": "arrival",
+			"exits": [
+				{
+					"id": "return",
+					"rect": [
+						21,
+						26,
+						2,
+						2
+					],
+					"to": "return",
+					"prompt": "Return to Emberfall",
+					"visual": "marker.village_gate"
+				}
+			],
+			"border": {
+				"visual": "prop.tree.pine",
+				"spacing": 2
+			},
+			"props": [
+				{
+					"visual": "prop.tree.dead",
+					"at": [
+						9,
+						12
+					],
+					"solid": [
+						1,
+						0.6
+					]
+				},
+				{
+					"visual": "prop.tree.dead",
+					"at": [
+						33,
+						13
+					],
+					"solid": [
+						1,
+						0.6
+					]
+				},
+				{
+					"visual": "prop.stump",
+					"at": [
+						10,
+						22
+					]
+				},
+				{
+					"visual": "prop.signpost",
+					"at": [
+						24,
+						25
+					]
+				}
+			]
+		},
+		"objects": [
+			{
+				"id": "timber_a",
+				"at": [
+					16,
+					19
+				],
+				"prompt": "Gather fallen timber (+18 wood)",
+				"visual": "resource.node.wood",
+				"reward": {
+					"wood": 18
+				},
+				"regrowth_days": 10
+			},
+			{
+				"id": "timber_b",
+				"at": [
+					25,
+					14
+				],
+				"prompt": "Gather stacked logs (+18 wood)",
+				"visual": "resource.node.wood",
+				"reward": {
+					"wood": 18
+				},
+				"regrowth_days": 10
+			},
+			{
+				"id": "forage",
+				"at": [
+					28,
+					21
+				],
+				"prompt": "Gather food (+10 food)",
+				"visual": "resource.node.food",
+				"reward": {
+					"food": 10
+				},
+				"regrowth_days": 10
+			},
+			{
+				"id": "survivor",
+				"at": [
+					18,
+					11
+				],
+				"prompt": "Rescue the stranded survivor",
+				"visual": "actor.npc.stranded_survivor",
+				"recruits": 1,
+				"lore": "The survivor saw soldiers carrying an unmarked black banner."
+			}
+		],
+		"enemies": []
+	},
+	"ruined_watchtower": {
+		"name": "Ruined Watchtower",
+		"travel_days": 1,
+		"layout": {
+			"map_id": "ruined_watchtower",
+			"name": "Ruined Watchtower",
+			"cell_size": 32,
+			"width": 44,
+			"height": 30,
+			"border_cells": 1,
+			"ground": {
+				"base": "terrain.poi.ruined_watchtower",
+				"patches": [
+					{
+						"visual": "terrain.village.path",
+						"rect": [
+							21,
+							9,
+							2,
+							17
+						]
+					}
+				]
+			},
+			"entries": {
+				"arrival": [
+					22,
+					25
+				]
+			},
+			"default_entry": "arrival",
+			"exits": [
+				{
+					"id": "return",
+					"rect": [
+						21,
+						26,
+						2,
+						2
+					],
+					"to": "return",
+					"prompt": "Return to Emberfall",
+					"visual": "marker.village_gate"
+				}
+			],
+			"border": {
+				"visual": "prop.tree.pine",
+				"spacing": 2
+			},
+			"props": [
+				{
+					"visual": "prop.rubble",
+					"at": [
+						9,
+						12
+					],
+					"solid": [
+						1,
+						0.6
+					]
+				},
+				{
+					"visual": "prop.rubble",
+					"at": [
+						33,
+						13
+					],
+					"solid": [
+						1,
+						0.6
+					]
+				},
+				{
+					"visual": "prop.stump",
+					"at": [
+						10,
+						22
+					]
+				},
+				{
+					"visual": "prop.signpost",
+					"at": [
+						24,
+						25
+					]
+				},
+				{
+					"visual": "building.watchpost.level_0",
+					"at": [
+						22,
+						6
+					],
+					"solid": [
+						2,
+						1
+					]
+				}
+			]
+		},
+		"objects": [
+			{
+				"id": "stone",
+				"at": [
+					14,
+					20
+				],
+				"prompt": "Gather masonry (+18 stone)",
+				"visual": "resource.node.stone",
+				"reward": {
+					"stone": 18
+				},
+				"regrowth_days": 10
+			},
+			{
+				"id": "scrap",
+				"at": [
+					29,
+					18
+				],
+				"prompt": "Gather fittings (+10 salvage)",
+				"visual": "resource.node.salvage",
+				"reward": {
+					"salvage": 10
+				},
+				"regrowth_days": 10
+			},
+			{
+				"id": "cache",
+				"at": [
+					22,
+					9
+				],
+				"prompt": "Inspect the guarded tower cache",
+				"visual": "poi.tower.cache",
+				"reward": {
+					"stone": 8,
+					"salvage": 4
+				},
+				"requires_defeated": [
+					"guard_a",
+					"guard_b"
+				],
+				"equipment": "tower_blade",
+				"attack_bonus": 2,
+				"lore": "The tower orders name Emberfall: burn the village, recover the ember beneath its hearth."
+			}
+		],
+		"enemies": [
+			{
+				"id": "guard_a",
+				"enemy_id": "marauder",
+				"at": [
+					19,
+					16
+				]
+			},
+			{
+				"id": "guard_b",
+				"enemy_id": "marauder",
+				"at": [
+					25,
+					12
+				]
+			}
+		]
+	},
+	"forgotten_shrine": {
+		"name": "Forgotten Shrine",
+		"travel_days": 1,
+		"layout": {
+			"map_id": "forgotten_shrine",
+			"name": "Forgotten Shrine",
+			"cell_size": 32,
+			"width": 44,
+			"height": 30,
+			"border_cells": 1,
+			"ground": {
+				"base": "terrain.poi.forgotten_shrine",
+				"patches": [
+					{
+						"visual": "terrain.village.path",
+						"rect": [
+							21,
+							9,
+							2,
+							17
+						]
+					}
+				]
+			},
+			"entries": {
+				"arrival": [
+					22,
+					25
+				]
+			},
+			"default_entry": "arrival",
+			"exits": [
+				{
+					"id": "return",
+					"rect": [
+						21,
+						26,
+						2,
+						2
+					],
+					"to": "return",
+					"prompt": "Return to Emberfall",
+					"visual": "marker.village_gate"
+				}
+			],
+			"border": {
+				"visual": "prop.tree.pine",
+				"spacing": 2
+			},
+			"props": [
+				{
+					"visual": "prop.rubble",
+					"at": [
+						9,
+						12
+					],
+					"solid": [
+						1,
+						0.6
+					]
+				},
+				{
+					"visual": "prop.rubble",
+					"at": [
+						33,
+						13
+					],
+					"solid": [
+						1,
+						0.6
+					]
+				},
+				{
+					"visual": "prop.stump",
+					"at": [
+						10,
+						22
+					]
+				},
+				{
+					"visual": "prop.signpost",
+					"at": [
+						24,
+						25
+					]
+				},
+				{
+					"visual": "prop.rubble",
+					"at": [
+						23,
+						9
+					],
+					"solid": [
+						2,
+						0.7
+					]
+				}
+			]
+		},
+		"objects": [
+			{
+				"id": "inscription",
+				"at": [
+					17,
+					18
+				],
+				"prompt": "Read the ancient inscription",
+				"visual": "poi.shrine.inscription",
+				"reward": {
+					"salvage": 2
+				},
+				"lore": "The ember binds a soul across death. The shrine guards those who offer mercy."
+			},
+			{
+				"id": "altar",
+				"at": [
+					23,
+					12
+				],
+				"prompt": "Decide the fate of the shrine",
+				"visual": "poi.shrine.altar",
+				"choices": {
+					"honor": {
+						"name": "Honor the dead",
+						"description": "Leave the reliquary sealed. +10 morality; a ward guards Emberfall.",
+						"morality": 10,
+						"reward": {
+							"food": 4
+						},
+						"consequence": "shrine_ward",
+						"defense_bonus": 2
+					},
+					"plunder": {
+						"name": "Plunder the reliquary",
+						"description": "Take its fittings. -10 morality; the ward is lost.",
+						"morality": -10,
+						"reward": {
+							"salvage": 8
+						},
+						"consequence": "desecrated"
+					}
+				}
+			}
+		],
+		"enemies": []
+	}
+}

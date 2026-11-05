@@ -13,13 +13,14 @@ static func init_state(grace_period: int) -> Dictionary:
 
 ## Call exactly once per resolved expedition (the caller guarantees that via
 ## ExpeditionRecord.resolved). Returns the awareness delta.
-static func on_expedition_resolved(threat: Dictionary, building_count: int, threat_balance: Dictionary) -> int:
+static func on_expedition_resolved(threat: Dictionary, building_count: int, threat_balance: Dictionary, defense: int = 0) -> int:
 	threat["completed_expeditions"] = int(threat.get("completed_expeditions", 0)) + 1
 	if int(threat["completed_expeditions"]) <= int(threat.get("grace_period", 5)):
 		return 0
 	var before := int(threat.get("awareness", 0))
 	var delta := DictUtil.get_int(threat_balance, "awareness_per_expedition_after_grace", 8)
 	delta += building_count * DictUtil.get_int(threat_balance, "awareness_per_building", 2)
+	delta = maxi(1, delta - maxi(0, defense))
 	threat["awareness"] = clampi(before + delta, 0, 100)
 	return int(threat["awareness"]) - before
 

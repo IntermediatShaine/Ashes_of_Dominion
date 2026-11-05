@@ -88,7 +88,7 @@ func test_schema_1_save_migrates() -> void:
 	var original: Dictionary = (raw as Dictionary).duplicate(true)
 	var r := SaveValidator.build_and_validate(raw)
 	assert_ok(r)
-	assert_eq(r.warnings, ["Migrated save to schema 2"] as Array[String])
+	assert_eq(r.warnings, ["Migrated save to schema 2", "Migrated save to schema 3"] as Array[String])
 	assert_eq(raw, original, "migration works on a copy")
 	var save: SaveGame = r.value
 	assert_eq(save.schema_version, SaveGame.SCHEMA_VERSION)
@@ -105,7 +105,9 @@ func test_schema_1_save_migrates() -> void:
 	assert_eq(u.decision_log, old_u["decision_log"])
 	assert_eq(u.expedition_history.size(), 1)
 	assert_eq(u.threat_state, DictUtil.int_map(old_u["threat_state"]))
-	assert_eq(s.resources, DictUtil.int_map(old_s["resources"]))
+	var expected_resources := DictUtil.int_map(old_s["resources"])
+	expected_resources["salvage"] = 0
+	assert_eq(s.resources, expected_resources)
 	assert_eq(s.morale, DictUtil.get_int(old_s, "morale"))
 	assert_eq(s.population, DictUtil.get_int(old_s, "population"), "one resident per counted person")
 	assert_eq(s.buildings.size(), 1)
@@ -152,7 +154,7 @@ func test_migrated_save_loads_from_disk_and_is_rewritten_as_schema_2() -> void:
 	assert_eq(String(hearth.value["instance"]["instance_id"]), "bld_000002", "the universe id counter carried over")
 	assert_ok(repo.write(2, save))
 	var on_disk: Dictionary = JSON.parse_string(TestCase.read_text(repo.primary_path(2)))
-	assert_eq(DictUtil.get_int(on_disk, "schema_version"), 2)
+	assert_eq(DictUtil.get_int(on_disk, "schema_version"), SaveGame.SCHEMA_VERSION)
 	assert_false((on_disk["universe"]["settlements"]["stl_emberfall"] as Dictionary).has("population"), "population is no longer stored separately")
 	var bak: Dictionary = JSON.parse_string(TestCase.read_text(repo.backup_path(2)))
 	assert_eq(DictUtil.get_int(bak, "schema_version"), 1, "the original stays as the backup")

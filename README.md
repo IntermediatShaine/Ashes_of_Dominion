@@ -1,5 +1,12 @@
 # Ashes of Dominion
 
+**Latest source work — Stage 2 (2026-11-05):** village gameplay, crafting and
+three persistent POIs are implemented on `codex/stage2-village-gameplay`.
+Windows Godot 4.5.1: **157 tests, 0 failures**, startup/relaunch checks passed.
+See [current evidence](docs/IMPLEMENTATION_STATUS.md) and
+[Gemini handoff](game/docs/handoffs/02_CODEX_TO_GEMINI.md). Published preview
+builds may predate this branch; human playtesting remains open.
+
 > A planned single-player medieval-fantasy action RPG blending direct combat, procedural exploration, settlement management, faction politics, and consequential morality.
 
 **Status:** Design documented; a **first playable vertical slice** lives in [`game/`](game/) (Godot 4.5.1,

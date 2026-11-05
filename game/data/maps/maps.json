@@ -7,30 +7,33 @@
 		"scene": "settlement",
 		"settlement_id": "stl_emberfall",
 		"default_entry": "spawn",
-		"arrival_entries": {"expedition_return": "gate", "resurrection": "hearth"}
+		"arrival_entries": {
+			"expedition_return": "gate",
+			"resurrection": "hearth"
+		}
 	},
 	"lumber_camp": {
 		"kind": "poi",
-		"name": "Lumber Camp",
-		"status": "reserved",
-		"scene": "",
+		"name": "Abandoned Lumber Camp",
+		"status": "implemented",
+		"scene": "poi",
 		"default_entry": "arrival",
-		"description": "An abandoned logging site at the Greywood edge. Reserved for Stage 2."
+		"description": "Abandoned Lumber Camp — local expedition"
 	},
 	"ruined_watchtower": {
 		"kind": "poi",
 		"name": "Ruined Watchtower",
-		"status": "reserved",
-		"scene": "",
+		"status": "implemented",
+		"scene": "poi",
 		"default_entry": "arrival",
-		"description": "A broken Crown tower above the old road. Reserved for Stage 2."
+		"description": "Ruined Watchtower — local expedition"
 	},
 	"forgotten_shrine": {
 		"kind": "poi",
 		"name": "Forgotten Shrine",
-		"status": "reserved",
-		"scene": "",
+		"status": "implemented",
+		"scene": "poi",
 		"default_entry": "arrival",
-		"description": "A shrine nobody tends any more. Reserved for Stage 2."
+		"description": "Forgotten Shrine — local expedition"
 	}
 }

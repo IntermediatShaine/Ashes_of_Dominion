@@ -42,6 +42,19 @@
 		"icon.resource.stone": {"texture": "res://assets/placeholders/icons/resource_stone.png", "anchor": "center"},
 		"icon.resource.food": {"texture": "res://assets/placeholders/icons/resource_food.png", "anchor": "center"},
 		"icon.resource.iron": {"texture": "res://assets/placeholders/icons/resource_iron.png", "anchor": "center"},
-		"icon.population": {"texture": "res://assets/placeholders/icons/population.png", "anchor": "center"}
+		"icon.population": {"texture": "res://assets/placeholders/icons/population.png", "anchor": "center"},
+		"resource.node.wood": {"extends": "prop.stump"},
+		"resource.node.stone": {"extends": "prop.rubble"},
+		"resource.node.food": {"extends": "icon.resource.food"},
+		"resource.node.salvage": {"extends": "icon.resource.iron"},
+		"icon.resource.salvage": {"extends": "icon.resource.iron"},
+		"actor.npc.stranded_survivor": {"extends": "actor.player", "modulate": "#d8ce9a"},
+		"actor.enemy.marauder": {"extends": "actor.player", "modulate": "#d26969", "scale": 0.9},
+		"poi.tower.cache": {"extends": "prop.rubble"},
+		"poi.shrine.inscription": {"extends": "prop.signpost"},
+		"poi.shrine.altar": {"extends": "prop.rubble"},
+		"terrain.poi.lumber_camp": {"extends": "terrain.village.grass"},
+		"terrain.poi.ruined_watchtower": {"extends": "terrain.village.dirt"},
+		"terrain.poi.forgotten_shrine": {"extends": "terrain.village.dirt"}
 	}
 }
