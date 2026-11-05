@@ -19,6 +19,9 @@ const DATA_FILES := {
 	"landmarks": "res://data/regions/landmarks.json",
 	"difficulty": "res://data/difficulty.json",
 	"decisions": "res://data/decisions.json",
+	"residents": "res://data/residents.json",
+	"village_layouts": "res://data/village/village_layouts.json",
+	"maps": "res://data/maps/maps.json",
 }
 
 var _tables: Dictionary = {}
@@ -173,3 +176,70 @@ func _validate_references() -> void:
 		for param in difficulty_parameters().keys():
 			if not (presets[pid] as Dictionary).has(param):
 				load_errors.append("difficulty preset %s missing parameter %s" % [pid, param])
+	_validate_building_levels()
+	_validate_maps_and_layouts()
+
+
+## Upgrade levels, placement and worker production of building definitions.
+func _validate_building_levels() -> void:
+	var buildings := table("buildings")
+	var resources := table("resources")
+	for id in buildings.keys():
+		var bd: Dictionary = buildings[id]
+		var placement := DictUtil.get_string(bd, "placement")
+		if placement != "" and placement != "reserved":
+			load_errors.append("building %s has unknown placement '%s'" % [id, placement])
+		for level in range(1, BuildingRules.max_level(bd) + 1):
+			var spec := BuildingRules.level_spec(bd, level)
+			for r in DictUtil.get_dict(spec, "cost").keys():
+				if not resources.has(String(r)):
+					load_errors.append("building %s level %d cost references unknown resource %s" % [id, level, String(r)])
+			for req in DictUtil.get_array(spec, "requires"):
+				if not buildings.has(String(req)):
+					load_errors.append("building %s level %d requires unknown building %s" % [id, level, String(req)])
+			var effects := DictUtil.get_dict(spec, "effects")
+			for key in ["production", "production_per_worker"]:
+				for r in DictUtil.get_dict(effects, key).keys():
+					if not resources.has(String(r)):
+						load_errors.append("building %s level %d %s references unknown resource %s" % [id, level, key, String(r)])
+
+
+## The map registry and the village layouts it points at.
+func _validate_maps_and_layouts() -> void:
+	var maps := table("maps")
+	var layouts := table("village_layouts")
+	var map_ids_in_layouts := {}
+	for sid in layouts.keys():
+		if not (layouts[sid] is Dictionary):
+			load_errors.append("village layout %s is not an object" % sid)
+			continue
+		var definition := MapDefinition.from_dict(layouts[sid])
+		for e in definition.validate(table("buildings")):
+			load_errors.append("village layout " + e)
+		map_ids_in_layouts[definition.map_id] = String(sid)
+		var registered := DictUtil.get_dict(maps, definition.map_id)
+		if registered.is_empty():
+			load_errors.append("village layout %s uses map id '%s' that is not in the map registry" % [sid, definition.map_id])
+		elif DictUtil.get_string(registered, "settlement_id") != String(sid):
+			load_errors.append("map %s does not point back at settlement %s" % [definition.map_id, sid])
+		else:
+			var arrival := DictUtil.get_dict(registered, "arrival_entries")
+			for purpose in arrival.keys():
+				if not definition.has_entry(String(arrival[purpose])):
+					load_errors.append("map %s arrival entry '%s' is not an entry of its layout" % [definition.map_id, String(arrival[purpose])])
+			if not definition.has_entry(DictUtil.get_string(registered, "default_entry")):
+				load_errors.append("map %s default_entry is not an entry of its layout" % definition.map_id)
+	for id in maps.keys():
+		var md: Dictionary = maps[id]
+		var kind := DictUtil.get_string(md, "kind")
+		if kind != MapRegistry.KIND_VILLAGE and kind != MapRegistry.KIND_POI:
+			load_errors.append("map %s has unknown kind '%s'" % [id, kind])
+		var status := DictUtil.get_string(md, "status")
+		if status != MapRegistry.STATUS_IMPLEMENTED and status != MapRegistry.STATUS_RESERVED:
+			load_errors.append("map %s has unknown status '%s'" % [id, status])
+		if status == MapRegistry.STATUS_IMPLEMENTED and DictUtil.get_string(md, "scene") == "":
+			load_errors.append("map %s is implemented but names no scene" % id)
+		if kind == MapRegistry.KIND_VILLAGE and not map_ids_in_layouts.has(String(id)):
+			load_errors.append("village map %s has no layout" % id)
+		if String(id).begins_with(MapLocation.WILDERNESS_PREFIX):
+			load_errors.append("map id %s uses the reserved wilderness prefix" % id)

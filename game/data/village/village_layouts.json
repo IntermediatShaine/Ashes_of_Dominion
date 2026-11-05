@@ -1,0 +1,68 @@
+{
+	"_comment": "Static village layouts, keyed by settlement id. Nothing here changes during play: what stands on a site is SettlementState.buildings[*].site_id. Units: `cell`/`footprint`/`rect` are whole cells [x, y] / [w, h] / [x, y, w, h]; `entries` and prop `at` are cell units with fractions allowed, measured from the map's top-left corner. A site's footprint is its collision and the base of its interaction area — both are independent of whatever artwork the visual registry resolves. Site kind 'core' is reserved for one building definition (shown as that building's ruin until it is rebuilt); kind 'plot' accepts any definition without placement 'reserved'.",
+	"stl_emberfall": {
+		"map_id": "village_emberfall",
+		"name": "Emberfall",
+		"cell_size": 32,
+		"width": 44,
+		"height": 30,
+		"border_cells": 1,
+		"ground": {
+			"base": "terrain.village.grass",
+			"patches": [
+				{"visual": "terrain.village.dirt", "rect": [19, 12, 6, 4]},
+				{"visual": "terrain.village.path", "rect": [21, 16, 2, 13]},
+				{"visual": "terrain.village.path", "rect": [7, 16, 30, 2]},
+				{"visual": "terrain.village.path", "rect": [9, 11, 2, 5]},
+				{"visual": "terrain.village.path", "rect": [34, 11, 2, 5]},
+				{"visual": "terrain.village.path", "rect": [10, 18, 2, 2]},
+				{"visual": "terrain.village.path", "rect": [33, 18, 2, 1]},
+				{"visual": "terrain.village.path", "rect": [21, 6, 2, 6]},
+				{"visual": "terrain.village.path", "rect": [17, 6, 10, 2]}
+			]
+		},
+		"entries": {
+			"spawn": [22.0, 18.5],
+			"hearth": [22.0, 16.0],
+			"gate": [22.0, 25.5]
+		},
+		"default_entry": "spawn",
+		"exits": [
+			{
+				"id": "gate",
+				"rect": [21, 27, 2, 2],
+				"to": "world_map",
+				"return_entry": "gate",
+				"prompt": "Leave Emberfall — open the world map",
+				"visual": "marker.village_gate"
+			}
+		],
+		"sites": [
+			{"id": "site_hearth", "kind": "core", "reserved_for": "village_hearth", "cell": [21, 13], "footprint": [2, 2], "role": "hearth"},
+			{"id": "site_shelter", "kind": "core", "reserved_for": "shelter", "cell": [8, 9], "footprint": [3, 2]},
+			{"id": "site_workshop", "kind": "core", "reserved_for": "workshop", "cell": [33, 9], "footprint": [3, 2]},
+			{"id": "site_stockpile", "kind": "core", "reserved_for": "stockpile", "cell": [9, 20], "footprint": [3, 2]},
+			{"id": "site_watchpost", "kind": "core", "reserved_for": "watchpost", "cell": [33, 19], "footprint": [2, 2]},
+			{"id": "plot_1", "kind": "plot", "cell": [14, 4], "footprint": [3, 2]},
+			{"id": "plot_2", "kind": "plot", "cell": [27, 4], "footprint": [3, 2]},
+			{"id": "plot_3", "kind": "plot", "cell": [4, 16], "footprint": [3, 2]},
+			{"id": "plot_4", "kind": "plot", "cell": [37, 16], "footprint": [3, 2]}
+		],
+		"border": {"visual": "prop.tree.pine", "spacing": 1.5},
+		"props": [
+			{"visual": "prop.rubble", "at": [12.5, 10.5]},
+			{"visual": "prop.rubble", "at": [31.5, 10.8]},
+			{"visual": "prop.rubble", "at": [13.5, 21.6]},
+			{"visual": "prop.rubble", "at": [36.5, 20.5]},
+			{"visual": "prop.tree.dead", "at": [5.5, 7.0], "solid": [0.6, 0.4]},
+			{"visual": "prop.tree.dead", "at": [39.0, 24.5], "solid": [0.6, 0.4]},
+			{"visual": "prop.tree.pine", "at": [4.5, 24.0], "solid": [0.6, 0.4]},
+			{"visual": "prop.tree.pine", "at": [38.5, 6.5], "solid": [0.6, 0.4]},
+			{"visual": "prop.tree.pine", "at": [16.0, 24.5], "solid": [0.6, 0.4]},
+			{"visual": "prop.tree.pine", "at": [28.5, 24.0], "solid": [0.6, 0.4]},
+			{"visual": "prop.stump", "at": [26.5, 21.5], "solid": [0.5, 0.3]},
+			{"visual": "prop.stump", "at": [17.5, 10.5], "solid": [0.5, 0.3]},
+			{"visual": "prop.signpost", "at": [24.2, 26.2], "solid": [0.3, 0.2]}
+		]
+	}
+}

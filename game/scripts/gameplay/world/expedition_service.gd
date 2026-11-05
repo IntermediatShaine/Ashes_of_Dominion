@@ -70,6 +70,9 @@ func start(destination_id: String, route: Dictionary) -> OpResult:
 	e.started_day = u.current_day
 	u.expeditions[e.expedition_id] = e
 	u.active_expedition_id = e.expedition_id
+	# The village is remembered as the place to come back to (through its gate).
+	var maps: Dictionary = content.table("maps")
+	MapLocation.enter(u.location, MapLocation.wilderness_map_id(destination_id), "spawn", true, MapRegistry.entry_for(maps, MapRegistry.map_for_settlement(maps, u.home_settlement_id), "expedition_return"))
 	return OpResult.success(e.expedition_id)
 
 
@@ -221,7 +224,8 @@ func resolve(expedition_id: String) -> OpResult:
 	e.ended_day = u.current_day
 
 	# 4. settlement arrivals, protagonist recovery
-	summary["recruits"] = SettlementRules.settle_recruits(settlement, building_defs)
+	summary["recruits"] = SettlementRules.settle_recruits(settlement, building_defs, u.current_day)
+	PopulationRules.ensure_names(settlement, PopulationRules.name_pool(content), u.world_seed)
 	u.protagonist_condition["health"] = ProgressionRules.max_health(save.character, content.balance("character"))
 
 	# 5. threat progression (exactly once per expedition)
@@ -232,4 +236,10 @@ func resolve(expedition_id: String) -> OpResult:
 	u.expedition_history.append(expedition_id)
 	if u.active_expedition_id == expedition_id:
 		u.active_expedition_id = ""
+
+	# 7. the protagonist is home again: through the gate, or — after a defeat —
+	#    wherever the curse sets them down
+	var maps: Dictionary = content.table("maps")
+	var home_map := MapRegistry.map_for_settlement(maps, u.home_settlement_id)
+	MapLocation.arrive(u.location, home_map, MapRegistry.entry_for(maps, home_map, "resurrection" if e.status == ExpeditionRecord.STATUS_DEFEATED else "expedition_return"))
 	return OpResult.success(summary)

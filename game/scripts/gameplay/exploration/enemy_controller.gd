@@ -30,6 +30,8 @@ var _fade: float = 1.0
 var _color: Color = Color.RED
 var _size: float = 10.0
 var _behaviour: String = "patrol"
+## Body artwork from the visual registry ("actor.enemy.<enemy id>"); null = code-drawn.
+var _sprite: VisualSprite = null
 
 
 func setup(p_enemy_id: String, p_spawn_key: String, p_definition: Dictionary, difficulty: Dictionary, p_combat_rng: RngStream, p_combat_rules: Dictionary, seed_value: int) -> void:
@@ -70,6 +72,7 @@ func _ready() -> void:
 	state = State.PATROL if _behaviour == "patrol" else State.IDLE
 	_timer = _local_rng.randf_range(0.5, 2.0)
 	add_to_group("enemies")
+	_sprite = VisualSprite.attach_if_registered(self, "actor.enemy." + enemy_id)
 
 
 func _physics_process(delta: float) -> void:
@@ -173,17 +176,28 @@ func _draw() -> void:
 	elif state == State.WINDUP:
 		c = c.lightened(0.35)
 	c.a = alpha
-	if state == State.DEAD:
+	if _sprite != null:
+		# Registry artwork replaces the body; state shows as a tint.
+		var tint := Color(1, 1, 1, alpha)
+		if _flash > 0.0:
+			tint = Color(1.6, 1.6, 1.6, alpha)
+		elif state == State.WINDUP:
+			tint = Color(1.25, 1.1, 1.1, alpha)
+		_sprite.self_modulate = tint
+		if state == State.DEAD:
+			return
+	elif state == State.DEAD:
 		draw_set_transform(Vector2(0, _size * 0.6), 0, Vector2(1.2, 0.35))
 		draw_circle(Vector2.ZERO, _size, c)
 		draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
 		return
-	draw_circle(Vector2(0, -_size * 0.4), _size, c)
-	draw_rect(Rect2(-_size * 0.6, -_size * 0.1, _size * 1.2, _size * 0.9), c.darkened(0.3))
-	# eyes
-	var eye := Color(1, 0.95, 0.6, alpha) if state != State.CHASE and state != State.WINDUP else Color(1, 0.3, 0.2, alpha)
-	draw_circle(Vector2(-_size * 0.35, -_size * 0.55), 1.8, eye)
-	draw_circle(Vector2(_size * 0.35, -_size * 0.55), 1.8, eye)
+	else:
+		draw_circle(Vector2(0, -_size * 0.4), _size, c)
+		draw_rect(Rect2(-_size * 0.6, -_size * 0.1, _size * 1.2, _size * 0.9), c.darkened(0.3))
+		# eyes
+		var eye := Color(1, 0.95, 0.6, alpha) if state != State.CHASE and state != State.WINDUP else Color(1, 0.3, 0.2, alpha)
+		draw_circle(Vector2(-_size * 0.35, -_size * 0.55), 1.8, eye)
+		draw_circle(Vector2(_size * 0.35, -_size * 0.55), 1.8, eye)
 	if state == State.WINDUP:
 		draw_arc(Vector2(0, -_size * 0.4), _size + 6, 0, TAU, 16, Color(1, 0.3, 0.2, 0.8), 2.0)
 	# health bar

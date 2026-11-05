@@ -46,7 +46,9 @@ func test_menu_scenes_instantiate() -> void:
 
 func test_settlement_and_map_with_game() -> void:
 	_new_game()
-	var settlement := _instance(Router.SCENES["settlement"])
+	# The management screen from before the walkable village; "settlement" is
+	# the village scene now (tests/integration/test_village_scene.gd).
+	var settlement := _instance(Router.SCENES["settlement_legacy"])
 	await tree.process_frame
 	assert_true(settlement.get_child_count() > 0)
 	# Construction through the real UI path: Session.construct_building + autosave

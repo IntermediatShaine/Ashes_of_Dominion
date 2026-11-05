@@ -9,6 +9,13 @@ signal died()
 signal interact_target_changed(target: Node)
 signal attacked()
 
+## Visual id of the protagonist's body. Without a registry entry the body is
+## drawn in code (the original placeholder).
+const VISUAL_ID := "actor.player"
+## The body's collision circle (centre relative to the node position). Map
+## scenes use these to tell whether a remembered position is still free.
+const BODY_RADIUS := 9.0
+const BODY_OFFSET := Vector2(0, 4)
 const DIAG := 0.70710678
 const DIRS_8: Array[Vector2] = [
 	Vector2(1, 0), Vector2(DIAG, DIAG), Vector2(0, 1), Vector2(-DIAG, DIAG),
@@ -19,6 +26,8 @@ var combatant: Combatant
 var move_speed: float = 130.0
 var facing: Vector2 = Vector2(0, 1)
 var input_enabled: bool = true
+## False on peaceful maps (the village): the attack input is ignored.
+var combat_enabled: bool = true
 
 var _attack_cooldown: float = 0.45
 var _attack_active_time: float = 0.12
@@ -36,6 +45,8 @@ var _interact_target: Node = null
 var _flash: float = 0.0
 var _combat_rules: Dictionary = {}
 var _camera: Camera2D
+## Body artwork from the visual registry ("actor.player"); null = code-drawn.
+var _sprite: VisualSprite = null
 
 
 func setup(character: CharacterState, current_health: int, char_balance: Dictionary, combat_rules: Dictionary) -> void:
@@ -56,9 +67,9 @@ func _ready() -> void:
 	collision_mask = 1 | 4   # world + enemy bodies
 	var shape := CollisionShape2D.new()
 	var circle := CircleShape2D.new()
-	circle.radius = 9
+	circle.radius = BODY_RADIUS
 	shape.shape = circle
-	shape.position = Vector2(0, 4)
+	shape.position = BODY_OFFSET
 	add_child(shape)
 
 	_hitbox = Area2D.new()
@@ -89,6 +100,10 @@ func _ready() -> void:
 	add_child(_camera)
 	_camera.make_current()
 	add_to_group("player")
+	if Visuals.has_visual(VISUAL_ID):
+		_sprite = Visuals.make_sprite(VISUAL_ID)
+		add_child(_sprite)
+		_update_sprite()
 
 
 func camera() -> Camera2D:
@@ -114,6 +129,7 @@ func _physics_process(delta: float) -> void:
 	if not input_enabled or not combatant.is_alive:
 		velocity = Vector2.ZERO
 		move_and_slide()
+		_update_sprite()
 		queue_redraw()
 		return
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
@@ -122,12 +138,28 @@ func _physics_process(delta: float) -> void:
 		facing = _snap8(input)
 	velocity = input * move_speed
 	move_and_slide()
-	if Input.is_action_just_pressed("attack"):
+	if combat_enabled and Input.is_action_just_pressed("attack"):
 		_try_attack()
 	if Input.is_action_just_pressed("interact") and _interact_target != null and is_instance_valid(_interact_target):
 		_interact_target.interact(self)
 	_update_interact_target()
+	_update_sprite()
 	queue_redraw()
+
+
+## Facing frame and state tint of the registry sprite (no-op when code-drawn).
+func _update_sprite() -> void:
+	if _sprite == null:
+		return
+	_sprite.set_facing_index(DIRS_8.find(facing))
+	var tint := Color.WHITE
+	if not combatant.is_alive:
+		tint = Color(0.45, 0.45, 0.5)
+	elif _flash > 0.0:
+		tint = Color(1.0, 0.45, 0.45)
+	elif _invuln_left > 0.0 and int(_invuln_left * 20) % 2 == 0:
+		tint = Color(1.4, 1.4, 1.4)
+	_sprite.self_modulate = tint
 
 
 func _snap8(v: Vector2) -> Vector2:
@@ -189,6 +221,12 @@ func _update_interact_target() -> void:
 
 
 func _draw() -> void:
+	if _sprite != null:
+		# The body comes from the visual registry; only the swing is drawn here.
+		if _active_left > 0.0:
+			var swing := facing.angle()
+			draw_arc(Vector2(0, -4), _attack_reach + 4, swing - 0.7, swing + 0.7, 10, Color(1, 0.9, 0.6, 0.9), 3.0)
+		return
 	# shadow
 	draw_set_transform(Vector2(0, 12), 0, Vector2(1, 0.45))
 	draw_circle(Vector2.ZERO, 11, Color(0, 0, 0, 0.3))

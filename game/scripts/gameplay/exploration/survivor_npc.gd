@@ -10,6 +10,8 @@ var resolved: bool = false
 var _font: Font
 var _color: Color = Color(0.85, 0.75, 0.3)
 var _prompt: String = "Talk"
+## Artwork from the visual registry ("actor.npc.<decision id>"); null = code-drawn.
+var _sprite: VisualSprite = null
 
 
 func setup(p_decision_id: String, definition: Dictionary = {}) -> void:
@@ -29,6 +31,7 @@ func _ready() -> void:
 	shape.shape = circle
 	add_child(shape)
 	add_to_group("interactables")
+	_sprite = VisualSprite.attach_if_registered(self, "actor.npc." + decision_id)
 
 
 func interaction_prompt() -> String:
@@ -48,6 +51,11 @@ func mark_resolved() -> void:
 
 
 func _draw() -> void:
+	if _sprite != null:
+		_sprite.self_modulate = Color(0.55, 0.55, 0.55) if resolved else Color.WHITE
+		if not resolved:
+			draw_string(_font, Vector2(-4, -26), "!", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(1, 0.95, 0.6))
+		return
 	draw_set_transform(Vector2(0, 12), 0, Vector2(1, 0.45))
 	draw_circle(Vector2.ZERO, 10, Color(0, 0, 0, 0.3))
 	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)

@@ -16,14 +16,23 @@ static func military_strength(s: SettlementState, building_defs: Dictionary) -> 
 	return s.military_strength + _sum_effect(s, building_defs, "military_strength")
 
 
-## resource_id -> units produced per day (before productivity scaling)
+## resource_id -> units produced per day (before productivity scaling).
+## A building's level decides its effects; residents assigned to it add
+## `production_per_worker` each; a destroyed building produces nothing.
 static func daily_production(s: SettlementState, building_defs: Dictionary) -> Dictionary:
 	var out := {}
 	for b in s.buildings:
-		var d: Dictionary = building_defs.get(String(b.get("definition_id", "")), {})
-		var prod := DictUtil.get_dict(DictUtil.get_dict(d, "effects"), "production")
+		var effects := BuildingRules.effects_for(b, building_defs)
+		var prod := DictUtil.get_dict(effects, "production")
 		for r in DictUtil.sorted_keys(prod):
 			out[r] = int(out.get(r, 0)) + DictUtil.get_int(prod, String(r), 0)
+		var per_worker := DictUtil.get_dict(effects, "production_per_worker")
+		if per_worker.is_empty():
+			continue
+		var workers := mini(s.workers_assigned_to(String(b.get("instance_id", ""))).size(), DictUtil.get_int(effects, "worker_slots", 0))
+		for r in DictUtil.sorted_keys(per_worker):
+			if workers > 0:
+				out[r] = int(out.get(r, 0)) + workers * DictUtil.get_int(per_worker, String(r), 0)
 	return out
 
 
@@ -49,9 +58,10 @@ static func add_resources(s: SettlementState, amounts: Dictionary, building_defs
 
 ## One in-game day of settlement life. Returns a summary dictionary.
 ## Deterministic: no randomness is used here; `events` stream reserved for
-## future random events.
-static func tick_day(s: SettlementState, building_defs: Dictionary, settlement_balance: Dictionary) -> Dictionary:
-	var summary := {"produced": {}, "consumed": {}, "starved": false, "lost": {}}
+## future random events. `day` is the calendar day that has just begun (used
+## to date finished construction and log entries).
+static func tick_day(s: SettlementState, building_defs: Dictionary, settlement_balance: Dictionary, day: int = 0) -> Dictionary:
+	var summary := {"produced": {}, "consumed": {}, "starved": false, "lost": {}, "jobs_completed": []}
 	# production, scaled by productivity (50 = nominal)
 	var prod := daily_production(s, building_defs)
 	var scaled := {}
@@ -72,17 +82,27 @@ static func tick_day(s: SettlementState, building_defs: Dictionary, settlement_b
 		s.morale = clampi(s.morale - DictUtil.get_int(settlement_balance, "starvation_morale_penalty_per_day", 3), 0, 100)
 	else:
 		s.morale = clampi(s.morale + DictUtil.get_int(settlement_balance, "fed_morale_recovery_per_day", 1), 0, 100)
+	# wear (off unless balance.json enables it), then a day of construction work
+	var decay := DictUtil.get_int(settlement_balance, "condition_decay_per_day", 0)
+	if decay > 0:
+		for b in s.buildings:
+			if b is Dictionary:
+				BuildingRules.apply_damage(b, decay)
+		PopulationRules.release_invalid(s, building_defs)
+	summary["jobs_completed"] = ConstructionJobRules.tick_day(s, building_defs, settlement_balance, day)
 	return summary
 
 
-## Moves pending recruits into the population, bounded by capacity.
-static func settle_recruits(s: SettlementState, building_defs: Dictionary) -> int:
+## Moves pending recruits into the population, bounded by capacity. Each
+## arrival becomes a resident (named later by PopulationRules.ensure_names).
+static func settle_recruits(s: SettlementState, building_defs: Dictionary, day: int = 0) -> int:
 	if s.pending_recruits <= 0:
 		return 0
 	var cap := population_capacity(s, building_defs)
 	var room := maxi(0, cap - s.population)
 	var moved := mini(room, s.pending_recruits)
-	s.population += moved
+	for i in moved:
+		s.add_resident("recruit", day)
 	s.pending_recruits -= moved
 	return moved
 
@@ -90,6 +110,5 @@ static func settle_recruits(s: SettlementState, building_defs: Dictionary) -> in
 static func _sum_effect(s: SettlementState, building_defs: Dictionary, effect: String) -> int:
 	var total := 0
 	for b in s.buildings:
-		var d: Dictionary = building_defs.get(String(b.get("definition_id", "")), {})
-		total += DictUtil.get_int(DictUtil.get_dict(d, "effects"), effect, 0)
+		total += DictUtil.get_int(BuildingRules.effects_for(b, building_defs), effect, 0)
 	return total

@@ -11,6 +11,8 @@ var display_name: String = ""
 var color: Color = Color.WHITE
 var depleted: bool = false
 var _font: Font
+## Artwork from the visual registry ("resource.node.<resource id>"); null = code-drawn.
+var _sprite: VisualSprite = null
 
 
 func setup(p_key: String, p_resource_id: String, p_amount: int, resource_def: Dictionary, p_depleted: bool) -> void:
@@ -33,6 +35,7 @@ func _ready() -> void:
 	shape.shape = circle
 	add_child(shape)
 	add_to_group("interactables")
+	_sprite = VisualSprite.attach_if_registered(self, "resource.node." + resource_id)
 
 
 func interaction_prompt() -> String:
@@ -49,6 +52,11 @@ func interact(_player: Node) -> void:
 
 
 func _draw() -> void:
+	if _sprite != null:
+		_sprite.self_modulate = Color(1, 1, 1, 0.3) if depleted else Color.WHITE
+		if not depleted:
+			draw_string(_font, Vector2(-8, -18), "x%d" % amount, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(1, 1, 1, 0.8))
+		return
 	var c := color if not depleted else Color(color, 0.25)
 	draw_set_transform(Vector2(0, 8), 0, Vector2(1, 0.4))
 	draw_circle(Vector2.ZERO, 10, Color(0, 0, 0, 0.25))

@@ -4,6 +4,34 @@ Reproducible defects and deliberate limitations. Nothing here is hidden behind a
 
 ## Defects / gaps
 
+### Village (Stage 1, 2026-11-05)
+
+- **No human has played the village.** Everything about it is verified by automated tests and by
+  rendered screenshots at 1280×720 only.
+- **The Workshop has no effect** beyond offering work places; Watchpost and Workshop work places
+  do nothing when filled. Workers matter only at the Woodcutter's Camp and on construction jobs.
+- **Condition never changes by itself** and nothing damages buildings (`condition_decay_per_day`
+  is 0; `SettlementService.damage_building` is there for raids/events to call). Between 1 and 99
+  a damaged building looks like a sound one.
+- **Time only moves by resting at the hearth or going on an expedition.** Resting costs just the
+  day's food.
+- **Four building plots** are fewer than the plot buildings the definitions allow; a fifth
+  request fails with "No free building site".
+- **A building can end up without a site** (a migrated save with more buildings than sites, or
+  code calling `ConstructionRules.build` directly). It works and is listed in the Buildings tab,
+  but is not in the village and cannot be placed by the player.
+- **Cancelling a construction job refunds its full cost.**
+- **The village interface is the minimum** (Overview / Buildings); it rebuilds whole panels on
+  every change.
+- **The earlier management screen is still in the project** (`settlement_legacy`), unreachable.
+- **Only the village interface is styled by `village_theme.tres`**; menus, world map and the
+  expedition HUD use the code-built theme in `ui_kit.gd`.
+- **Expedition terrain is not on the visual registry**, and expedition enemies / resource nodes /
+  NPCs have no placeholder images (code-drawn until a registry entry is added).
+- **No animation playback**: characters show one frame per facing.
+
+### Earlier
+
 - **No manual verification on Windows yet.** All runtime checks ran on Linux (headless tests, Xvfb +
   llvmpipe screenshot tour). Input feel, window handling and the save path on Windows are
   unverified.
@@ -46,7 +74,8 @@ Reproducible defects and deliberate limitations. Nothing here is hidden behind a
   resources and enemies are unchanged; no `generation_version` bump was made for Phase 2A.
 - **The crypt "dungeon" is a biome variant** (dense walls, sentinels), not an enclosed dungeon layout.
 - **Camera limits assume the map is at least the viewport size**; smaller maps would show
-  outside-of-map space (current map 1408×960 px > 1280×720).
+  outside-of-map space (expedition areas and the village are 1408×960 px > 1280×720). A window
+  much wider than 16:9 exceeds that with the `expand` stretch aspect.
 - `Content` pushes errors for bad data but the bootstrap only *shows* them; the game still lets
   you reach the main menu, where they are listed again.
 
@@ -55,5 +84,10 @@ Reproducible defects and deliberate limitations. Nothing here is hidden behind a
 - Godot 4.5 treats `inference_on_variant` as an error by default: never `:=` from a Variant
   (e.g. `Dictionary` lookups, duck-typed objects). Add an explicit type instead.
 - New `class_name` scripts require `--import` (or opening the editor) before headless runs see them.
+- The suite also passes unmodified on Godot 4.7.2-stable (2026-11-05). Engines from 4.6 on add
+  `TextureRect`s of their own inside `ScrollContainer`; do not assume every `TextureRect` in a
+  UI tree is yours.
+- A local variable named like a global function (`log`, `range`, `load`) shadows it; pick
+  another name.
 - Inside a class, an unqualified call to a name that is also a global function (`randf`,
   `randi_range`, `load`…) resolves to the **global** — qualify with `self.` or rename.

@@ -8,12 +8,19 @@ extends Node
 
 signal state_changed()
 signal game_saved(slot: int, result: OpResult)
+## Emitted just before the state is written, so whoever shows the current map
+## can record where the player stands (see MapTravelService.remember_position).
+signal saving()
 
 var save: SaveGame = null
 var world: WorldGraph = null
 var rng: RngRegistry = null
 var expeditions: ExpeditionService = null
 var transitions: TransitionService = null
+## The one door to the home settlement's state (snapshots, requests, signals).
+var settlement_service: SettlementService = null
+## Entering/leaving maps and return destinations.
+var travel: MapTravelService = null
 var current_slot: int = 0
 var repository: SaveRepository = SaveRepository.new("user://saves")
 ## Summary of the last resolved expedition, for the settlement screen to show once.
@@ -108,6 +115,7 @@ func save_game() -> OpResult:
 	if current_slot == 0:
 		return OpResult.failure("No save slot selected")
 	var started := Time.get_ticks_msec()
+	saving.emit()
 	save.universe.rng_states = rng.to_dict()
 	_telemetry_state_check()
 	var r := repository.write(current_slot, save)
@@ -121,17 +129,26 @@ func _telemetry_state_check() -> void:
 		Telemetry.record_event("state_checked", {"errors": save.validate().size()})
 
 
+## Builds `definition_id` on the site it belongs to (its reserved village site,
+## else the first free plot). Kept for callers that predate building sites;
+## new code uses `settlement_service.request_construction(site_id, id)`.
+## value = the new building instance, or {} while it is still under construction.
 func construct_building(definition_id: String) -> OpResult:
 	if save == null:
 		return OpResult.failure("No game")
-	var u := save.universe
-	var r := ConstructionRules.build(u.home_settlement(), definition_id, Content.table("buildings"), u.id_counters, u.current_day)
+	var r := settlement_service.request_construction_anywhere(definition_id)
 	if r.ok:
-		Telemetry.record_event("building_built")
-		# New housing lets waiting recruits move in.
-		SettlementRules.settle_recruits(u.home_settlement(), Content.table("buildings"))
-		state_changed.emit()
+		r.value = DictUtil.get_dict(r.value, "instance")
 	return r
+
+
+func _on_settlement_changed(_reason: String) -> void:
+	state_changed.emit()
+
+
+func _on_settlement_event(event: Dictionary) -> void:
+	if DictUtil.get_string(event, "type") == "building_constructed":
+		Telemetry.record_event("building_built")
 
 
 func end_session() -> void:
@@ -147,6 +164,13 @@ func _bind(s: SaveGame) -> void:
 	rng = RngRegistry.from_dict(s.universe.rng_states, s.universe.world_seed)
 	expeditions = ExpeditionService.new(s, world, rng, Content)
 	transitions = TransitionService.new(s, expeditions)
+	settlement_service = SettlementService.new(s, Content)
+	travel = MapTravelService.new(s, Content)
+	# Finishes what a migration from an older save format could not know
+	# (resident names, building sites); a no-op for a current save.
+	settlement_service.normalize()
+	settlement_service.settlement_changed.connect(_on_settlement_changed)
+	settlement_service.event_recorded.connect(_on_settlement_event)
 
 
 func _unbind() -> void:
@@ -155,6 +179,8 @@ func _unbind() -> void:
 	rng = null
 	expeditions = null
 	transitions = null
+	settlement_service = null
+	travel = null
 	current_slot = 0
 	pending_expedition_summary = {}
 

@@ -5,7 +5,6 @@ extends Node2D
 ## (return, retreat, defeat). No game rules live here.
 
 const TerrainRendererScript := preload("res://scripts/gameplay/exploration/terrain_renderer.gd")
-const PlayerScript := preload("res://scripts/gameplay/exploration/player_controller.gd")
 const EnemyScript := preload("res://scripts/gameplay/exploration/enemy_controller.gd")
 const ResourceNodeScript := preload("res://scripts/gameplay/exploration/resource_node.gd")
 const SurvivorScript := preload("res://scripts/gameplay/exploration/survivor_npc.gd")
@@ -37,17 +36,9 @@ func _ready() -> void:
 	add_child(terrain)
 	terrain.setup(map, biome)
 
-	_entities = Node2D.new()
-	_entities.y_sort_enabled = true
-	add_child(_entities)
-
-	# player
-	player = CharacterBody2D.new()
-	player.set_script(PlayerScript)
-	player.setup(Session.character(), DictUtil.get_int(u.protagonist_condition, "health", 1), Content.balance("character"), Content.balance("combat"))
-	player.position = map.cell_center(map.spawn)
-	_entities.add_child(player)
-	player.set_camera_limits(map.world_size())
+	# entity layer and protagonist: the same kit the village and POIs use
+	_entities = ExplorationKit.create_entities_layer(self)
+	player = ExplorationKit.spawn_player(_entities, map.cell_center(map.spawn), map.world_size(), true)
 	player.health_changed.connect(_on_player_health_changed)
 	player.died.connect(_on_player_died)
 	player.interact_target_changed.connect(_on_interact_target_changed)
