@@ -1,0 +1,36 @@
+{
+	"_comment": "Registry of persistent explorable maps. kind 'village' = a settlement map driven by data/village/village_layouts.json; kind 'poi' = a hand-authored point of interest. status 'reserved' = the identifier is fixed but the location is not built yet (MapTravelService refuses to enter it). Generated expedition areas are not listed: their map id is 'wilderness:<landmark_id>' and they open the 'exploration' scene. `scene` is a Router scene key. Persistent per-map state is stored in UniverseState.world_modifications[map_id] through MapStateStore.",
+	"village_emberfall": {
+		"kind": "village",
+		"name": "Emberfall",
+		"status": "implemented",
+		"scene": "settlement",
+		"settlement_id": "stl_emberfall",
+		"default_entry": "spawn",
+		"arrival_entries": {"expedition_return": "gate", "resurrection": "hearth"}
+	},
+	"lumber_camp": {
+		"kind": "poi",
+		"name": "Lumber Camp",
+		"status": "reserved",
+		"scene": "",
+		"default_entry": "arrival",
+		"description": "An abandoned logging site at the Greywood edge. Reserved for Stage 2."
+	},
+	"ruined_watchtower": {
+		"kind": "poi",
+		"name": "Ruined Watchtower",
+		"status": "reserved",
+		"scene": "",
+		"default_entry": "arrival",
+		"description": "A broken Crown tower above the old road. Reserved for Stage 2."
+	},
+	"forgotten_shrine": {
+		"kind": "poi",
+		"name": "Forgotten Shrine",
+		"status": "reserved",
+		"scene": "",
+		"default_entry": "arrival",
+		"description": "A shrine nobody tends any more. Reserved for Stage 2."
+	}
+}

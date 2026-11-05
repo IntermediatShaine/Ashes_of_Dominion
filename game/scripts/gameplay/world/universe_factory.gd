@@ -22,6 +22,7 @@ static func create(world_seed: int, difficulty: Dictionary, world_settings: Dict
 	u.difficulty = difficulty.duplicate(true)
 	u.world_settings = world_settings.duplicate(true)
 	u.current_day = 1
+	u.time_of_day_minutes = clampi(DictUtil.get_int(content.balance("time"), "start_minute", UniverseState.DEFAULT_START_MINUTE), 0, UniverseState.MINUTES_PER_DAY - 1)
 	u.rng_states = RngRegistry.create_fresh(world_seed).to_dict()
 
 	# discovery: starting knowledge only
@@ -35,7 +36,11 @@ static func create(world_seed: int, difficulty: Dictionary, world_settings: Dict
 	s.display_name = DictUtil.get_string(landmarks[HOME_LANDMARK_ID], "name", "Emberfall")
 	s.landmark_id = HOME_LANDMARK_ID
 	var start := DictUtil.get_dict(content.table("balance"), "starting_settlement")
-	s.population = DictUtil.get_int(start, "population", 6)
+	# The founders are residents from day one; names come from the content pool,
+	# picked by seed (no runtime rng stream is touched).
+	for i in DictUtil.get_int(start, "population", 6):
+		s.add_resident("founder", u.current_day)
+	PopulationRules.ensure_names(s, PopulationRules.name_pool(content), world_seed)
 	s.base_population_capacity = DictUtil.get_int(start, "population_capacity", 6)
 	s.base_storage_capacity = DictUtil.get_int(start, "storage_capacity", 40)
 	s.loyalty = DictUtil.get_int(start, "loyalty", 50)
@@ -50,6 +55,13 @@ static func create(world_seed: int, difficulty: Dictionary, world_settings: Dict
 			s.resources[rid] = 0
 	u.settlements[s.settlement_id] = s
 	u.home_settlement_id = s.settlement_id
+
+	# the protagonist starts in the home village
+	var maps: Dictionary = content.table("maps")
+	var home_map := MapRegistry.map_for_settlement(maps, s.settlement_id)
+	if home_map == "":
+		return OpResult.failure("Map data has no village map for settlement '%s'" % s.settlement_id)
+	u.location = MapLocation.make(home_map, MapRegistry.entry_for(maps, home_map))
 
 	# factions
 	var faction_defs: Dictionary = content.table("factions")

@@ -48,7 +48,24 @@
 		"food_consumption_per_person_day": 0.1,
 		"starvation_morale_penalty_per_day": 3,
 		"fed_morale_recovery_per_day": 1,
-		"overflow_resources_lost": true
+		"overflow_resources_lost": true,
+		"base_job_work_per_day": 1,
+		"builder_work_per_day": 1,
+		"max_builders_per_job": 2,
+		"job_cancel_refund_ratio": 1.0,
+		"repair_cost_ratio": 0.5,
+		"condition_decay_per_day": 0,
+		"event_log_limit": 200,
+		"condition_bands": [
+			{"min": 75, "label": "Sound"},
+			{"min": 40, "label": "Worn"},
+			{"min": 1, "label": "Damaged"},
+			{"min": 0, "label": "Ruined"}
+		]
+	},
+	"time": {
+		"start_minute": 480,
+		"dawn_minute": 360
 	},
 	"threat": {
 		"awareness_per_expedition_after_grace": 8,

@@ -1,5 +1,20 @@
 {
-	"_comment": "Definitions only. Instances are stored in SettlementState.buildings. Effects: population_capacity, storage_capacity, military_strength are additive; production is per in-game day.",
+	"_comment": "Definitions only (static). Instances — level, condition, site — are stored in SettlementState.buildings. Level 1 is described by cost/build_days/requires/effects; every entry of `upgrades` describes the next level (its effects REPLACE the previous level's). Effects: population_capacity, storage_capacity, military_strength are additive across buildings; production is per in-game day; worker_slots is how many residents can be assigned; production_per_worker is added per assigned resident. build_days/days 0 = finished immediately, otherwise a construction job runs. placement 'reserved' = only on the village site reserved for it (see data/village/village_layouts.json); otherwise any free plot. Visuals are looked up as building.<id>.level_<n> in data/visuals/visual_registry.json — nothing here names an image.",
+	"village_hearth": {
+		"name": "Village Hearth",
+		"category": "administration",
+		"description": "The fire Emberfall is named for. While it burns, people gather, plan and stay.",
+		"cost": {"wood": 4},
+		"build_days": 0,
+		"max_count": 1,
+		"requires": [],
+		"placement": "reserved",
+		"effects": {"population_capacity": 1},
+		"upgrades": [
+			{"cost": {"wood": 12, "stone": 6}, "days": 1, "effects": {"population_capacity": 2, "storage_capacity": 10}},
+			{"cost": {"wood": 20, "stone": 14, "iron": 2}, "days": 2, "effects": {"population_capacity": 4, "storage_capacity": 20}}
+		]
+	},
 	"shelter": {
 		"name": "Shelter",
 		"category": "housing",
@@ -7,7 +22,54 @@
 		"cost": {"wood": 10},
 		"max_count": 4,
 		"requires": [],
-		"effects": {"population_capacity": 4}
+		"effects": {"population_capacity": 4},
+		"upgrades": [
+			{"cost": {"wood": 14, "stone": 6}, "days": 1, "effects": {"population_capacity": 7}},
+			{"cost": {"wood": 22, "stone": 12, "iron": 2}, "days": 2, "effects": {"population_capacity": 10}}
+		]
+	},
+	"workshop": {
+		"name": "Workshop",
+		"category": "crafting",
+		"description": "A bench, a few salvaged tools and somewhere dry to use them.",
+		"cost": {"wood": 8, "stone": 4},
+		"build_days": 1,
+		"max_count": 1,
+		"requires": [],
+		"placement": "reserved",
+		"effects": {"worker_slots": 1},
+		"upgrades": [
+			{"cost": {"wood": 14, "stone": 10, "iron": 2}, "days": 2, "effects": {"worker_slots": 2}}
+		]
+	},
+	"stockpile": {
+		"name": "Stockpile",
+		"category": "storage",
+		"description": "Stacked timber, stone and sacks under whatever cover can be found.",
+		"cost": {"wood": 6, "stone": 2},
+		"build_days": 1,
+		"max_count": 1,
+		"requires": [],
+		"placement": "reserved",
+		"effects": {"storage_capacity": 20},
+		"upgrades": [
+			{"cost": {"wood": 12, "stone": 8}, "days": 1, "effects": {"storage_capacity": 45}},
+			{"cost": {"wood": 20, "stone": 14, "iron": 2}, "days": 2, "effects": {"storage_capacity": 80}}
+		]
+	},
+	"watchpost": {
+		"name": "Watchpost",
+		"category": "defense",
+		"description": "A raised platform with a view of the roads. Someone has to be looking.",
+		"cost": {"wood": 10, "stone": 4},
+		"build_days": 1,
+		"max_count": 1,
+		"requires": [],
+		"placement": "reserved",
+		"effects": {"military_strength": 2, "worker_slots": 1},
+		"upgrades": [
+			{"cost": {"wood": 16, "stone": 10, "iron": 2}, "days": 2, "effects": {"military_strength": 5, "worker_slots": 2}}
+		]
 	},
 	"woodcutters_camp": {
 		"name": "Woodcutter's Camp",
@@ -16,7 +78,7 @@
 		"cost": {"wood": 8, "stone": 4},
 		"max_count": 2,
 		"requires": [],
-		"effects": {"production": {"wood": 2}}
+		"effects": {"production": {"wood": 2}, "worker_slots": 2, "production_per_worker": {"wood": 1}}
 	},
 	"storehouse": {
 		"name": "Storehouse",

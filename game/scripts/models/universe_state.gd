@@ -9,6 +9,8 @@ extends RefCounted
 ## changed is persisted (see `world_modifications`, `discovered_landmark_ids`).
 
 const CURRENT_GENERATION_VERSION: int = 1
+const MINUTES_PER_DAY: int = 1440
+const DEFAULT_START_MINUTE: int = 480
 
 # --- immutable generation parameters ---
 var universe_id: String = ""
@@ -21,6 +23,12 @@ var world_settings: Dictionary = {}
 
 # --- mutable world state ---
 var current_day: int = 1
+## Minute of the current day (0..MINUTES_PER_DAY-1). `current_day` plus this is
+## the single in-game clock; the settlement reads it, it never keeps its own.
+var time_of_day_minutes: int = DEFAULT_START_MINUTE
+## Where the protagonist is: {map_id, entry_id, return_stack:[{map_id, entry_id}],
+## position:[x, y] (optional exact resume point)}. Written through MapLocation.
+var location: Dictionary = {"map_id": "", "entry_id": "", "return_stack": []}
 var discovered_landmark_ids: Array[String] = []
 var revealed_edge_ids: Array[String] = []
 ## area_id -> {"harvested": {node_key: day}, "defeated": {...}}
@@ -99,6 +107,8 @@ func to_dict() -> Dictionary:
 		"difficulty": difficulty.duplicate(true),
 		"world_settings": world_settings.duplicate(true),
 		"current_day": current_day,
+		"time_of_day_minutes": time_of_day_minutes,
+		"location": location.duplicate(true),
 		"discovered_landmark_ids": discovered_landmark_ids.duplicate(),
 		"revealed_edge_ids": revealed_edge_ids.duplicate(),
 		"world_modifications": world_modifications.duplicate(true),
@@ -130,6 +140,8 @@ static func from_dict(d: Dictionary) -> UniverseState:
 	u.difficulty = DictUtil.get_dict(d, "difficulty").duplicate(true)
 	u.world_settings = DictUtil.get_dict(d, "world_settings").duplicate(true)
 	u.current_day = DictUtil.get_int(d, "current_day", 1)
+	u.time_of_day_minutes = DictUtil.get_int(d, "time_of_day_minutes", DEFAULT_START_MINUTE)
+	u.location = MapLocation.normalized(DictUtil.get_dict(d, "location"))
 	u.discovered_landmark_ids = DictUtil.string_array(DictUtil.get_array(d, "discovered_landmark_ids"))
 	u.revealed_edge_ids = DictUtil.string_array(DictUtil.get_array(d, "revealed_edge_ids"))
 	u.world_modifications = DictUtil.get_dict(d, "world_modifications").duplicate(true)
@@ -164,6 +176,9 @@ func validate() -> Array[String]:
 		errors.append("unsupported generation_version %d" % generation_version)
 	if current_day < 1:
 		errors.append("current_day must be >= 1")
+	if time_of_day_minutes < 0 or time_of_day_minutes >= MINUTES_PER_DAY:
+		errors.append("time_of_day_minutes out of range: %d" % time_of_day_minutes)
+	errors.append_array(MapLocation.validate(location))
 	if home_settlement_id == "" or not settlements.has(home_settlement_id):
 		errors.append("home_settlement_id does not reference a settlement")
 	for k in settlements.keys():

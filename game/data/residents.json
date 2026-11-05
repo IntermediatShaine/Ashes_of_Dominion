@@ -1,0 +1,6 @@
+{
+	"_comment": "Name pool for settlement residents. A resident's name is picked once (seeded by the universe and the resident's number) and then stored in the save, so editing this list never renames existing people.",
+	"names": {
+		"pool": ["Aldric", "Bera", "Corwin", "Dagny", "Edda", "Fenn", "Garrick", "Hilde", "Ivo", "Jorun", "Kell", "Liesel", "Marek", "Nessa", "Osric", "Petra", "Quill", "Runa", "Sten", "Tamsin", "Ulf", "Vesna", "Wren", "Ysolde", "Brann", "Cato", "Dunya", "Emrik", "Freya", "Gunnar", "Halla", "Isak", "Jora", "Kasimir", "Lotte", "Milo", "Nadja", "Orla", "Piotr", "Rosalind"]
+	}
+}

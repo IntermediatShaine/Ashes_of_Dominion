@@ -17,6 +17,6 @@ static func advance_days(save: SaveGame, days: int, content) -> Array:
 		u.current_day += 1
 		var day_summary := {"day": u.current_day, "settlements": {}}
 		for sid in DictUtil.sorted_keys(u.settlements):
-			day_summary["settlements"][sid] = SettlementRules.tick_day(u.settlements[sid], building_defs, settlement_bal)
+			day_summary["settlements"][sid] = SettlementRules.tick_day(u.settlements[sid], building_defs, settlement_bal, u.current_day)
 		out.append(day_summary)
 	return out
