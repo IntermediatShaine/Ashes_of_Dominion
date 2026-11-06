@@ -1,5 +1,8 @@
 # Phase 2C — Three-milestone development roadmap (PROPOSED)
 
+> **Current-main update (2026-11-06):** This is a historical Phase 2C proposal based on the 2026-11-01 schema-1 baseline. Merged Stage 1/2 PRs subsequently introduced schema 3 and partial POI Save/Continue. Refer to the [2026-11-06 reassessment](PHASE_2C_ROADMAP_2026-11-06.md) for actionable architecture and tests. This historical proposal never constituted owner approval to implement a save policy.
+
+
 **Base:** main aec6ce9, 2026-11-01. **Approval gate:** owner accepts or changes ADR-2C-A before gameplay work begins. The authoritative Godot project remains game/. No old external package is to be merged as the project root.
 
 ## Repository review and coordination
