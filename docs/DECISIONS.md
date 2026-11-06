@@ -31,6 +31,11 @@ are still undefined (only the `return_home` resurrection outcome exists).
 
 **Phase 2C proposal status (2026-11-01):** [The expedition-save ADR](PHASE_2C_ARCHITECTURE_PROPOSAL.md) is **not an adopted decision**. The [Codex issue #3 audit](CODEX_ISSUE_3_AUDIT.md) subsequently recovered and statically inspected the separate v0.3.1-m1 archive; older statements about inaccessibility below are historical and do not authorize a replacement of game/.
 
+
+## 2026-11-06 — Phase 2C owner policy selections (not code authorization)
+
+The owner selected A1–A7 for architecture planning: **resumable generated expeditions**; first UI **pause-menu Save & Exit**; **block saving during unresolved attacks** initially; **explicit recovery choices** for historical active wilderness without an exact checkpoint; **benchmark before approving performance numbers**; **freeze immutable generation-v1 algorithms and effective inputs**; and **retain partial POI Save/Continue temporarily before unification**. These selections are authoritative *owner preferences* and are not yet a gameplay implementation or permission to start editing gameplay. Exact checkpoint schema, safe-tick and combat UI behavior, legacy recovery/loot consequences, generation-v1 fixture hashes, benchmark hardware/limits, code milestones and release acceptance require separate approval. See [ADR-2C-001](ADR_2C_001_OWNER_PERSISTENCE_DECISION.md) (R1–R7).
+
 ## Decision records
 
 ### 2026-11-05 — Stage 2 bounded gameplay decisions
