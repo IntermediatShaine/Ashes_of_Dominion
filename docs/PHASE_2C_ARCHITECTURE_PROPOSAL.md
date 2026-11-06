@@ -1,5 +1,8 @@
 # Phase 2C — Architecture decision proposal (UNAPPROVED)
 
+> **Current-main update (2026-11-06):** This is a historical Phase 2C proposal based on the 2026-11-01 schema-1 baseline. Merged Stage 1/2 PRs subsequently introduced schema 3 and partial POI Save/Continue. Refer to the [2026-11-06 reassessment](PHASE_2C_ARCHITECTURE_2026-11-06.md) for actionable architecture and tests. This historical proposal never constituted owner approval to implement a save policy.
+
+
 **Status:** Proposal for owner review. **Baseline:** main at aec6ce9 (2026-11-01). **Scope:** design only; no gameplay implementation or save migration is approved by this document.
 
 ## Evidence from the tracked source
