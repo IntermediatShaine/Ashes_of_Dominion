@@ -4,6 +4,8 @@
 **Reviewed baseline:** `main` `ea57814c181ce44d97cb77080c1c34e61cce4052` (2026-11-06).  
 **Godot project:** `game/`. **Schema:** `SaveGame.SCHEMA_VERSION = 3`. **Generation:** `UniverseState.CURRENT_GENERATION_VERSION = 1`.
 
+> **Owner preference update (2026-11-06):** A1–A7 now have owner-selected directions, recorded in [ADR-2C-001](ADR_2C_001_OWNER_PERSISTENCE_DECISION.md). The comparison and proposals below are historical design analysis, not a new request to select A1–A7. Detailed approvals R1–R7 and explicit permission to implement gameplay remain pending.
+
 This reassesses [the original Phase 2C proposal](PHASE_2C_ARCHITECTURE_PROPOSAL.md), merged in PR #6 against schema 1. The original was never an adopted save-policy decision. PRs #10 (Claude, Stage 1), #11 (Codex, Stage 2), and #12 (CI reverification) have since merged; the following observations reflect those changes.
 
 ## Evidence: implemented, tested, absent
@@ -76,7 +78,7 @@ The checkpoint is not the owner of loot, morale, discovered edges, death records
 - Legacy schema-1/2/3 *without* checkpoint: ordinary settlement saves load unchanged; currently supported active POI loads keep their old partial semantics until a separately approved migration strategy; active generated-wilderness records **must not** be silently transformed into a fresh encounter, rewarded, or completed. Offer a documented, reversible recovery action or a selectable prior valid save.
 - Existing POI automatic saves on claims/deaths may coexist with the new checkpoint only when they capture a consistent live state or are explicitly restricted to durable event boundaries. Avoid a player exploiting the existing partial-health reset through reload.
 
-## Owner approval gates (remain OPEN)
+## Earlier proposal questions — owner directions now recorded in ADR-2C-001
 
 | ID | Decision required | Proposed option, not binding |
 | --- | --- | --- |
@@ -88,7 +90,7 @@ The checkpoint is not the owner of loot, morale, discovered edges, death records
 | A6 | Historical generated-content strategy: immutable bundle versus versioned data tables | Freeze v1 effective inputs and add explicit dispatch before evolving them |
 | A7 | Are partial POI checkpoints accepted as a temporary distinct feature? | Label honestly, then unify; do not market as exact-state combat resume |
 
-No A1–A7 choice is approved merely by merging documentation. No gameplay/schema/generation edits are authorized until owner approval and separate implementation PRs.
+Owner-selected directions for A1–A7 are now recorded in ADR-2C-001. The remaining detailed R1–R7 gates and separate implementation authorization still apply. No gameplay/schema/generation edits are authorized by this documentation.
 
 ## Candidate implementation ownership after approval
 
