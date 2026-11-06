@@ -104,3 +104,7 @@ Significant development changes to **Ashes of Dominion** are recorded here. Do n
 - Windows Godot 4.5.1: 157 tests passed, startup/relaunch passed, seven rendered
   screens inspected. Human playtesting and Stage 2 exports remain unverified.
 - Created `game/docs/handoffs/02_CODEX_TO_GEMINI.md`; Stage 3 is not implemented.
+
+## 2026-11-06 — Phase 2B reverification
+
+Confirmed existing merged CI/harness implementation on current main; Windows Godot 4.5.1: 157 tests, Mist 4/4, smoke/relaunch and 20 harness cases passed. Documentation only; see docs/TESTING_AND_CI.md.

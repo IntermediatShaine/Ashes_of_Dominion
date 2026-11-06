@@ -145,3 +145,46 @@ No human/manual play acceptance is inferred from automated results. The regressi
 still includes the four Mist renderer tests, nine deterministic generation tests and thirteen
 save-system tests. `game/scripts/`, `game/scenes/`, `game/data/`, `game/tests/`, and the relaunch
 scene/script are unchanged; no save schema, RNG, generator or scene-reference changes.
+
+## Reverification — 2026-11-06
+
+The repeated Phase 2B assignment is already implemented and merged in
+[PR #5](https://github.com/IntermediatShaine/Ashes_of_Dominion/pull/5), merge
+`a3b24a154b8914568b9a7e41eeba48706f0d703a`. Fetched current main and created
+`codex/ci-test-hardening-verification` in a separate worktree at
+`efa32c815fcccc0e147fc3c4307ed05f9cf83eee`; the existing village branch was preserved.
+The four wrappers, shared runners, failure-injection harness and reliability workflow
+are unchanged from that merge. Their implementation satisfies this assignment;
+no replacement or gameplay changes were necessary.
+
+Fresh commands from the worktree root, using
+`$engine = 'D:\Ashes of Dominion\.local-tools\godot\Godot_v4.5.1-stable_win64_console.exe'`:
+
+| Command | Observed result |
+| --- | --- |
+| `& $engine --version` | `4.5.1.stable.official.f62fdbde1` |
+| `& ./game/run_tests.ps1 -Godot $engine` | import passed from a fresh project cache; 157 tests, 0 failed; expected two save-recovery warnings |
+| `& ./game/run_tests.ps1 -Godot $engine -Filter mist_preview` | import passed; 4 tests, 0 failed |
+| `& ./game/tools/verify.ps1 -Godot $engine -Check smoke` | import and 60-frame startup passed |
+| `& ./game/check_relaunch.ps1 -Godot $engine` | write and fresh-process comparison passed: day 12, level 1, morality 25, 4 buildings |
+| `& ./game/tools/test_harness.ps1 -Godot $engine` | 20/20 cases passed; both positive controls accepted, all 18 intentional failures returned exit 1 |
+
+The negative cases include failed imports (nonzero exit and diagnostic-only exit 0),
+script/engine errors, assertions, failing/missing/empty summaries, unsuccessful
+relaunch stages, missing executable, and real Godot assertion/runtime/import/state
+mismatch injections into disposable copies. Imports stop subsequent stages on failure.
+The full suite includes 4 Mist renderer, 9 deterministic generation, 5 RNG stream,
+13 save-system and 5 settlement-persistence tests. The map's Mist rendering fix is
+retained; later map additions are POI buttons/departure and telemetry. This verification
+changes no RNG code, save schema, content, scene references or test implementation.
+
+The GitHub connector independently confirmed PR #5 is merged and both jobs of
+[run 41331592525](https://github.com/IntermediatShaine/Ashes_of_Dominion/actions/runs/41331592525)
+passed, including Linux Bash failure injection and Windows/ Linux PowerShell failure
+injection. These are historical hosted results, not a new hosted run of today's main.
+The connector returned no PR workflow runs for current main's merge SHA; this is not
+proof that all push workflows are absent. Bash/Linux were not rerun locally today;
+Bash is not on this session's PATH. This documentation-only follow-up does not match
+the reliability workflow's path filters. Existing limitations remain: no macOS or
+human gameplay acceptance, no local process timeout, and branch protection is an
+owner setting. No unreviewed changes were merged in this session.
