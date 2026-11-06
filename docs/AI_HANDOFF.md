@@ -217,3 +217,14 @@ reputation-gated reactions).
 - Save/schema/determinism implications:
 - Decisions requiring owner review:
 - Next smallest actionable change:
+
+## Phase 2B reverification — 2026-11-06
+
+Repeated assignment checked against fetched main `efa32c815fcccc0e147fc3c4307ed05f9cf83eee`
+on isolated branch `codex/ci-test-hardening-verification`. Phase 2B already merged as
+PR #5; wrappers/runners/harness/workflow remain unchanged. Fresh Windows official
+Godot 4.5.1: 157 tests / 0 failed, focused Mist 4/4, fresh-cache import, startup and
+two-process full-state relaunch passed. Harness 20/20: 18 intentional failures all
+returned exit 1. Documentation-only follow-up; no gameplay/RNG/schema/scene changes.
+Exact commands, historical hosted evidence and local Linux/Bash limitations:
+[`TESTING_AND_CI.md`](TESTING_AND_CI.md), 2026-11-06 record.
