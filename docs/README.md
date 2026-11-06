@@ -15,6 +15,7 @@ This folder contains specifications and planning documents. **A design descripti
 | [PHASE_2C_ARCHITECTURE_PROPOSAL.md](PHASE_2C_ARCHITECTURE_PROPOSAL.md) | Historical 2026-11-01 unapproved ADR (schema-1 baseline) |
 | [PHASE_2C_COMPATIBILITY_TEST_SPEC.md](PHASE_2C_COMPATIBILITY_TEST_SPEC.md) | Historical schema-1 fixture and test plan |
 | [PHASE_2C_DEVELOPMENT_ROADMAP.md](PHASE_2C_DEVELOPMENT_ROADMAP.md) | Historical 2C.1–2C.3 roadmap (superseded baseline) |
+| [ADR_2C_001_OWNER_PERSISTENCE_DECISION.md](ADR_2C_001_OWNER_PERSISTENCE_DECISION.md) | Owner-selected A1–A7 policy direction, no implementation authorization, pending R1–R7 approvals |
 | [PHASE_2C_ARCHITECTURE_2026-11-06.md](PHASE_2C_ARCHITECTURE_2026-11-06.md) | Current schema-3 persistence ADR proposal and explicit owner gates A1–A7 |
 | [PHASE_2C_COMPATIBILITY_2026-11-06.md](PHASE_2C_COMPATIBILITY_2026-11-06.md) | Current generation v1 fixture/dispatch contract and G/P/S test scenarios |
 | [PHASE_2C_ROADMAP_2026-11-06.md](PHASE_2C_ROADMAP_2026-11-06.md) | Current three-milestone sequence, Claude/Codex coordination and historical archive audit |
