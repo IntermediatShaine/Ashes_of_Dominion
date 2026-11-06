@@ -1,5 +1,8 @@
 # Phase 2C — Generation compatibility and persistence test specification (PROPOSED)
 
+> **Current-main update (2026-11-06):** This is a historical Phase 2C proposal based on the 2026-11-01 schema-1 baseline. Merged Stage 1/2 PRs subsequently introduced schema 3 and partial POI Save/Continue. Refer to the [2026-11-06 reassessment](PHASE_2C_COMPATIBILITY_2026-11-06.md) for actionable architecture and tests. This historical proposal never constituted owner approval to implement a save policy.
+
+
 **Status:** Not implemented. **Verified baseline:** main aec6ce9, SaveGame.SCHEMA_VERSION = 1 and UniverseState.CURRENT_GENERATION_VERSION = 1.
 
 ## Actual behavior and compatibility hazards
